@@ -1,0 +1,221 @@
+{
+  "E01": {
+    "email_kind": "price_change",
+    "changes": [
+      {
+        "material_text": "EPDM 70 duro compound",
+        "new_price": 2.27,
+        "price_unit": "lb",
+        "pack_qty": null,
+        "old_price": 2.1,
+        "pct_change": null,
+        "effective_date": "2026-11-01"
+      }
+    ],
+    "confidence": 0.97,
+    "rationale": "The supplier states a specific new price per lb for EPDM 70 duro compound with an old price and an effective date of Nov 1, 2026; other EPDM grades are unchanged and excluded."
+  },
+  "E02": {
+    "email_kind": "price_change",
+    "changes": [
+      {
+        "material_text": "NBR 70 (Buna-N 70) compound",
+        "new_price": 5.2,
+        "price_unit": "kg",
+        "pack_qty": null,
+        "old_price": null,
+        "pct_change": null,
+        "effective_date": "2026-11-15"
+      }
+    ],
+    "confidence": 0.96,
+    "rationale": "Supplier announces a firm new price of USD 5.20 per kg for NBR 70 compound effective 15 November 2026, with no old price or percent change stated."
+  },
+  "E03": {
+    "email_kind": "price_change",
+    "changes": [
+      {
+        "material_text": "Silicone VMQ 50",
+        "new_price": 310.0,
+        "price_unit": "kg",
+        "pack_qty": 25.0,
+        "old_price": 281.1,
+        "pct_change": null,
+        "effective_date": "2026-11-01"
+      }
+    ],
+    "confidence": 0.96,
+    "rationale": "Supplier announces a firm new price of $310.00 per 25 kg bag (previously $281.10) effective 2026-11-01; the pallet quantity of 40 bags is unchanged and not a price."
+  },
+  "E04": {
+    "email_kind": "price_change",
+    "changes": [
+      {
+        "material_text": "EPDM 70 duro compound",
+        "new_price": 2.27,
+        "price_unit": "lb",
+        "pack_qty": null,
+        "old_price": 2.1,
+        "pct_change": null,
+        "effective_date": "2026-11-01"
+      }
+    ],
+    "confidence": 0.97,
+    "rationale": "Forwarded notice states EPDM 70 duro compound moving from $2.10/lb to $2.27/lb effective Nov 1, 2026; other EPDM grades unchanged and so excluded."
+  },
+  "E05": {
+    "email_kind": "price_change",
+    "changes": [
+      {
+        "material_text": "Neoprene 60 (CR 60)",
+        "new_price": 3.26,
+        "price_unit": "lb",
+        "pack_qty": null,
+        "old_price": 3.4,
+        "pct_change": null,
+        "effective_date": "2026-10-20"
+      }
+    ],
+    "confidence": 0.97,
+    "rationale": "The supplier announces a specific price reduction for one material, with old and new prices per lb and a stated effective date."
+  },
+  "E06": {
+    "email_kind": "other",
+    "changes": [],
+    "confidence": 0.97,
+    "rationale": "The email is a holiday shipping schedule notice that explicitly says pricing is unchanged, so it contains no price change."
+  },
+  "E07": {
+    "email_kind": "price_change",
+    "changes": [
+      {
+        "material_text": "Black 70 compound",
+        "new_price": 2.3,
+        "price_unit": "lb",
+        "pack_qty": null,
+        "old_price": null,
+        "pct_change": null,
+        "effective_date": "2026-11-01"
+      }
+    ],
+    "confidence": 0.95,
+    "rationale": "The supplier states a specific new price of $2.30/lb for Black 70 compound effective November 1, 2026, so it is a firm price change."
+  },
+  "E08": {
+    "email_kind": "price_change",
+    "changes": [
+      {
+        "material_text": "FKM 75 (Viton 75 equivalent)",
+        "new_price": null,
+        "price_unit": null,
+        "pack_qty": null,
+        "old_price": null,
+        "pct_change": 6.5,
+        "effective_date": "2026-12-01"
+      }
+    ],
+    "confidence": 0.95,
+    "rationale": "Supplier announces a 6.5% increase on FKM 75 effective December 1, 2026, with no absolute prices or units stated."
+  },
+  "E09": {
+    "email_kind": "price_change",
+    "changes": [
+      {
+        "material_text": "N550 carbon black",
+        "new_price": 118.0,
+        "price_unit": "cwt",
+        "pack_qty": null,
+        "old_price": 109.0,
+        "pct_change": null,
+        "effective_date": "2026-11-01"
+      }
+    ],
+    "confidence": 0.97,
+    "rationale": "Supplier states a specific new price of $118.00/cwt for N550 carbon black effective Nov 1, 2026, with the previous price of $109.00/cwt."
+  },
+  "E10": {
+    "email_kind": "price_change",
+    "changes": [
+      {
+        "material_text": "C1018 cold rolled bar",
+        "new_price": 1980.0,
+        "price_unit": "metric_ton",
+        "pack_qty": null,
+        "old_price": 1852.0,
+        "pct_change": null,
+        "effective_date": "2026-11-01"
+      }
+    ],
+    "confidence": 0.95,
+    "rationale": "Supplier states a specific new price per metric ton with prior price and a November 1, 2026 effective date for C1018 cold rolled bar."
+  },
+  "E11": {
+    "email_kind": "price_change",
+    "changes": [
+      {
+        "material_text": "NR 40 compound",
+        "new_price": null,
+        "price_unit": null,
+        "pack_qty": null,
+        "old_price": null,
+        "pct_change": 5.0,
+        "effective_date": "2027-02-01"
+      }
+    ],
+    "confidence": 0.93,
+    "rationale": "The supplier announces a 5% increase on NR 40 compound effective 2027-02-01, with no absolute price or unit stated."
+  },
+  "E12": {
+    "email_kind": "price_change",
+    "changes": [
+      {
+        "material_text": "EPDM 50 compound",
+        "new_price": 2.04,
+        "price_unit": "lb",
+        "pack_qty": null,
+        "old_price": 1.95,
+        "pct_change": null,
+        "effective_date": "2026-11-15"
+      },
+      {
+        "material_text": "SBR 60 compound",
+        "new_price": 1.7,
+        "price_unit": "lb",
+        "pack_qty": null,
+        "old_price": 1.62,
+        "pct_change": null,
+        "effective_date": "2026-11-15"
+      }
+    ],
+    "confidence": 0.97,
+    "rationale": "The supplier announces new per-lb prices for EPDM 50 and SBR 60 effective 2026-11-15, with old prices stated; EPDM 60 and 70 are mentioned only as unchanged and are excluded."
+  },
+  "E13": {
+    "email_kind": "price_change",
+    "changes": [
+      {
+        "material_text": "EPDM 60 compound",
+        "new_price": 2.05,
+        "price_unit": "lb",
+        "pack_qty": null,
+        "old_price": null,
+        "pct_change": null,
+        "effective_date": "2026-10-01"
+      }
+    ],
+    "confidence": 0.95,
+    "rationale": "The reminder restates a price change already in effect: EPDM 60 compound at $2.05/lb effective 2026-10-01, with no old price or percentage given."
+  },
+  "E14": {
+    "email_kind": "supplier_offer",
+    "changes": [],
+    "confidence": 0.93,
+    "rationale": "A trading company sales pitch offering EPDM 70 at $1.80/lb with a minimum order and a sample request, not an announced change to an existing supply price."
+  },
+  "E15": {
+    "email_kind": "price_advisory",
+    "changes": [],
+    "confidence": 0.95,
+    "rationale": "The supplier gives a heads-up of expected 3-5% increases in Q1 2027 with no exact price or firm date, and says formal notices will follow in December."
+  }
+}

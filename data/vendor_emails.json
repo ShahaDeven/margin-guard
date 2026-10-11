@@ -1,0 +1,185 @@
+[
+  {
+    "id": "E01",
+    "from": "pricing@midwestpolymer.com",
+    "subject": "Price notice - EPDM 70 compound",
+    "received_at": "2026-10-13T09:12:00",
+    "body": "Hello,\n\nDue to continued increases in ethylene and diene feedstock costs, our EPDM 70 duro compound will move from $2.10/lb to $2.27/lb effective November 1, 2026. All other EPDM grades are unchanged at this time.\n\nOrders placed before Nov 1 ship at current pricing.\n\nRegards,\nDana Whitfield\nMidwest Polymer Supply",
+    "gold": {
+      "outcome": "detected",
+      "changes": [{"material_id": "MAT-EPDM-70", "new_cost_per_lb": 2.27, "effective_date": "2026-11-01"}],
+      "trap": "clean baseline"
+    }
+  },
+  {
+    "id": "E02",
+    "from": "sales@glelastomers.com",
+    "subject": "Nitrile 70 pricing update",
+    "received_at": "2026-10-13T11:40:00",
+    "body": "Hi team,\n\nEffective 15 November 2026 the price for our NBR 70 (Buna-N 70) compound will be USD 5.20 per kg. This reflects the acrylonitrile increases we flagged last quarter.\n\nPlease let me know if you want to place forward orders.\n\nThanks,\nMarco Iles\nGreat Lakes Elastomers",
+    "gold": {
+      "outcome": "detected",
+      "changes": [{"material_id": "MAT-NBR-70", "new_cost_per_lb": 2.3587, "effective_date": "2026-11-15"}],
+      "trap": "priced per kg; catalog is per lb"
+    }
+  },
+  {
+    "id": "E03",
+    "from": "orders@summitsilicones.com",
+    "subject": "VMQ 50 bag pricing - Nov 1",
+    "received_at": "2026-10-13T14:05:00",
+    "body": "Good afternoon,\n\nStarting November 1, 2026, Silicone VMQ 50 will be invoiced at $310.00 per 25 kg bag (currently $281.10 per bag). Pallet quantities are unchanged at 40 bags.\n\nBest,\nPriya Raman\nSummit Silicones",
+    "gold": {
+      "outcome": "detected",
+      "changes": [{"material_id": "MAT-VMQ-50", "new_cost_per_lb": 5.6245, "effective_date": "2026-11-01"}],
+      "trap": "pack pricing: per 25 kg bag"
+    }
+  },
+  {
+    "id": "E04",
+    "from": "accounts@midwestpolymer.com",
+    "subject": "FW: Price notice - EPDM 70 compound",
+    "received_at": "2026-10-14T08:30:00",
+    "body": "Resending in case this was missed.\n\n---------- Forwarded message ----------\nFrom: pricing@midwestpolymer.com\nSubject: Price notice - EPDM 70 compound\n\nHello,\n\nDue to continued increases in ethylene and diene feedstock costs, our EPDM 70 duro compound will move from $2.10/lb to $2.27/lb effective November 1, 2026. All other EPDM grades are unchanged at this time.\n\nRegards,\nDana Whitfield\nMidwest Polymer Supply",
+    "gold": {
+      "outcome": "duplicate",
+      "changes": [{"material_id": "MAT-EPDM-70", "new_cost_per_lb": 2.27, "effective_date": "2026-11-01"}],
+      "trap": "forwarded duplicate of E01 from a different address"
+    }
+  },
+  {
+    "id": "E05",
+    "from": "sales@glelastomers.com",
+    "subject": "Good news: neoprene price reduction",
+    "received_at": "2026-10-14T10:15:00",
+    "body": "Hi,\n\nWith chloroprene monomer supply easing, we are reducing Neoprene 60 (CR 60) from $3.40/lb to $3.26/lb effective October 20, 2026.\n\nMarco Iles\nGreat Lakes Elastomers",
+    "gold": {
+      "outcome": "detected",
+      "changes": [{"material_id": "MAT-CR-60", "new_cost_per_lb": 3.26, "effective_date": "2026-10-20"}],
+      "trap": "price decrease, not an increase"
+    }
+  },
+  {
+    "id": "E06",
+    "from": "orders@summitsilicones.com",
+    "subject": "Holiday shipping schedule",
+    "received_at": "2026-10-14T13:00:00",
+    "body": "Hello valued customer,\n\nOur warehouse will be closed November 26-27 and December 24 - January 1. Orders received after December 18 will ship on January 4. Pricing and lead times are otherwise unchanged.\n\nHappy holidays,\nSummit Silicones",
+    "gold": {
+      "outcome": "ignored",
+      "changes": [],
+      "trap": "irrelevant email that mentions pricing"
+    }
+  },
+  {
+    "id": "E07",
+    "from": "sales@keystonerubber.com",
+    "subject": "Black 70 price change",
+    "received_at": "2026-10-14T15:20:00",
+    "body": "Hi there,\n\nHeads up that our Black 70 compound goes to $2.30/lb on November 1, 2026.\n\nThanks,\nTodd\nKeystone Rubber Distributors",
+    "gold": {
+      "outcome": "needs_review",
+      "changes": [],
+      "trap": "ambiguous name: Keystone supplies both EPDM 70 and NBR 70 as 'Black 70'"
+    }
+  },
+  {
+    "id": "E08",
+    "from": "commercial@fluorotechmaterials.com",
+    "subject": "FKM 75 - 2026 Q4 adjustment",
+    "received_at": "2026-10-14T16:45:00",
+    "body": "Dear customer,\n\nPlease be advised that FKM 75 (Viton 75 equivalent) will increase by 6.5% effective December 1, 2026, due to HFP and VDF monomer costs. Your current contract price remains in place until that date.\n\nSincerely,\nFluoroTech Materials Commercial Team",
+    "gold": {
+      "outcome": "detected",
+      "changes": [{"material_id": "MAT-FKM-75", "new_cost_per_lb": 15.762, "effective_date": "2026-12-01"}],
+      "trap": "percentage only; new price must be computed from our current cost"
+    }
+  },
+  {
+    "id": "E09",
+    "from": "customerservice@ridgelinecarbon.com",
+    "subject": "N550 price revision",
+    "received_at": "2026-10-15T08:05:00",
+    "body": "Hello,\n\nN550 carbon black pricing will be $118.00/cwt for shipments on or after November 1, 2026 (previously $109.00/cwt).\n\nRidgeline Carbon Customer Service",
+    "gold": {
+      "outcome": "detected",
+      "changes": [{"material_id": "MAT-CB-N550", "new_cost_per_lb": 1.18, "effective_date": "2026-11-01"}],
+      "trap": "priced per hundredweight (cwt)"
+    }
+  },
+  {
+    "id": "E10",
+    "from": "quotes@buckeyesteel.com",
+    "subject": "1018 CR bar - November pricing",
+    "received_at": "2026-10-15T09:30:00",
+    "body": "Team,\n\nC1018 cold rolled bar will be $1,980 per metric ton for November 1, 2026 releases, up from $1,852/MT. Mill surcharge is included in the new figure.\n\nBuckeye Steel Service",
+    "gold": {
+      "outcome": "detected",
+      "changes": [{"material_id": "MAT-STL-1018", "new_cost_per_lb": 0.8981, "effective_date": "2026-11-01"}],
+      "trap": "priced per metric ton"
+    }
+  },
+  {
+    "id": "E11",
+    "from": "pricing@midwestpolymer.com",
+    "subject": "Natural rubber - Q1 2027",
+    "received_at": "2026-10-15T10:10:00",
+    "body": "Hello,\n\nGiving early notice: our NR 40 compound will rise 5% effective February 1, 2027, following the latest SMR-20 contract settlements.\n\nDana Whitfield\nMidwest Polymer Supply",
+    "gold": {
+      "outcome": "detected",
+      "changes": [{"material_id": "MAT-NR-40", "new_cost_per_lb": 1.974, "effective_date": "2027-02-01"}],
+      "trap": "effective date after most open quotes expire"
+    }
+  },
+  {
+    "id": "E12",
+    "from": "pricing@midwestpolymer.com",
+    "subject": "Pricing update: EPDM 50 and SBR 60",
+    "received_at": "2026-10-15T11:00:00",
+    "body": "Hi,\n\nTwo updates effective November 15, 2026:\n\n  - EPDM 50 compound: $1.95/lb -> $2.04/lb\n  - SBR 60 compound: $1.62/lb -> $1.70/lb\n\nNo change to EPDM 60 or EPDM 70 beyond what was already communicated.\n\nDana Whitfield\nMidwest Polymer Supply",
+    "gold": {
+      "outcome": "detected",
+      "changes": [
+        {"material_id": "MAT-EPDM-50", "new_cost_per_lb": 2.04, "effective_date": "2026-11-15"},
+        {"material_id": "MAT-SBR-60", "new_cost_per_lb": 1.70, "effective_date": "2026-11-15"}
+      ],
+      "trap": "two changes in one email, plus a decoy mention of other grades"
+    }
+  },
+  {
+    "id": "E13",
+    "from": "pricing@midwestpolymer.com",
+    "subject": "Reminder: EPDM 60 pricing",
+    "received_at": "2026-10-15T11:30:00",
+    "body": "Hello,\n\nA reminder that, as announced in September, EPDM 60 compound moved to $2.05/lb effective October 1, 2026. Invoices dated after Oct 1 reflect the new price.\n\nDana Whitfield\nMidwest Polymer Supply",
+    "gold": {
+      "outcome": "duplicate",
+      "changes": [{"material_id": "MAT-EPDM-60", "new_cost_per_lb": 2.05, "effective_date": "2026-10-01"}],
+      "trap": "change already applied on Oct 1"
+    }
+  },
+  {
+    "id": "E14",
+    "from": "deals@apexpoly-trade.com",
+    "subject": "EPDM 70 at $1.80/lb - limited offer",
+    "received_at": "2026-10-15T12:45:00",
+    "body": "Dear Purchasing Manager,\n\nApex Polymer Trading can supply EPDM 70 compound at $1.80/lb, delivered, for orders placed before November 1, 2026. Minimum order 5,000 lb.\n\nReply to request a sample.\n\nApex Polymer Trading",
+    "gold": {
+      "outcome": "ignored",
+      "changes": [],
+      "trap": "sales offer from a supplier we do not use, not a cost change"
+    }
+  },
+  {
+    "id": "E15",
+    "from": "sales@glelastomers.com",
+    "subject": "2027 outlook",
+    "received_at": "2026-10-15T14:00:00",
+    "body": "Hi team,\n\nFor planning purposes: we expect increases in the 3-5% range across nitrile and neoprene grades in Q1 2027. Formal notices with exact pricing will follow in December.\n\nMarco Iles\nGreat Lakes Elastomers",
+    "gold": {
+      "outcome": "needs_review",
+      "changes": [],
+      "trap": "advisory with a range and no exact price or date"
+    }
+  }
+]

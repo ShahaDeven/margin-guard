@@ -1,0 +1,238 @@
+{
+  "summary": {
+    "model": "claude-sonnet-5-5",
+    "emails": 15,
+    "outcome_accuracy": 1.0,
+    "gold_changes": 10,
+    "change_recall": 1.0,
+    "price_accuracy": 1.0,
+    "date_accuracy": 1.0,
+    "unexpected_changes": 0
+  },
+  "emails": [
+    {
+      "id": "E01",
+      "trap": "clean baseline",
+      "gold_outcome": "detected",
+      "outcome": "detected",
+      "outcome_ok": true,
+      "changes": [
+        {
+          "material_id": "MAT-EPDM-70",
+          "found": true,
+          "price_ok": true,
+          "date_ok": true,
+          "predicted_cost": 2.27,
+          "gold_cost": 2.27
+        }
+      ],
+      "unexpected_changes": []
+    },
+    {
+      "id": "E02",
+      "trap": "priced per kg; catalog is per lb",
+      "gold_outcome": "detected",
+      "outcome": "detected",
+      "outcome_ok": true,
+      "changes": [
+        {
+          "material_id": "MAT-NBR-70",
+          "found": true,
+          "price_ok": true,
+          "date_ok": true,
+          "predicted_cost": 2.35868,
+          "gold_cost": 2.3587
+        }
+      ],
+      "unexpected_changes": []
+    },
+    {
+      "id": "E03",
+      "trap": "pack pricing: per 25 kg bag",
+      "gold_outcome": "detected",
+      "outcome": "detected",
+      "outcome_ok": true,
+      "changes": [
+        {
+          "material_id": "MAT-VMQ-50",
+          "found": true,
+          "price_ok": true,
+          "date_ok": true,
+          "predicted_cost": 5.624545,
+          "gold_cost": 5.6245
+        }
+      ],
+      "unexpected_changes": []
+    },
+    {
+      "id": "E04",
+      "trap": "forwarded duplicate of E01 from a different address",
+      "gold_outcome": "duplicate",
+      "outcome": "duplicate",
+      "outcome_ok": true,
+      "changes": [],
+      "unexpected_changes": []
+    },
+    {
+      "id": "E05",
+      "trap": "price decrease, not an increase",
+      "gold_outcome": "detected",
+      "outcome": "detected",
+      "outcome_ok": true,
+      "changes": [
+        {
+          "material_id": "MAT-CR-60",
+          "found": true,
+          "price_ok": true,
+          "date_ok": true,
+          "predicted_cost": 3.26,
+          "gold_cost": 3.26
+        }
+      ],
+      "unexpected_changes": []
+    },
+    {
+      "id": "E06",
+      "trap": "irrelevant email that mentions pricing",
+      "gold_outcome": "ignored",
+      "outcome": "ignored",
+      "outcome_ok": true,
+      "changes": [],
+      "unexpected_changes": []
+    },
+    {
+      "id": "E07",
+      "trap": "ambiguous name: Keystone supplies both EPDM 70 and NBR 70 as 'Black 70'",
+      "gold_outcome": "needs_review",
+      "outcome": "needs_review",
+      "outcome_ok": true,
+      "changes": [],
+      "unexpected_changes": []
+    },
+    {
+      "id": "E08",
+      "trap": "percentage only; new price must be computed from our current cost",
+      "gold_outcome": "detected",
+      "outcome": "detected",
+      "outcome_ok": true,
+      "changes": [
+        {
+          "material_id": "MAT-FKM-75",
+          "found": true,
+          "price_ok": true,
+          "date_ok": true,
+          "predicted_cost": 15.762,
+          "gold_cost": 15.762
+        }
+      ],
+      "unexpected_changes": []
+    },
+    {
+      "id": "E09",
+      "trap": "priced per hundredweight (cwt)",
+      "gold_outcome": "detected",
+      "outcome": "detected",
+      "outcome_ok": true,
+      "changes": [
+        {
+          "material_id": "MAT-CB-N550",
+          "found": true,
+          "price_ok": true,
+          "date_ok": true,
+          "predicted_cost": 1.18,
+          "gold_cost": 1.18
+        }
+      ],
+      "unexpected_changes": []
+    },
+    {
+      "id": "E10",
+      "trap": "priced per metric ton",
+      "gold_outcome": "detected",
+      "outcome": "detected",
+      "outcome_ok": true,
+      "changes": [
+        {
+          "material_id": "MAT-STL-1018",
+          "found": true,
+          "price_ok": true,
+          "date_ok": true,
+          "predicted_cost": 0.898113,
+          "gold_cost": 0.8981
+        }
+      ],
+      "unexpected_changes": []
+    },
+    {
+      "id": "E11",
+      "trap": "effective date after most open quotes expire",
+      "gold_outcome": "detected",
+      "outcome": "detected",
+      "outcome_ok": true,
+      "changes": [
+        {
+          "material_id": "MAT-NR-40",
+          "found": true,
+          "price_ok": true,
+          "date_ok": true,
+          "predicted_cost": 1.974,
+          "gold_cost": 1.974
+        }
+      ],
+      "unexpected_changes": []
+    },
+    {
+      "id": "E12",
+      "trap": "two changes in one email, plus a decoy mention of other grades",
+      "gold_outcome": "detected",
+      "outcome": "detected",
+      "outcome_ok": true,
+      "changes": [
+        {
+          "material_id": "MAT-EPDM-50",
+          "found": true,
+          "price_ok": true,
+          "date_ok": true,
+          "predicted_cost": 2.04,
+          "gold_cost": 2.04
+        },
+        {
+          "material_id": "MAT-SBR-60",
+          "found": true,
+          "price_ok": true,
+          "date_ok": true,
+          "predicted_cost": 1.7,
+          "gold_cost": 1.7
+        }
+      ],
+      "unexpected_changes": []
+    },
+    {
+      "id": "E13",
+      "trap": "change already applied on Oct 1",
+      "gold_outcome": "duplicate",
+      "outcome": "duplicate",
+      "outcome_ok": true,
+      "changes": [],
+      "unexpected_changes": []
+    },
+    {
+      "id": "E14",
+      "trap": "sales offer from a supplier we do not use, not a cost change",
+      "gold_outcome": "ignored",
+      "outcome": "ignored",
+      "outcome_ok": true,
+      "changes": [],
+      "unexpected_changes": []
+    },
+    {
+      "id": "E15",
+      "trap": "advisory with a range and no exact price or date",
+      "gold_outcome": "needs_review",
+      "outcome": "needs_review",
+      "outcome_ok": true,
+      "changes": [],
+      "unexpected_changes": []
+    }
+  ]
+}

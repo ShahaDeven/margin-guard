@@ -1,0 +1,16 @@
+[project]
+name = "margin-guard"
+version = "0.1.0"
+description = "Coordinated agents that protect quoted margin when supplier costs move."
+requires-python = ">=3.11"
+dependencies = [
+    "anthropic>=0.107",
+    "pydantic>=2.0",
+    "python-dotenv>=1.0",
+]
+
+[dependency-groups]
+dev = ["pytest>=8"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
