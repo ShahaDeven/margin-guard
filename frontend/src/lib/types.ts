@@ -150,4 +150,86 @@ export interface FeedItem {
   text: string
 }
 
+// ---------------------------------------------------------------- data tab
+
+export interface DataQuote {
+  id: string
+  customer_id: string
+  customer_name: string
+  tier: 'key' | 'standard'
+  status: 'open' | 'won' | 'lost' | 'expired'
+  issued_date: string
+  valid_until: string
+  margin_floor: number
+  value_usd: number
+  margin: number
+  lines: number
+  revisions: number
+  open_cards: number
+}
+
+export interface QuoteDetail {
+  id: string
+  customer_name: string
+  tier: 'key' | 'standard'
+  status: string
+  issued_date: string
+  valid_until: string
+  margin_floor: number
+  price_lock_until: string | null
+  contract_note: string | null
+  buyer_name: string | null
+  buyer_phone: string | null
+  buyer_email: string | null
+  account_manager: string | null
+  account_manager_phone: string | null
+  lines: {
+    id: number
+    part_id: string
+    part_name: string
+    qty: number
+    unit_price: number
+    material_cost_basis: number
+    conversion_cost: number
+    materials: string
+  }[]
+  revisions: { id: number; part_name: string; old_price: number; new_price: number; created_at: string }[]
+  cards: {
+    id: number
+    action: Action
+    final_action: Action | null
+    status: Status
+    decided_by: 'rule' | 'llm' | 'error'
+    exposure_usd: number
+    material_id: string | null
+    email_id: string | null
+  }[]
+}
+
+export interface DataCustomer {
+  id: string
+  name: string
+  tier: 'key' | 'standard'
+  price_lock_until: string | null
+  contract_note: string | null
+  buyer_name: string
+  buyer_phone: string
+  buyer_email: string
+  account_manager: string
+  account_manager_phone: string
+  open_quotes: number
+  open_value_usd: number
+  won_quotes: number
+}
+
+export interface DataMaterial {
+  id: string
+  name: string
+  category: string
+  cost_per_lb: number
+  aliases: string[]
+  history: { cost_per_lb: number; effective_date: string; vendor_name: string | null; email_id: string | null }[]
+  parts: string[]
+}
+
 export const isQuote = (p: Proposal): p is Proposal & { facts: QuoteFacts } => p.kind === 'quote_action'

@@ -256,6 +256,35 @@ def test_queue_filters_to_one_emails_cards(client):
     assert inbox["E01"]["rule_pending"] == len(e01)
 
 
+def test_data_quotes_list_and_detail(client, processed):
+    quotes = client.get("/api/data/quotes").json()
+    assert len(quotes) == 270 and sum(q["status"] == "open" for q in quotes) == 150
+    q = next(q for q in quotes if q["open_cards"] > 0)
+    detail = client.get(f"/api/data/quotes/{q['id']}").json()
+    assert detail["customer_name"] == q["customer_name"] and len(detail["lines"]) == q["lines"]
+    assert any(c["status"] == "pending" for c in detail["cards"])
+    assert client.get("/api/data/quotes/Q-NOPE").status_code == 404
+
+
+def test_data_quote_shows_revisions_after_a_reprice(client, processed):
+    pid = _first(processed, "action = 'reprice'")
+    quote_id = actions.get(processed, pid)["quote_id"]
+    client.post(f"/api/proposals/{pid}/review", json={"verdict": "approve"})
+    detail = client.get(f"/api/data/quotes/{quote_id}").json()
+    assert detail["revisions"] and all(r["new_price"] > r["old_price"] for r in detail["revisions"])
+    assert next(q for q in client.get("/api/data/quotes").json() if q["id"] == quote_id)["revisions"] > 0
+
+
+def test_data_customers_and_materials(client):
+    customers = client.get("/api/data/customers").json()
+    assert len(customers) == 24 and all(c["buyer_phone"] for c in customers)
+    materials = {m["id"]: m for m in client.get("/api/data/materials").json()}
+    epdm70 = materials["MAT-EPDM-70"]
+    # The Nov 1 change is scheduled, traced to the email it came from, and today's cost is unchanged.
+    assert any(h["effective_date"] == "2026-11-01" and h["email_id"] == "E01" for h in epdm70["history"])
+    assert epdm70["cost_per_lb"] == 2.10 and "EPDM door seal, 1.2 m" in epdm70["parts"]
+
+
 def test_review_endpoint_and_errors(client):
     card = next(p for p in client.get("/api/queue", params={"lane": "decide"}).json() if p["action"] == "reprice")
     ok = client.post(f"/api/proposals/{card['id']}/review", json={"verdict": "approve"})

@@ -10,7 +10,12 @@ type Review = (body: { verdict: 'approve' | 'edit' | 'reject'; action?: string; 
 
 /** One quote Claude made a judgment call on. Closed: who, what we recommend,
  *  how much is at stake. Open: why, the numbers, and an editable draft. */
-export function DecisionCard({ p, fresh, onReview }: { p: Proposal & { facts: QuoteFacts }; fresh: boolean; onReview: Review }) {
+export function DecisionCard({ p, fresh, onReview, onViewQuote }: {
+  p: Proposal & { facts: QuoteFacts }
+  fresh: boolean
+  onReview: Review
+  onViewQuote: (quoteId: string) => void
+}) {
   const f = p.facts
   const [open, setOpen] = useState(false)
   const [action, setAction] = useState<Action>(p.action)
@@ -76,6 +81,9 @@ export function DecisionCard({ p, fresh, onReview }: { p: Proposal & { facts: Qu
           ) : null}
 
           <LinesTable f={f} />
+          <button type="button" onClick={() => onViewQuote(f.quote_id)} className="font-mono text-[11px] text-silver-dim underline-offset-2 hover:text-silver hover:underline">
+            View {f.quote_id} in Data →
+          </button>
 
           <div className="space-y-2">
             <div className="flex flex-wrap items-center gap-2">

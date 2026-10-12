@@ -59,6 +59,10 @@ export function useConsole() {
   const [lane, setLane] = useState<Lane>('decide')
   /** Show only the cards that came from one supplier email (null = all). */
   const [emailFilter, setEmailFilter] = useState<string | null>(null)
+  /** Quote to open in the Data tab when jumping there from a card. */
+  const [focusedQuote, setFocusedQuote] = useState<string | null>(null)
+  /** Bumped on every refresh, so the Data tab knows to reload. */
+  const [version, setVersion] = useState(0)
   const [overview, setOverview] = useState<Overview | null>(null)
   const [cards, setCards] = useState<Proposal[]>([])
   const [inbox, setInbox] = useState<Email[]>([])
@@ -82,8 +86,12 @@ export function useConsole() {
     try {
       const current = laneRef.current
       const [ov, queue, mail, out] = await Promise.all([
-        api.overview(), api.queue(current, filterRef.current), api.inbox(), api.outbox(),
+        api.overview(),
+        current === 'data' ? Promise.resolve([]) : api.queue(current, filterRef.current),
+        api.inbox(),
+        api.outbox(),
       ])
+      setVersion((v) => v + 1)
       setOverview(ov)
       setBusy(ov.agents_busy)
       setInbox(mail)
@@ -123,6 +131,13 @@ export function useConsole() {
     setLane(target)
   }, [])
 
+  /** Jump from a card to the quote behind it. */
+  const focusQuote = useCallback((quoteId: string) => {
+    setFocusedQuote(quoteId)
+    setLane('data')
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }, [])
+
   useEffect(() => {
     const es = new EventSource('/api/stream')
     const kinds = ['hello', 'email.received', 'email.reading', 'email.processed', 'event.started', 'decision.started',
@@ -156,7 +171,7 @@ export function useConsole() {
   }, [soon])
 
   return {
-    lane, setLane, emailFilter, setEmailFilter, focusEmail,
+    lane, setLane, emailFilter, setEmailFilter, focusEmail, focusedQuote, setFocusedQuote, focusQuote, version,
     overview, cards, inbox, outbox, materials, demoEmails, feed, busy, error, arrived, run,
   }
 }

@@ -9,7 +9,7 @@
       "outcome": "detected",
       "changes": [{"material_id": "MAT-EPDM-70", "new_cost_per_lb": 2.27, "effective_date": "2026-11-01"}],
       "trap": "clean baseline"
-    }
+    } 
   },
   {
     "id": "E02",

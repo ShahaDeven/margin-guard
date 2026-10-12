@@ -1,4 +1,6 @@
-import type { DemoEmail, Email, Material, OutboxItem, Overview, Proposal } from './types'
+import type {
+  DataCustomer, DataMaterial, DataQuote, DemoEmail, Email, Material, OutboxItem, Overview, Proposal, QuoteDetail,
+} from './types'
 
 async function call<T>(path: string, init?: RequestInit): Promise<T> {
   const res = await fetch(path, {
@@ -19,7 +21,7 @@ async function call<T>(path: string, init?: RequestInit): Promise<T> {
 
 const post = <T>(path: string, body: unknown = {}) => call<T>(path, { method: 'POST', body: JSON.stringify(body) })
 
-export type Lane = 'decide' | 'rules' | 'done'
+export type Lane = 'decide' | 'rules' | 'done' | 'data'
 
 export const api = {
   overview: () => call<Overview>('/api/overview'),
@@ -29,6 +31,10 @@ export const api = {
   materials: () => call<Material[]>('/api/materials'),
   outbox: () => call<OutboxItem[]>('/api/outbox'),
   demoEmails: () => call<DemoEmail[]>('/api/demo-emails'),
+  dataQuotes: () => call<DataQuote[]>('/api/data/quotes'),
+  dataQuote: (id: string) => call<QuoteDetail>(`/api/data/quotes/${encodeURIComponent(id)}`),
+  dataCustomers: () => call<DataCustomer[]>('/api/data/customers'),
+  dataMaterials: () => call<DataMaterial[]>('/api/data/materials'),
 
   review: (id: number, body: { verdict: 'approve' | 'edit' | 'reject'; action?: string; subject?: string; body?: string; note?: string }) =>
     post<Proposal>(`/api/proposals/${id}/review`, body),

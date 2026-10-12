@@ -15,7 +15,12 @@ const STATUS_TONE: Record<string, string> = {
 
 /** The record: what each person decided next to what was proposed, plus what
  *  went out. Any row opens to the full detail and can be undone. */
-export function DoneLane({ cards, outbox, onReopen }: { cards: Proposal[]; outbox: OutboxItem[]; onReopen: (id: number) => void }) {
+export function DoneLane({ cards, outbox, onReopen, onViewQuote }: {
+  cards: Proposal[]
+  outbox: OutboxItem[]
+  onReopen: (id: number) => void
+  onViewQuote: (quoteId: string) => void
+}) {
   const [openId, setOpenId] = useState<number | null>(null)
   const [openMail, setOpenMail] = useState<number | null>(null)
 
@@ -26,7 +31,7 @@ export function DoneLane({ cards, outbox, onReopen }: { cards: Proposal[]; outbo
         {cards.length ? (
           <ul className="divide-y divide-line rounded-lg border border-line bg-panel">
             {cards.map((p) => (
-              <DoneRow key={p.id} p={p} open={openId === p.id} onToggle={() => setOpenId(openId === p.id ? null : p.id)} onReopen={() => onReopen(p.id)} />
+              <DoneRow key={p.id} p={p} open={openId === p.id} onToggle={() => setOpenId(openId === p.id ? null : p.id)} onReopen={() => onReopen(p.id)} onViewQuote={onViewQuote} />
             ))}
           </ul>
         ) : <Empty text="Nothing decided yet." />}
@@ -58,7 +63,13 @@ export function DoneLane({ cards, outbox, onReopen }: { cards: Proposal[]; outbo
   )
 }
 
-function DoneRow({ p, open, onToggle, onReopen }: { p: Proposal; open: boolean; onToggle: () => void; onReopen: () => void }) {
+function DoneRow({ p, open, onToggle, onReopen, onViewQuote }: {
+  p: Proposal
+  open: boolean
+  onToggle: () => void
+  onReopen: () => void
+  onViewQuote: (quoteId: string) => void
+}) {
   const isQuote = p.kind === 'quote_action'
   const f = p.facts as QuoteFacts
   const label = isQuote ? `${p.quote_id} · ${f.customer_name}` : `Supplier email ${(p.facts as ReviewFacts).email_id}`
@@ -116,6 +127,7 @@ function DoneRow({ p, open, onToggle, onReopen }: { p: Proposal; open: boolean; 
               ) : null}
               <div className="flex items-center gap-3">
                 <Button tone="hiviz" small onClick={onReopen}>UNDO &amp; REVIEW AGAIN</Button>
+                <Button small onClick={() => onViewQuote(f.quote_id)}>VIEW QUOTE</Button>
                 <span className="font-mono text-[10px] text-silver-dim">
                   {final === 'reprice' && p.status !== 'rejected'
                     ? 'Restores the original quote prices and withdraws the email.'

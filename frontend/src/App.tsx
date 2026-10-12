@@ -1,3 +1,4 @@
+import { DataLane } from './components/DataLane'
 import { DecisionCard } from './components/DecisionCard'
 import { DoneLane } from './components/DoneLane'
 import { ReviewCard } from './components/ReviewCard'
@@ -35,7 +36,7 @@ function App() {
 
         <main>
           <Tabs lane={c.lane} setLane={c.setLane} ov={ov} />
-          {c.emailFilter ? (
+          {c.emailFilter && c.lane !== 'data' ? (
             <FilterChip
               email={c.inbox.find((m) => m.id === c.emailFilter)?.subject}
               id={c.emailFilter}
@@ -61,6 +62,7 @@ function App() {
                     p={p}
                     fresh={c.arrived.has(p.id)}
                     onReview={(body) => c.run(() => api.review(p.id, body))}
+                    onViewQuote={c.focusQuote}
                   />
                 ))}
                 {!c.cards.length ? <Empty text="Nothing needs you right now." /> : null}
@@ -70,7 +72,15 @@ function App() {
               <RulesLane cards={quoteCards} onConfirm={(eventId) => c.run(() => api.confirmRules(eventId))} />
             ) : null}
             {c.lane === 'done' ? (
-              <DoneLane cards={c.cards} outbox={c.outbox} onReopen={(id) => c.run(() => api.reopen(id))} />
+              <DoneLane cards={c.cards} outbox={c.outbox} onReopen={(id) => c.run(() => api.reopen(id))} onViewQuote={c.focusQuote} />
+            ) : null}
+            {c.lane === 'data' && ov ? (
+              <DataLane
+                asOf={ov.as_of}
+                version={c.version}
+                focusedQuote={c.focusedQuote}
+                onFocusHandled={() => c.setFocusedQuote(null)}
+              />
             ) : null}
           </div>
         </main>
@@ -144,6 +154,7 @@ function Tabs({ lane, setLane, ov }: { lane: Lane; setLane: (l: Lane) => void; o
     { id: 'decide', label: 'Needs your decision', count: ov?.needs_you },
     { id: 'rules', label: 'Settled by rules', count: ov?.rule_pending },
     { id: 'done', label: 'Done', count: ov?.done },
+    { id: 'data', label: 'Data' },
   ]
   return (
     <nav className="flex gap-1 border-b border-line">

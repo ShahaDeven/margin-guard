@@ -225,6 +225,109 @@ def demo_emails() -> list[dict]:
     return json.loads(DEMO_EMAILS_PATH.read_text(encoding="utf-8"))
 
 
+# ------------------------------------------------------------------ data (read-only)
+
+
+@app.get("/api/data/quotes")
+def data_quotes() -> list[dict]:
+    """Every quote with its value and margin at current prices and quote-time costs."""
+    with _conn_lock:
+        return [dict(r) for r in conn().execute(
+            """SELECT q.id, q.customer_id, c.name AS customer_name, c.tier, q.status, q.issued_date, q.valid_until,
+                      q.margin_floor,
+                      ROUND(SUM(ql.qty * ql.unit_price), 2) AS value_usd,
+                      ROUND(1 - SUM(ql.qty * (ql.material_cost_basis + ql.conversion_cost))
+                                / SUM(ql.qty * ql.unit_price), 4) AS margin,
+                      COUNT(ql.id) AS lines,
+                      (SELECT COUNT(*) FROM quote_revisions r WHERE r.quote_id = q.id) AS revisions,
+                      (SELECT COUNT(*) FROM proposals p WHERE p.quote_id = q.id AND p.status = 'pending') AS open_cards
+               FROM quotes q
+               JOIN customers c ON c.id = q.customer_id
+               JOIN quote_lines ql ON ql.quote_id = q.id
+               GROUP BY q.id
+               ORDER BY q.status = 'open' DESC, q.id DESC"""
+        )]
+
+
+@app.get("/api/data/quotes/{quote_id}")
+def data_quote(quote_id: str) -> dict:
+    """One quote in full: lines, every price revision, and every card ever raised on it."""
+    with _conn_lock:
+        c = conn()
+        q = c.execute(
+            """SELECT q.*, c.name AS customer_name, c.tier, c.price_lock_until, c.contract_note,
+                      c.buyer_name, c.buyer_phone, c.buyer_email, c.account_manager, c.account_manager_phone
+               FROM quotes q JOIN customers c ON c.id = q.customer_id WHERE q.id = ?""",
+            (quote_id,),
+        ).fetchone()
+        if q is None:
+            raise HTTPException(404, f"no quote {quote_id}")
+        lines = c.execute(
+            """SELECT ql.id, ql.part_id, p.name AS part_name, ql.qty, ql.unit_price, ql.material_cost_basis,
+                      ql.conversion_cost,
+                      (SELECT GROUP_CONCAT(m.name, ' + ') FROM part_materials pm JOIN materials m ON m.id = pm.material_id
+                       WHERE pm.part_id = ql.part_id) AS materials
+               FROM quote_lines ql JOIN parts p ON p.id = ql.part_id WHERE ql.quote_id = ? ORDER BY ql.id""",
+            (quote_id,),
+        ).fetchall()
+        revisions = c.execute(
+            """SELECT r.*, p.name AS part_name FROM quote_revisions r
+               JOIN quote_lines ql ON ql.id = r.line_id JOIN parts p ON p.id = ql.part_id
+               WHERE r.quote_id = ? ORDER BY r.id""",
+            (quote_id,),
+        ).fetchall()
+        cards = c.execute(
+            """SELECT p.id, p.action, p.final_action, p.status, p.decided_by, p.exposure_usd, p.created_at,
+                      json_extract(e.payload, '$.material_id') AS material_id,
+                      json_extract(e.payload, '$.email_id') AS email_id
+               FROM proposals p JOIN events e ON e.id = p.event_id WHERE p.quote_id = ? ORDER BY p.id""",
+            (quote_id,),
+        ).fetchall()
+        return {**dict(q), "lines": [dict(r) for r in lines], "revisions": [dict(r) for r in revisions],
+                "cards": [dict(r) for r in cards]}
+
+
+@app.get("/api/data/customers")
+def data_customers() -> list[dict]:
+    with _conn_lock:
+        return [dict(r) for r in conn().execute(
+            """SELECT c.*,
+                      (SELECT COUNT(*) FROM quotes q WHERE q.customer_id = c.id AND q.status = 'open') AS open_quotes,
+                      (SELECT ROUND(COALESCE(SUM(ql.qty * ql.unit_price), 0), 2) FROM quotes q
+                       JOIN quote_lines ql ON ql.quote_id = q.id
+                       WHERE q.customer_id = c.id AND q.status = 'open') AS open_value_usd,
+                      (SELECT COUNT(*) FROM quotes q WHERE q.customer_id = c.id AND q.status = 'won') AS won_quotes
+               FROM customers c ORDER BY c.name"""
+        )]
+
+
+@app.get("/api/data/materials")
+def data_materials() -> list[dict]:
+    """Each material: cost today, its full price history including scheduled changes,
+    where each change came from, and which parts use it."""
+    with _conn_lock:
+        c = conn()
+        out = []
+        for m in c.execute("SELECT * FROM materials ORDER BY id").fetchall():
+            history = c.execute(
+                """SELECT h.cost_per_lb, h.effective_date, v.name AS vendor_name,
+                          json_extract(e.payload, '$.email_id') AS email_id
+                   FROM material_price_history h
+                   LEFT JOIN vendors v ON v.id = h.vendor_id
+                   LEFT JOIN events e ON e.id = h.source_event_id
+                   WHERE h.material_id = ? ORDER BY h.effective_date, h.id""",
+                (m["id"],),
+            ).fetchall()
+            parts = c.execute(
+                """SELECT p.name FROM part_materials pm JOIN parts p ON p.id = pm.part_id
+                   WHERE pm.material_id = ? ORDER BY p.id""",
+                (m["id"],),
+            ).fetchall()
+            out.append({**dict(m), "aliases": json.loads(m["aliases"]),
+                        "history": [dict(h) for h in history], "parts": [p["name"] for p in parts]})
+        return out
+
+
 # ------------------------------------------------------------------ actions
 
 

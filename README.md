@@ -60,7 +60,12 @@ Built for an estimator, not an engineer. Three lanes:
   recommend, margin before → after against the floor); open it for the reasons,
   the line-by-line prices and an editable draft.
 - **Settled by rules:** honor/absorb decisions grouped by price change, confirmed in bulk.
-- **Done:** what each person decided next to what was proposed, and the outbox.
+- **Done:** what each person decided next to what was proposed, and the outbox. Any
+  decision can be undone (an approved revision restores the old prices).
+- **Data:** read-only quotes, customers and materials, so any number on a card can be
+  checked: a quote's lines, revisions and every card raised on it; each customer's
+  buyer, account manager, lock and notes; each material's price history including
+  scheduled changes and the email each came from.
 
 Approving a revised quote writes the new prices to the quote and queues the email;
 approving "call first" creates a call task. Every verdict, including edits and notes,
