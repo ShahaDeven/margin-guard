@@ -16,5 +16,17 @@ dependencies = [
 [dependency-groups]
 dev = ["pytest>=8", "httpx>=0.27"]
 
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+# The repo root also holds frontend/, data/ and tests/, so name the packages
+# explicitly instead of letting setuptools guess (it refuses to).
+[tool.setuptools]
+packages = ["margin_guard", "evals"]
+
+[tool.setuptools.package-data]
+margin_guard = ["schema.sql"]
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]
