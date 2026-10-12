@@ -81,38 +81,98 @@ PARTS = [
     ("P-1018", "Bonded EPDM bushing", 2.30, [("MAT-EPDM-70", 0.25, 0.05), ("MAT-STL-1018", 0.60, 0.02)]),
     ("P-1019", "EPDM roof flashing boot", 1.05, [("MAT-EPDM-60", 0.50, 0.05)]),
     ("P-1020", "Nitrile oil pan gasket", 0.85, [("MAT-NBR-70", 0.20, 0.07)]),
+    ("P-1021", "EPDM radiator hose, 0.5 m", 1.60, [("MAT-EPDM-70", 0.65, 0.05), ("MAT-CB-N550", 0.10, 0.0)]),
+    ("P-1022", "EPDM pond liner gasket", 0.90, [("MAT-EPDM-50", 0.70, 0.04)]),
+    ("P-1023", "EPDM wiper blade insert", 0.30, [("MAT-EPDM-60", 0.08, 0.10)]),
+    ("P-1024", "Nitrile glove-box gasket", 1.40, [("MAT-NBR-70", 0.38, 0.06)]),
+    ("P-1025", "Nitrile hydraulic rod wiper", 0.65, [("MAT-NBR-90", 0.05, 0.09)]),
+    ("P-1026", "Nitrile fuel tank grommet", 0.22, [("MAT-NBR-70", 0.04, 0.08)]),
+    ("P-1027", "Bonded nitrile valve stem", 1.75, [("MAT-NBR-90", 0.12, 0.06), ("MAT-STL-1018", 0.35, 0.02)]),
+    ("P-1028", "SBR conveyor skirting, 1 m", 2.60, [("MAT-SBR-60", 3.20, 0.03), ("MAT-CB-N550", 0.30, 0.0)]),
+    ("P-1029", "SBR anti-vibration mat", 1.95, [("MAT-SBR-60", 2.80, 0.03)]),
+    ("P-1030", "Natural rubber dock bumper", 3.10, [("MAT-NR-40", 4.50, 0.04), ("MAT-STL-1018", 0.80, 0.02)]),
+    ("P-1031", "Natural rubber suspension bushing", 1.15, [("MAT-NR-40", 0.40, 0.05), ("MAT-STL-1018", 0.25, 0.02)]),
+    ("P-1032", "Neoprene expansion joint", 3.40, [("MAT-CR-60", 1.80, 0.05)]),
+    ("P-1033", "Neoprene cable grommet", 0.18, [("MAT-CR-60", 0.03, 0.07)]),
+    ("P-1034", "Silicone baking mat seal", 1.10, [("MAT-VMQ-50", 0.20, 0.08)]),
+    ("P-1035", "Silicone LED lens gasket", 0.45, [("MAT-VMQ-50", 0.04, 0.12)]),
+    ("P-1036", "Silicone CPAP mask cushion", 2.90, [("MAT-VMQ-50", 0.15, 0.15)]),
+    ("P-1037", "FKM fuel injector O-ring kit (10 pc)", 0.80, [("MAT-FKM-75", 0.03, 0.12)]),
+    ("P-1038", "FKM semiconductor chamber door seal", 6.20, [("MAT-FKM-75", 0.55, 0.10)]),
+    ("P-1039", "Bonded FKM check valve", 4.10, [("MAT-FKM-75", 0.18, 0.10), ("MAT-STL-1018", 0.30, 0.02)]),
+    ("P-1040", "EPDM solar panel edge seal", 0.95, [("MAT-EPDM-60", 0.32, 0.05)]),
 ]
 
-# (id, name, price_lock_until, contract_note)
+# (id, name, tier, price_lock_until, contract_note)
 CUSTOMERS = [
-    ("C-01", "Lakeshore HVAC", None, None),
-    ("C-02", "Prairie Ag Equipment", None, None),
-    ("C-03", "Tri-County Plumbing Supply", None, None),
-    ("C-04", "Ironbridge Trucks", "2026-12-31", "Annual supply agreement: quoted prices fixed through 2026-12-31."),
-    ("C-05", "Cobalt Marine", None, None),
-    ("C-06", "Redwood Medical Devices", "2027-03-31", "Validated-part agreement: price changes need 90 days notice; locked through 2027-03-31."),
-    ("C-07", "Summit Pumps", None, None),
-    ("C-08", "Granite Industrial", None, None),
-    ("C-09", "Bluewater Filtration", None, None),
-    ("C-10", "Northfield Appliance", None, None),
+    ("C-01", "Lakeshore HVAC", "key", None, None),
+    ("C-02", "Prairie Ag Equipment", "key", None,
+     "Purchasing asks that revised pricing always arrive by email as a revised quote. Please do not call."),
+    ("C-03", "Tri-County Plumbing Supply", "standard", None, None),
+    ("C-04", "Ironbridge Trucks", "key", "2026-12-31",
+     "Annual supply agreement: quoted prices fixed through 2026-12-31."),
+    ("C-05", "Cobalt Marine", "standard", None, None),
+    ("C-06", "Redwood Medical Devices", "key", "2027-03-31",
+     "Validated-part agreement: price changes need 90 days notice; locked through 2027-03-31."),
+    ("C-07", "Summit Pumps", "standard", None,
+     "Any price revision must be agreed by phone with purchasing (J. Ortiz) before a revised quote is sent."),
+    ("C-08", "Granite Industrial", "key", None, None),
+    ("C-09", "Bluewater Filtration", "standard", None, None),
+    ("C-10", "Northfield Appliance", "standard", None, None),
+    # Distractor note: mentions logistics, says nothing about price revisions.
+    ("C-11", "Harbor Point Foodservice", "standard", None,
+     "Ship-to address changed to Dock 4, north entrance, for all 2026 releases."),
+    ("C-12", "Meridian Rail Systems", "key", None,
+     "All communication goes through their distributor, Allied Supply. Send revised quotes by email only."),
+    ("C-13", "Pioneer Irrigation", "standard", None,
+     "Their buyer requires a call from the account manager before any change to quoted pricing."),
+    # Lock ends between the Nov 1 and Nov 15 changes.
+    ("C-14", "Atlas Compressor Co.", "standard", "2026-11-10", "Spot-buy price hold through 2026-11-10."),
+    ("C-15", "Evergreen Solar Mounts", "standard", None, None),
+    ("C-16", "Copperline Brewing Equipment", "standard", None, None),
+    ("C-17", "Ridgeway Lab Instruments", "key", None, None),
+    ("C-18", "Delta Hydraulics", "standard", None, None),
+    ("C-19", "Orchard Food Processing", "standard", None, None),
+    ("C-20", "Vantage Semiconductor Tools", "key", None, None),
+    # Distractor note: payment terms only.
+    ("C-21", "Sterling Fire Apparatus", "standard", None,
+     "Net 45 payment terms; a PO is required for every release."),
+    ("C-22", "Crescent Pool Products", "standard", None, None),
+    ("C-23", "Frontier Rail Car", "standard", None, None),
+    ("C-24", "Willow Creek Medical", "standard", "2027-01-15",
+     "Price hold through 2027-01-15 under the 2026 bid award."),
 ]
 
 # Which parts each customer tends to buy, so quotes look like real accounts.
 CUSTOMER_PARTS = {
-    "C-01": ["P-1004", "P-1001", "P-1013"],
-    "C-02": ["P-1009", "P-1010", "P-1008", "P-1007"],
-    "C-03": ["P-1002", "P-1019", "P-1003", "P-1020"],
+    "C-01": ["P-1004", "P-1001", "P-1013", "P-1021"],
+    "C-02": ["P-1009", "P-1010", "P-1008", "P-1007", "P-1029", "P-1030"],
+    "C-03": ["P-1002", "P-1019", "P-1003", "P-1020", "P-1026"],
     "C-04": ["P-1008", "P-1018", "P-1007", "P-1020"],
-    "C-05": ["P-1012", "P-1013", "P-1011"],
+    "C-05": ["P-1012", "P-1013", "P-1011", "P-1032"],
     "C-06": ["P-1014", "P-1015", "P-1017"],
-    "C-07": ["P-1016", "P-1017", "P-1006", "P-1005"],
-    "C-08": ["P-1006", "P-1005", "P-1018", "P-1010"],
-    "C-09": ["P-1016", "P-1005", "P-1014"],
-    "C-10": ["P-1015", "P-1002", "P-1001", "P-1003"],
+    "C-07": ["P-1016", "P-1017", "P-1006", "P-1005", "P-1039"],
+    "C-08": ["P-1006", "P-1005", "P-1018", "P-1010", "P-1028"],
+    "C-09": ["P-1016", "P-1005", "P-1014", "P-1037"],
+    "C-10": ["P-1015", "P-1002", "P-1001", "P-1003", "P-1023"],
+    "C-11": ["P-1034", "P-1015", "P-1033"],
+    "C-12": ["P-1027", "P-1031", "P-1018", "P-1006"],
+    "C-13": ["P-1022", "P-1040", "P-1029"],
+    "C-14": ["P-1025", "P-1027", "P-1006", "P-1005"],
+    "C-15": ["P-1040", "P-1023", "P-1035"],
+    "C-16": ["P-1024", "P-1026", "P-1020"],
+    "C-17": ["P-1036", "P-1035", "P-1037"],
+    "C-18": ["P-1025", "P-1006", "P-1039"],
+    "C-19": ["P-1034", "P-1024", "P-1028"],
+    "C-20": ["P-1038", "P-1037", "P-1016"],
+    "C-21": ["P-1012", "P-1021", "P-1032"],
+    "C-22": ["P-1022", "P-1013", "P-1033"],
+    "C-23": ["P-1030", "P-1028", "P-1031"],
+    "C-24": ["P-1036", "P-1014", "P-1035"],
 }
 
-N_OPEN_QUOTES = 45
-N_CLOSED_QUOTES = 30
+N_OPEN_QUOTES = 150
+N_CLOSED_QUOTES = 120
 RNG_SEED = 42
 
 
@@ -136,7 +196,8 @@ def _price_change_key(material_id: str, cost_per_lb: float, effective: str) -> s
 def _insert_quote(conn, rng, quote_id, customer_id, status, issued, valid_days, costs):
     valid_until = issued + timedelta(days=valid_days)
     target_margin = round(rng.uniform(0.22, 0.35), 3)
-    margin_floor = rng.choice([0.18, 0.20])
+    # Competitive bids are quoted close to the floor, so headroom varies a lot.
+    margin_floor = max(0.18, round(target_margin - rng.choice([0.01, 0.015, 0.02, 0.03, 0.05, 0.08]), 3))
     conn.execute(
         "INSERT INTO quotes VALUES (?, ?, ?, ?, ?, ?)",
         (quote_id, customer_id, status, issued.isoformat(), valid_until.isoformat(), margin_floor),
@@ -200,15 +261,15 @@ def build(conn, emails_path: Path = EMAILS_PATH) -> None:
         for mat_id, lb, scrap in bom:
             conn.execute("INSERT INTO part_materials VALUES (?, ?, ?, ?)", (part_id, mat_id, lb, scrap))
 
-    conn.executemany("INSERT INTO customers VALUES (?, ?, ?, ?)", CUSTOMERS)
+    conn.executemany("INSERT INTO customers VALUES (?, ?, ?, ?, ?)", CUSTOMERS)
     customer_ids = [c[0] for c in CUSTOMERS]
 
-    # Open quotes: issued in the six weeks before AS_OF and still valid.
+    # Open quotes: issued in the two months before AS_OF and still valid.
     n = 0
     seq = 101
     while n < N_OPEN_QUOTES:
-        issued = AS_OF - timedelta(days=rng.randint(1, 44))
-        valid_days = rng.choice([30, 45, 60, 90])
+        issued = AS_OF - timedelta(days=rng.randint(1, 59))
+        valid_days = rng.choice([30, 45, 60, 60, 90, 90, 120])
         if issued + timedelta(days=valid_days) < AS_OF:
             continue
         _insert_quote(conn, rng, f"Q-2026-{seq:04d}", rng.choice(customer_ids), "open", issued, valid_days, costs)
@@ -217,7 +278,7 @@ def build(conn, emails_path: Path = EMAILS_PATH) -> None:
 
     # Closed history (won/lost) for later analysis.
     for _ in range(N_CLOSED_QUOTES):
-        issued = date(2026, 4, 1) + timedelta(days=rng.randint(0, 120))
+        issued = date(2026, 1, 5) + timedelta(days=rng.randint(0, 220))
         status = rng.choice(["won", "won", "lost"])
         _insert_quote(conn, rng, f"Q-2026-{seq:04d}", rng.choice(customer_ids), status, issued, 30, costs)
         seq += 1

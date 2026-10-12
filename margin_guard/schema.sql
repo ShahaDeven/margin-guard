@@ -48,6 +48,7 @@ CREATE TABLE IF NOT EXISTS part_materials (
 CREATE TABLE IF NOT EXISTS customers (
     id               TEXT PRIMARY KEY,
     name             TEXT NOT NULL,
+    tier             TEXT NOT NULL DEFAULT 'standard' CHECK (tier IN ('key', 'standard')),
     price_lock_until TEXT,                       -- contract price lock; NULL = none
     contract_note    TEXT
 );
@@ -94,8 +95,37 @@ CREATE TABLE IF NOT EXISTS events (
     payload          TEXT NOT NULL,              -- JSON
     status           TEXT NOT NULL DEFAULT 'pending'
                      CHECK (status IN ('pending', 'processed', 'failed')),
+    result           TEXT,                       -- JSON summary written by the coordinator
     created_at       TEXT NOT NULL DEFAULT (datetime('now'))
 );
+
+-- One proposed action per (event, quote), or one review item per doubtful event.
+-- Every row waits for a person; their verdict is what the eval loop learns from.
+CREATE TABLE IF NOT EXISTS proposals (
+    id               INTEGER PRIMARY KEY AUTOINCREMENT,
+    idempotency_key  TEXT NOT NULL UNIQUE,       -- "<event_id>:<quote_id>" or "<event_id>:event"
+    event_id         INTEGER NOT NULL REFERENCES events(id),
+    quote_id         TEXT REFERENCES quotes(id),
+    kind             TEXT NOT NULL CHECK (kind IN ('quote_action', 'event_review')),
+    action           TEXT NOT NULL CHECK (action IN
+                     ('honor', 'absorb', 'reprice', 'contact_customer', 'escalate', 'resolve_event')),
+    decided_by       TEXT NOT NULL CHECK (decided_by IN ('rule', 'llm', 'error')),
+    rule_id          TEXT,
+    confidence       REAL,
+    rationale        TEXT NOT NULL,
+    draft_subject    TEXT,
+    draft_body       TEXT,
+    facts            TEXT NOT NULL,              -- JSON: everything the decision was based on
+    exposure_usd     REAL NOT NULL DEFAULT 0,
+    status           TEXT NOT NULL DEFAULT 'pending'
+                     CHECK (status IN ('pending', 'approved', 'edited', 'rejected', 'superseded')),
+    superseded_by    INTEGER REFERENCES proposals(id),   -- newer card that already covers this change
+    reviewer_note    TEXT,
+    created_at       TEXT NOT NULL DEFAULT (datetime('now')),
+    reviewed_at      TEXT
+);
+
+CREATE INDEX IF NOT EXISTS idx_proposals_status ON proposals(status);
 
 CREATE INDEX IF NOT EXISTS idx_events_status ON events(status, event_type);
 CREATE INDEX IF NOT EXISTS idx_quote_lines_quote ON quote_lines(quote_id);

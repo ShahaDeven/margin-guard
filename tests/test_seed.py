@@ -4,8 +4,10 @@ from margin_guard.config import AS_OF
 def test_counts(conn):
     count = lambda sql: conn.execute(sql).fetchone()[0]  # noqa: E731
     assert count("SELECT COUNT(*) FROM materials") == 12
-    assert count("SELECT COUNT(*) FROM parts") == 20
-    assert count("SELECT COUNT(*) FROM quotes WHERE status = 'open'") == 45
+    assert count("SELECT COUNT(*) FROM parts") == 40
+    assert count("SELECT COUNT(*) FROM customers") == 24
+    assert count("SELECT COUNT(*) FROM quotes WHERE status = 'open'") == 150
+    assert count("SELECT COUNT(*) FROM quotes WHERE status <> 'open'") == 120
     assert count("SELECT COUNT(*) FROM inbox_emails WHERE status = 'new'") == 15
 
 
