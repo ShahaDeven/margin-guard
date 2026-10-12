@@ -1,4 +1,4 @@
-# margin-guard
+# Margin-Guard
 
 When a supplier raises a price, every open quote built on that material is quietly losing
 money. Usually nobody notices until the job is already shipped at the old margin.
@@ -149,15 +149,27 @@ undo, the API, and the eval machinery itself.
 
 ## Run it
 
-```bash
-cp .env.example .env                    # add ANTHROPIC_API_KEY
-python -m margin_guard.seed --reset     # build the demo shop
-python -m margin_guard.ingest           # read the supplier inbox
-python -m margin_guard.coordinator      # impact + decisions (--replay evals/results/decisions.json reuses cached calls)
+Needs Python 3.11+ and Node 20.19+ (tested on Python 3.11 and Node 22).
 
+```bash
+python -m venv .venv
+source .venv/bin/activate              # Windows: .venv\Scripts\activate
+pip install -r requirements.txt        # requirements-dev.txt adds pytest
+
+# Build the demo shop and run the agents on its inbox.
+# --replay reuses the Claude calls cached in evals/results/, so this needs no API key.
+python -m margin_guard.seed --reset
+python -m margin_guard.ingest --replay evals/results/extractions.json
+python -m margin_guard.coordinator --replay evals/results/decisions.json
+
+# Console
 uvicorn margin_guard.api:app --port 8000
 cd frontend && npm install && npm run dev   # http://localhost:5174
 ```
+
+Everything above works without an API key. To run Claude live ("Send test email" in the
+console, or the commands without `--replay`), copy `.env.example` to `.env` and add an
+`ANTHROPIC_API_KEY`. The evals also take `--replay` to rescore cached results for free.
 
 Stack: Python 3.11, LangGraph, FastAPI + SSE, SQLite (WAL), React 19 + Vite + Tailwind, and
 Claude Sonnet 5.5 through the Anthropic SDK with structured outputs.

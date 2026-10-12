@@ -5,6 +5,7 @@
 """
 
 import argparse
+import json
 import sqlite3
 from pathlib import Path
 
@@ -60,9 +61,22 @@ def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--email", help="process one email by id (even if already processed)")
     ap.add_argument("--db", type=Path, default=DB_PATH)
+    ap.add_argument("--replay", type=Path, metavar="EXTRACTIONS_JSON",
+                    help="reuse cached Claude extractions (e.g. evals/results/extractions.json); "
+                         "emails not in the cache still go to Claude")
     args = ap.parse_args()
     conn = db.connect(args.db)
-    run(conn, args.email)
+
+    extract = parser.extract
+    if args.replay:
+        cache = json.loads(args.replay.read_text(encoding="utf-8"))
+
+        def extract(email):
+            if email["id"] in cache:
+                return parser.EmailExtraction.model_validate(cache[email["id"]])
+            return parser.extract(email)
+
+    run(conn, args.email, extract)
     print()
     for row in conn.execute("SELECT event_type, COUNT(*) n FROM events WHERE status = 'pending' GROUP BY event_type"):
         print(f"  pending {row['event_type']}: {row['n']}")
