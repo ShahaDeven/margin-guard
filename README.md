@@ -164,12 +164,15 @@ python -m margin_guard.coordinator --replay evals/results/decisions.json
 
 # Console
 uvicorn margin_guard.api:app --port 8000
+# in a second terminal:
 cd frontend && npm install && npm run dev   # http://localhost:5174
 ```
 
 Everything above works without an API key. To run Claude live ("Send test email" in the
 console, or the commands without `--replay`), copy `.env.example` to `.env` and add an
 `ANTHROPIC_API_KEY`. The evals also take `--replay` to rescore cached results for free.
+Without a key, "Send test email" and answering a "needs a look" question fail gracefully: the
+email shows "could not read" and any judgment call becomes a "Needs your call" card for a person.
 
 Stack: Python 3.11, LangGraph, FastAPI + SSE, SQLite (WAL), React 19 + Vite + Tailwind, and
 Claude Sonnet 5.5 through the Anthropic SDK with structured outputs.

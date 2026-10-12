@@ -30,7 +30,8 @@ function describe(kind: string, d: Msg): Omit<FeedItem, 'id' | 'at'> | null {
         ignored: 'not a price change',
         error: 'could not be read',
       }
-      return { tone: outcome === 'needs_review' ? 'attention' : 'good', text: `${d.email_id}: ${text[outcome] ?? outcome}` }
+      const tone = outcome === 'error' ? 'fault' : outcome === 'needs_review' ? 'attention' : 'good'
+      return { tone, text: `${d.email_id}: ${text[outcome] ?? outcome}` }
     }
     case 'event.started':
       return d.event_type === 'price_change.detected'

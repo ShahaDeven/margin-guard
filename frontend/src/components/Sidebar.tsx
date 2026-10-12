@@ -59,6 +59,8 @@ const OUTCOME: Record<string, { label: string; tone: string }> = {
 
 /** The label reflects where the email stands now, not only how it was first read. */
 function statusOf(m: Email): { label: string; tone: string } {
+  // A failed read leaves no verdict, only status = 'error' (e.g. no API key).
+  if (m.status === 'error') return OUTCOME.error
   if (m.outcome === 'needs_review' && m.review_status === 'approved') return { label: 'resolved', tone: 'text-cyan' }
   if (m.outcome === 'needs_review' && m.review_status === 'rejected') return { label: 'dismissed', tone: 'text-silver-dim' }
   return OUTCOME[m.outcome ?? ''] ?? { label: m.status === 'new' ? 'reading…' : m.status, tone: 'text-purple' }
