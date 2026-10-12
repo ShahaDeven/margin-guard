@@ -1,0 +1,61 @@
+@import "tailwindcss";
+
+/* Black Arrows palette, shared with MarketPulse. Same curation rules:
+   purple = Claude / brand, cyan = healthy / approve, hi-viz = needs a person,
+   signal red = below floor / faults only. Mono for numbers and labels, sans for prose,
+   because estimators read sentences, not telemetry. */
+@theme {
+  --color-weave: #0a0a0a;
+  --color-panel: #101216;
+  --color-panel-2: #161a20;
+  --color-line: #23272f;
+  --color-line-bright: #333944;
+
+  --color-silver: #c2c8cf;
+  --color-silver-bright: #eceef1;
+  --color-silver-dim: #7c828b;
+
+  --color-purple: #a96bff;
+  --color-cyan: #00d7b6;
+  --color-hiviz: #ccff00;
+  --color-signal: #ff4d3d;
+
+  --font-sans: "Segoe UI", ui-sans-serif, system-ui, Roboto, Helvetica, sans-serif;
+  --font-mono: "Cascadia Code", "JetBrains Mono", ui-monospace, Consolas, monospace;
+}
+
+:root { color-scheme: dark; }
+
+html, body, #root { height: 100%; }
+
+body {
+  margin: 0;
+  background: var(--color-weave);
+  color: var(--color-silver);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+  background-size: 44px 44px;
+}
+
+@keyframes mg-breathe {
+  0%, 100% { opacity: 0.55; }
+  50% { opacity: 1; }
+}
+@keyframes mg-arrive {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: none; }
+}
+.mg-breathe { animation: mg-breathe 1.6s ease-in-out infinite; }
+.mg-arrive { animation: mg-arrive 0.35s ease-out; }
+
+@media (prefers-reduced-motion: reduce) {
+  .mg-breathe, .mg-arrive { animation: none; }
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-line-bright) transparent;
+}

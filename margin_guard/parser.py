@@ -163,6 +163,7 @@ def normalize(conn: sqlite3.Connection, email: sqlite3.Row | dict, extraction: E
             "material_text": ch.material_text,
             "material_id": match.material_id,
             "match_method": match.method,
+            "match_candidates": match.candidates,
             "old_cost_per_lb": current,
             "new_cost_per_lb": round(new_cost, 6) if new_cost is not None else None,
             "pct_change": round(pct, 6) if pct is not None else None,

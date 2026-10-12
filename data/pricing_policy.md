@@ -22,10 +22,18 @@ communicated (for example "email only" or "agree by phone first"), follow the no
 
 ## Drafts
 
-- **reprice**: an email to the customer's buyer. Reference the quote ID, explain the supplier cost
-  change in one or two sentences, and list each revised line with its new unit price. Keep it short
-  and courteous.
-- **contact_customer**: an internal note to the account manager. Say what changed, the margin impact
-  in points and dollars, the proposed prices, and two or three talking points for the call.
+- **reprice**: an email to the customer's buyer, addressed by name. Reference the quote ID, explain the
+  supplier cost changes in one or two sentences, and list each revised line with its new unit price.
+  Keep it short and courteous.
+- **contact_customer**: an internal note to the account manager. Start with who to call and their phone
+  number (the buyer). Then say what changed, the margin impact in points and dollars, the proposed prices,
+  and two or three talking points for the call.
+
+A quote can be hit by more than one cost change; `cost_changes` lists all of them, and each line's
+`changed_materials` says which ones affect it. Explain every change that moves a price, not only the
+one that triggered the review.
+
+Refer to materials by `material_name` (for example "Silicone (VMQ) 50 Shore A compound"), never by
+their internal ID such as MAT-VMQ-50. Write dates the way a person would ("November 1"), not as ISO dates.
 
 Use the `proposed_unit_price` values exactly as given. Never calculate prices yourself.

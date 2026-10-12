@@ -143,6 +143,60 @@ CUSTOMERS = [
      "Price hold through 2027-01-15 under the 2026 bid award."),
 ]
 
+# Pricing contact at each customer: (name, area code, email domain).
+# Phone numbers use the 555-01xx block, which is reserved for fiction.
+BUYERS = {
+    "C-01": ("Maria Chen", "312", "lakeshorehvac"),
+    "C-02": ("Tom Okafor", "515", "prairieag"),
+    "C-03": ("Linda Park", "614", "tricountyplumbing"),
+    "C-04": ("Ray Delgado", "419", "ironbridgetrucks"),
+    "C-05": ("Priya Nair", "231", "cobaltmarine"),
+    "C-06": ("Ellen Shaw", "612", "redwoodmedical"),
+    "C-07": ("Jamie Ortiz", "918", "summitpumps"),
+    "C-08": ("Mark Feldman", "412", "graniteindustrial"),
+    "C-09": ("Sofia Russo", "262", "bluewaterfiltration"),
+    "C-10": ("Kevin Walsh", "269", "northfieldappliance"),
+    "C-11": ("Hannah Lee", "216", "harborpointfood"),
+    "C-12": ("Grace Kim (Allied Supply)", "317", "alliedsupply"),
+    "C-13": ("Luis Romero", "308", "pioneerirrigation"),
+    "C-14": ("Beth Novak", "330", "atlascompressor"),
+    "C-15": ("Omar Haddad", "480", "evergreensolar"),
+    "C-16": ("Nina Petrov", "414", "copperlinebrewing"),
+    "C-17": ("Arjun Mehta", "617", "ridgewaylab"),
+    "C-18": ("Carla Jensen", "309", "deltahydraulics"),
+    "C-19": ("Paul Murphy", "509", "orchardfood"),
+    "C-20": ("Yuki Tanaka", "512", "vantagesemi"),
+    "C-21": ("Sam Turner", "920", "sterlingfire"),
+    "C-22": ("Rosa Alvarez", "813", "crescentpool"),
+    "C-23": ("Greg Holt", "618", "frontierrailcar"),
+    "C-24": ("Anita Desai", "608", "willowcreekmedical"),
+}
+# Our four account managers, each owning a book of customers (a mix of key and standard).
+ACCOUNT_MANAGERS = {
+    "Chris Patel": "(216) 555-0141",
+    "Morgan Reyes": "(216) 555-0142",
+    "Leah Brennan": "(216) 555-0143",
+    "Victor Osei": "(216) 555-0144",
+}
+ACCOUNT_BOOKS = {
+    "Chris Patel": ["C-01", "C-04", "C-11", "C-15", "C-21", "C-23"],
+    "Morgan Reyes": ["C-03", "C-05", "C-08", "C-09", "C-13", "C-19"],
+    "Leah Brennan": ["C-02", "C-06", "C-12", "C-17", "C-22", "C-24"],
+    "Victor Osei": ["C-07", "C-10", "C-14", "C-16", "C-18", "C-20"],
+}
+_MANAGER_OF = {cid: am for am, book in ACCOUNT_BOOKS.items() for cid in book}
+
+
+def _contact_row(customer: tuple, index: int) -> tuple:
+    cid = customer[0]
+    buyer, area, domain = BUYERS[cid]
+    first, last = buyer.split(" (")[0].lower().split(" ", 1)
+    am_name = _MANAGER_OF[cid]
+    am_phone = ACCOUNT_MANAGERS[am_name]
+    return (buyer, f"({area}) 555-01{index:02d}", f"{first}.{last.replace(' ', '')}@{domain}.example",
+            am_name, am_phone)
+
+
 # Which parts each customer tends to buy, so quotes look like real accounts.
 CUSTOMER_PARTS = {
     "C-01": ["P-1004", "P-1001", "P-1013", "P-1021"],
@@ -261,7 +315,10 @@ def build(conn, emails_path: Path = EMAILS_PATH) -> None:
         for mat_id, lb, scrap in bom:
             conn.execute("INSERT INTO part_materials VALUES (?, ?, ?, ?)", (part_id, mat_id, lb, scrap))
 
-    conn.executemany("INSERT INTO customers VALUES (?, ?, ?, ?, ?)", CUSTOMERS)
+    conn.executemany(
+        "INSERT INTO customers VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        [c + _contact_row(c, i) for i, c in enumerate(CUSTOMERS, start=1)],
+    )
     customer_ids = [c[0] for c in CUSTOMERS]
 
     # Open quotes: issued in the two months before AS_OF and still valid.

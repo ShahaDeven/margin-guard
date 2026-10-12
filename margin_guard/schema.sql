@@ -50,7 +50,12 @@ CREATE TABLE IF NOT EXISTS customers (
     name             TEXT NOT NULL,
     tier             TEXT NOT NULL DEFAULT 'standard' CHECK (tier IN ('key', 'standard')),
     price_lock_until TEXT,                       -- contract price lock; NULL = none
-    contract_note    TEXT
+    contract_note    TEXT,
+    buyer_name       TEXT,                       -- who we talk to about pricing
+    buyer_phone      TEXT,
+    buyer_email      TEXT,
+    account_manager  TEXT,                       -- our side of the relationship
+    account_manager_phone TEXT
 );
 
 CREATE TABLE IF NOT EXISTS quotes (
@@ -120,12 +125,39 @@ CREATE TABLE IF NOT EXISTS proposals (
     status           TEXT NOT NULL DEFAULT 'pending'
                      CHECK (status IN ('pending', 'approved', 'edited', 'rejected', 'superseded')),
     superseded_by    INTEGER REFERENCES proposals(id),   -- newer card that already covers this change
+    -- What the person actually signed off on. Compared with action/draft_* this is
+    -- the label the eval loop learns from (Day 4).
+    final_action     TEXT,
+    final_subject    TEXT,
+    final_body       TEXT,
     reviewer_note    TEXT,
     created_at       TEXT NOT NULL DEFAULT (datetime('now')),
     reviewed_at      TEXT
 );
 
 CREATE INDEX IF NOT EXISTS idx_proposals_status ON proposals(status);
+
+-- Stand-in for sending: approved customer emails and internal call tasks.
+CREATE TABLE IF NOT EXISTS outbox (
+    id           INTEGER PRIMARY KEY AUTOINCREMENT,
+    proposal_id  INTEGER NOT NULL REFERENCES proposals(id),
+    kind         TEXT NOT NULL CHECK (kind IN ('customer_email', 'call_task')),
+    recipient    TEXT NOT NULL,
+    subject      TEXT NOT NULL,
+    body         TEXT NOT NULL,
+    created_at   TEXT NOT NULL DEFAULT (datetime('now'))
+);
+
+-- Every price an approved reprice changed, so a revision can be audited.
+CREATE TABLE IF NOT EXISTS quote_revisions (
+    id           INTEGER PRIMARY KEY AUTOINCREMENT,
+    quote_id     TEXT NOT NULL REFERENCES quotes(id),
+    line_id      INTEGER NOT NULL REFERENCES quote_lines(id),
+    proposal_id  INTEGER NOT NULL REFERENCES proposals(id),
+    old_price    REAL NOT NULL,
+    new_price    REAL NOT NULL,
+    created_at   TEXT NOT NULL DEFAULT (datetime('now'))
+);
 
 CREATE INDEX IF NOT EXISTS idx_events_status ON events(status, event_type);
 CREATE INDEX IF NOT EXISTS idx_quote_lines_quote ON quote_lines(quote_id);

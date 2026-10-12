@@ -1,11 +1,13 @@
 """The coordination layer: route each pending event through the agents that act on it.
 
-    price_change.detected      load -> record_change -> impact -> decide -> persist
-    price_change.needs_review  load -> review --------------------------> persist
+    price_change.detected      load -> impact -> decide -> persist
+    price_change.needs_review  load -> review -----------> persist
 
 Routing is deterministic code; the LLM is only used inside `decide` for judgment
-calls. Each event runs in one transaction and is marked processed at the end,
-so an event is acted on exactly once.
+calls. impact and decide only read; every write (the price history row, the
+proposals, superseding, marking the event processed) happens in `persist` as one
+short transaction. The database is never write-locked while Claude is thinking,
+and an event is acted on exactly once.
 
     python -m margin_guard.coordinator
 """
@@ -14,7 +16,7 @@ import argparse
 import json
 import sqlite3
 from pathlib import Path
-from typing import TypedDict
+from typing import Callable, TypedDict
 
 from langgraph.graph import END, START, StateGraph
 
@@ -37,7 +39,7 @@ def build_graph(conn: sqlite3.Connection, decider: decide.Decider = decide.llm_d
         return {"event_type": row["event_type"], "payload": json.loads(row["payload"])}
 
     def route(state: EventState) -> str:
-        return "review" if state["event_type"] == "price_change.needs_review" else "record_change"
+        return "review" if state["event_type"] == "price_change.needs_review" else "impact"
 
     def review(state: EventState) -> EventState:
         p = state["payload"]
@@ -50,16 +52,14 @@ def build_graph(conn: sqlite3.Connection, decider: decide.Decider = decide.llm_d
         }
         return {"proposals": [proposal], "result": {"review_reasons": reasons}}
 
-    def record_change(state: EventState) -> EventState:
-        p = state["payload"]
+    def record_change(event_id: int, p: dict) -> None:
         conn.execute(
             "INSERT INTO material_price_history (material_id, vendor_id, cost_per_lb, effective_date, source_event_id)"
             " VALUES (?, ?, ?, ?, ?)",
-            (p["material_id"], p["vendor_id"], p["new_cost_per_lb"], p["effective_date"], state["event_id"]),
+            (p["material_id"], p["vendor_id"], p["new_cost_per_lb"], p["effective_date"], event_id),
         )
         if p["effective_date"] <= AS_OF.isoformat():
             conn.execute("UPDATE materials SET cost_per_lb = ? WHERE id = ?", (p["new_cost_per_lb"], p["material_id"]))
-        return {}
 
     def impact_node(state: EventState) -> EventState:
         p = state["payload"]
@@ -71,6 +71,8 @@ def build_graph(conn: sqlite3.Connection, decider: decide.Decider = decide.llm_d
         return {"proposals": [decide.decide(f, decider) for f in state.get("impacts", [])]}
 
     def persist(state: EventState) -> EventState:
+        if state["event_type"] == "price_change.detected":
+            record_change(state["event_id"], state["payload"])
         proposals = state.get("proposals", [])
         superseded = 0
         for pr in proposals:
@@ -101,13 +103,11 @@ def build_graph(conn: sqlite3.Connection, decider: decide.Decider = decide.llm_d
     g = StateGraph(EventState)
     g.add_node("load", load)
     g.add_node("review", review)
-    g.add_node("record_change", record_change)
     g.add_node("impact", impact_node)
     g.add_node("decide", decide_node)
     g.add_node("persist", persist)
     g.add_edge(START, "load")
-    g.add_conditional_edges("load", route, {"review": "review", "record_change": "record_change"})
-    g.add_edge("record_change", "impact")
+    g.add_conditional_edges("load", route, {"review": "review", "impact": "impact"})
     g.add_edge("impact", "decide")
     g.add_edge("decide", "persist")
     g.add_edge("review", "persist")
@@ -137,11 +137,28 @@ def supersede_older(conn: sqlite3.Connection, new_id: int, facts: dict) -> int:
     return len(covered)
 
 
-def run(conn: sqlite3.Connection, decider: decide.Decider = decide.llm_decide) -> dict[int, dict]:
-    """Process every pending event, oldest first. Returns {event_id: result}."""
-    graph = build_graph(conn, decider)
+Notify = Callable[[str, dict], None]
+
+
+def run(conn: sqlite3.Connection, decider: decide.Decider = decide.llm_decide,
+        notify: Notify | None = None) -> dict[int, dict]:
+    """Process every pending event, oldest first. Returns {event_id: result}.
+
+    `notify(kind, data)` receives progress for a live UI: event.started,
+    decision.started (a judgment call going to Claude) and event.processed.
+    """
+    notify = notify or (lambda kind, data: None)
+
+    def announced(facts: dict) -> decide.QuoteDecision:
+        notify("decision.started", {"quote_id": facts["quote_id"], "customer": facts["customer_name"]})
+        return decider(facts)
+
+    graph = build_graph(conn, announced)
     results = {}
     for ev in events.pending(conn):
+        payload = json.loads(ev["payload"])
+        label = str(payload.get("material_id") or payload.get("email_id"))
+        notify("event.started", {"event_id": ev["id"], "event_type": ev["event_type"], "label": label})
         try:
             state = graph.invoke({"event_id": ev["id"]})
             conn.commit()
@@ -152,8 +169,7 @@ def run(conn: sqlite3.Connection, decider: decide.Decider = decide.llm_decide) -
             conn.execute("UPDATE events SET status = 'failed', result = ? WHERE id = ?",
                          (json.dumps(results[ev["id"]]), ev["id"]))
             conn.commit()
-        payload = json.loads(ev["payload"])
-        label = str(payload.get("material_id") or payload.get("email_id"))
+        notify("event.processed", {"event_id": ev["id"], "label": label, "result": results[ev["id"]]})
         print(f"  event {ev['id']:>3}  {ev['event_type']:<26} {label:<14} {json.dumps(results[ev['id']])}")
     return results
 
@@ -161,9 +177,23 @@ def run(conn: sqlite3.Connection, decider: decide.Decider = decide.llm_decide) -
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--db", type=Path, default=DB_PATH)
+    ap.add_argument("--replay", type=Path, metavar="DECISIONS_JSON",
+                    help="reuse cached Claude decisions (e.g. evals/results/decisions.json); "
+                         "quotes not in the cache still go to Claude")
     args = ap.parse_args()
     conn = db.connect(args.db)
-    run(conn)
+
+    decider = decide.llm_decide
+    if args.replay:
+        cache = json.loads(args.replay.read_text(encoding="utf-8"))
+
+        def decider(facts: dict) -> decide.QuoteDecision:
+            key = f"{facts['quote_id']}:{facts['material_id']}:{facts['effective_date']}"
+            if key in cache:
+                return decide.QuoteDecision.model_validate(cache[key])
+            return decide.llm_decide(facts)
+
+    run(conn, decider)
     print()
     for row in conn.execute(
         "SELECT action, decided_by, COUNT(*) n, ROUND(SUM(exposure_usd), 2) usd FROM proposals"

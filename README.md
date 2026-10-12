@@ -6,7 +6,7 @@ price change into an event, finds the affected quotes, proposes what to do with
 each one, and asks a person to approve. Every approval feeds an eval that
 measures how far the system can be trusted to act on its own.
 
-> Work in progress: Day 2 of 4 (coordinator, impact analysis, decisions).
+> Work in progress: Day 3 of 4 (approval console).
 
 ## How it works (so far)
 
@@ -51,6 +51,24 @@ Claude makes the judgment calls and writes the draft; every price in a draft
 comes from the impact calculation. Decisions are graded against an independent
 implementation of the same policy ([evals/reference_policy.py](evals/reference_policy.py)).
 
+### The approval console
+
+Built for an estimator, not an engineer. Three lanes:
+
+- **Needs your decision:** Claude's judgment calls, sorted by dollars at risk, plus
+  supplier emails the system wouldn't guess on. One line per card (who, what we
+  recommend, margin before → after against the floor); open it for the reasons,
+  the line-by-line prices and an editable draft.
+- **Settled by rules:** honor/absorb decisions grouped by price change, confirmed in bulk.
+- **Done:** what each person decided next to what was proposed, and the outbox.
+
+Approving a revised quote writes the new prices to the quote and queues the email;
+approving "call first" creates a call task. Every verdict, including edits and notes,
+is stored beside the original proposal; that pair is what the Day 4 eval learns from.
+An ambiguous email ("Black 70") becomes a one-click question; the answer turns into a
+price change and the agents run again. "Deliver to inbox" drops in a new supplier
+email and the agent activity feed streams the run live (SSE).
+
 ## The demo shop
 
 A synthetic custom rubber-molding job shop (`margin_guard/seed.py`, deterministic):
@@ -79,4 +97,8 @@ python -m margin_guard.coordinator # impact + decisions for every pending event
 python -m evals.eval_extraction    # scores extraction against gold labels
 python -m evals.eval_decisions     # scores quote decisions against the policy
 python -m pytest                   # offline tests, no API calls
+
+# console
+uvicorn margin_guard.api:app --port 8000
+cd frontend && npm install && npm run dev   # http://localhost:5174
 ```
