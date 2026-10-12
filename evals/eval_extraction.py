@@ -1,7 +1,8 @@
-"""Score email -> event extraction against the gold labels in data/vendor_emails.json.
+"""Score email -> event extraction against gold labels.
 
-    python -m evals.eval_extraction            # fresh DB, calls Claude for every email
-    python -m evals.eval_extraction --replay   # rescore cached extractions, no API calls
+    python -m evals.eval_extraction                 # the 15 inbox emails (the set the pipeline was built on)
+    python -m evals.eval_extraction --set holdout   # 10 harder emails nothing was tuned against
+    python -m evals.eval_extraction --replay        # rescore cached extractions, no API calls
 
 Builds a throwaway database each run so results never depend on local state.
 """
@@ -12,11 +13,15 @@ import tempfile
 from pathlib import Path
 
 from margin_guard import db, ingest, seed
-from margin_guard.config import EMAILS_PATH, MODEL
+from margin_guard.config import EMAILS_PATH, MODEL, ROOT
 from margin_guard.parser import EmailExtraction
 
 RESULTS_DIR = Path(__file__).resolve().parent / "results"
-CACHE_PATH = RESULTS_DIR / "extractions.json"
+SETS = {
+    # name: (emails, cache of raw extractions, report suffix)
+    "tuned": (EMAILS_PATH, RESULTS_DIR / "extractions.json", ""),
+    "holdout": (ROOT / "data" / "vendor_emails_holdout.json", RESULTS_DIR / "extractions_holdout.json", "_holdout"),
+}
 PRICE_TOLERANCE = 0.005   # 0.5%
 
 
@@ -40,9 +45,11 @@ def _score_changes(gold_changes, predicted):
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--replay", action="store_true", help="reuse cached extractions instead of calling Claude")
+    ap.add_argument("--set", choices=sorted(SETS), default="tuned")
     args = ap.parse_args()
+    emails_path, CACHE_PATH, suffix = SETS[args.set]
 
-    gold = {e["id"]: e for e in json.loads(EMAILS_PATH.read_text(encoding="utf-8"))}
+    gold = {e["id"]: e for e in json.loads(emails_path.read_text(encoding="utf-8"))}
     RESULTS_DIR.mkdir(exist_ok=True)
 
     extract = None
@@ -52,8 +59,8 @@ def main() -> None:
 
     with tempfile.TemporaryDirectory() as tmp:
         conn = db.connect(Path(tmp) / "eval.db")
-        seed.build(conn)
-        print(f"Extracting {len(gold)} emails ({'replay' if args.replay else MODEL})")
+        seed.build(conn, emails_path)
+        print(f"[{args.set}] Extracting {len(gold)} emails ({'replay' if args.replay else MODEL})")
         outcomes = ingest.run(conn, extract=extract) if extract else ingest.run(conn)
 
         if not args.replay:
@@ -81,6 +88,7 @@ def main() -> None:
     n_changes = len(all_changes)
     false_pos = sum(len(e["unexpected_changes"]) for e in per_email)
     summary = {
+        "set": args.set,
         "model": "replay" if args.replay else MODEL,
         "emails": n,
         "outcome_accuracy": sum(e["outcome_ok"] for e in per_email) / n,
@@ -110,8 +118,8 @@ def main() -> None:
     ]
     report = "\n".join(lines)
     print("\n" + report)
-    (RESULTS_DIR / "extraction_report.md").write_text(report + "\n", encoding="utf-8")
-    (RESULTS_DIR / "extraction_results.json").write_text(
+    (RESULTS_DIR / f"extraction_report{suffix}.md").write_text(report + "\n", encoding="utf-8")
+    (RESULTS_DIR / f"extraction_results{suffix}.json").write_text(
         json.dumps({"summary": summary, "emails": per_email}, indent=2), encoding="utf-8")
 
 

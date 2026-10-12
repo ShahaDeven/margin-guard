@@ -1,0 +1,125 @@
+[
+  {
+    "id": "H01",
+    "from": "sales@glelastomers.com",
+    "subject": "Dec 1 nitrile pricing",
+    "received_at": "2026-10-16T08:10:00",
+    "body": "Hi team,\n\nUpdated nitrile pricing below.\n\nGrade        | Current   | New       | Effective\n-------------|-----------|-----------|----------\nNBR 70       | $2.25/lb  | $2.36/lb  | 12/1/2026\nNBR 90       | $2.48/lb  | $2.62/lb  | 12/1/2026\n\nMarco Iles\nGreat Lakes Elastomers",
+    "gold": {
+      "outcome": "detected",
+      "changes": [
+        {"material_id": "MAT-NBR-70", "new_cost_per_lb": 2.36, "effective_date": "2026-12-01"},
+        {"material_id": "MAT-NBR-90", "new_cost_per_lb": 2.62, "effective_date": "2026-12-01"}
+      ],
+      "trap": "prices in a text table, US date format"
+    }
+  },
+  {
+    "id": "H02",
+    "from": "customerservice@ridgelinecarbon.com",
+    "subject": "N550 - December",
+    "received_at": "2026-10-16T09:00:00",
+    "body": "Hello,\n\nN550 will be invoiced at $1,240 per M lbs for December 1, 2026 shipments.\n\nRidgeline Carbon",
+    "gold": {
+      "outcome": "detected",
+      "changes": [{"material_id": "MAT-CB-N550", "new_cost_per_lb": 1.24, "effective_date": "2026-12-01"}],
+      "trap": "priced per thousand lb (M)"
+    }
+  },
+  {
+    "id": "H03",
+    "from": "orders@summitsilicones.com",
+    "subject": "CORRECTION: VMQ 50 bag pricing",
+    "received_at": "2026-10-16T09:30:00",
+    "body": "Apologies - our notice of Oct 13 listed Silicone VMQ 50 at $310.00 per 25 kg bag from November 1. The correct price is $298.00 per 25 kg bag, same effective date (November 1, 2026).\n\nPriya Raman\nSummit Silicones",
+    "gold": {
+      "outcome": "detected",
+      "changes": [{"material_id": "MAT-VMQ-50", "new_cost_per_lb": 5.4068, "effective_date": "2026-11-01"}],
+      "trap": "a correction: the old wrong price appears first"
+    }
+  },
+  {
+    "id": "H04",
+    "from": "pricing@midwestpolymer.com",
+    "subject": "Re: SBR 60 pricing question",
+    "received_at": "2026-10-16T10:15:00",
+    "body": "Confirming: SBR 60 goes to $1.74/lb effective December 1, 2026.\n\nDana\n\n> On Oct 2, 2026, purchasing wrote:\n> What is SBR 60 running now? We have it at $1.62/lb.\n>\n> > On Sep 30, Midwest wrote:\n> > SBR 60 is $1.62/lb through November.",
+    "gold": {
+      "outcome": "detected",
+      "changes": [{"material_id": "MAT-SBR-60", "new_cost_per_lb": 1.74, "effective_date": "2026-12-01"}],
+      "trap": "reply thread quoting the old price twice"
+    }
+  },
+  {
+    "id": "H05",
+    "from": "sales@keystonerubber.com",
+    "subject": "Passing through Midwest increase",
+    "received_at": "2026-10-16T11:00:00",
+    "body": "Hi,\n\nMidwest Polymer has raised their EPDM 70, and we have to pass it through: our EPDM 70 will be $2.34/lb from November 15, 2026. NBR 70 stays where it is.\n\nTodd\nKeystone Rubber Distributors",
+    "gold": {
+      "outcome": "detected",
+      "changes": [{"material_id": "MAT-EPDM-70", "new_cost_per_lb": 2.34, "effective_date": "2026-11-15"}],
+      "trap": "distributor mentions another vendor and an unchanged grade"
+    }
+  },
+  {
+    "id": "H06",
+    "from": "commercial@fluorotechmaterials.com",
+    "subject": "FKM 75 price",
+    "received_at": "2026-10-16T12:00:00",
+    "body": "Dear customer,\n\nFKM 75 increases to $15.95/lb effective the first of next month.\n\nFluoroTech Materials",
+    "gold": {
+      "outcome": "detected",
+      "changes": [{"material_id": "MAT-FKM-75", "new_cost_per_lb": 15.95, "effective_date": "2026-11-01"}],
+      "trap": "relative date ('first of next month', received Oct 16)"
+    }
+  },
+  {
+    "id": "H07",
+    "from": "customerservice@ridgelinecarbon.com",
+    "subject": "2027 N550 price",
+    "received_at": "2026-10-16T13:00:00",
+    "body": "Hello,\n\nStarting January 1, 2027, N550 will be 118 cents per pound.\n\nRidgeline Carbon",
+    "gold": {
+      "outcome": "detected",
+      "changes": [{"material_id": "MAT-CB-N550", "new_cost_per_lb": 1.18, "effective_date": "2027-01-01"}],
+      "trap": "price in cents"
+    }
+  },
+  {
+    "id": "H08",
+    "from": "orders@summitsilicones.com",
+    "subject": "Energy surcharge - silicone",
+    "received_at": "2026-10-16T14:00:00",
+    "body": "Hello,\n\nA temporary energy surcharge of $0.12/lb will apply to all silicone shipments from November 1 to December 31, 2026. List prices are unchanged.\n\nSummit Silicones",
+    "gold": {
+      "outcome": "needs_review",
+      "changes": [],
+      "trap": "temporary surcharge, not a new list price"
+    }
+  },
+  {
+    "id": "H09",
+    "from": "pricing@midwestpolymer.com",
+    "subject": "Natural rubber reduction",
+    "received_at": "2026-10-16T15:00:00",
+    "body": "Good news: NR 40 compound comes down 3% effective December 1, 2026.\n\nDana Whitfield\nMidwest Polymer Supply",
+    "gold": {
+      "outcome": "detected",
+      "changes": [{"material_id": "MAT-NR-40", "new_cost_per_lb": 1.8236, "effective_date": "2026-12-01"}],
+      "trap": "percentage decrease"
+    }
+  },
+  {
+    "id": "H10",
+    "from": "pricing@midwestpolymer.com",
+    "subject": "Shipped: PO 4471",
+    "received_at": "2026-10-16T16:00:00",
+    "body": "Your PO 4471 for 2,000 lb EPDM 60 at $2.05/lb shipped today via XPO, tracking 88213004.\n\nMidwest Polymer Supply",
+    "gold": {
+      "outcome": "ignored",
+      "changes": [],
+      "trap": "shipping confirmation with a price in it"
+    }
+  }
+]

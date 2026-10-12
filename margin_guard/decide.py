@@ -32,8 +32,8 @@ SYSTEM_PROMPT = f"""You are the pricing assistant at a custom rubber-molding man
 The facts are computed by the pricing system and are correct. Use the proposed_unit_price values exactly as given; never compute prices yourself."""
 
 
-def llm_decide(facts: dict) -> QuoteDecision:
-    return llm.parse(SYSTEM_PROMPT, json.dumps(facts, indent=2), QuoteDecision, effort="low")
+def llm_decide(facts: dict, model: str | None = None, log: list | None = None) -> QuoteDecision:
+    return llm.parse(SYSTEM_PROMPT, json.dumps(facts, indent=2), QuoteDecision, effort="low", model=model, log=log)
 
 
 Decider = Callable[[dict], QuoteDecision]

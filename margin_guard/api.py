@@ -144,7 +144,26 @@ def overview() -> dict:
                                  " WHERE status = 'pending' AND kind = 'quote_action'"),
             "done": one("SELECT COUNT(*) FROM proposals WHERE status IN ('approved', 'edited', 'rejected')"),
             "outbox": one("SELECT COUNT(*) FROM outbox"),
+            "autonomy": _autonomy(c),
         }
+
+
+AUTONOMY_PATH = ROOT / "evals" / "results" / "autonomy.json"
+
+
+def _autonomy(c) -> dict | None:
+    """Report only: how many open judgment calls clear the confidence bar the
+    scenario eval found error-free. Nothing is ever approved automatically."""
+    if not AUTONOMY_PATH.exists():
+        return None
+    bar = json.loads(AUTONOMY_PATH.read_text(encoding="utf-8"))
+    if bar.get("threshold") is None:
+        return {"threshold": None, "model": bar.get("model"), "would_clear": 0}
+    would = c.execute(
+        "SELECT COUNT(*) FROM proposals WHERE status = 'pending' AND kind = 'quote_action'"
+        " AND decided_by = 'llm' AND confidence >= ?", (bar["threshold"],)).fetchone()[0]
+    return {"threshold": bar["threshold"], "model": bar.get("model"), "would_clear": would,
+            "eval_runs": bar.get("runs")}
 
 
 _LANES = {

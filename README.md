@@ -1,109 +1,163 @@
 # margin-guard
 
-When a supplier changes a price, every open quote that uses that material is
-suddenly priced on a stale cost. Margin Guard reads vendor emails, turns each
-price change into an event, finds the affected quotes, proposes what to do with
-each one, and asks a person to approve. Every approval feeds an eval that
-measures how far the system can be trusted to act on its own.
+When a supplier raises a price, every open quote built on that material is quietly losing
+money. Usually nobody notices until the job is already shipped at the old margin.
 
-> Work in progress: Day 3 of 4 (approval console).
+Margin Guard reads the supplier's email, works out which open quotes the change hurts and by
+how much, decides what to do about each one, drafts the message, and puts it in front of a
+person. Agents coordinate the work and a person approves every outcome. An evaluation loop
+measures when the system can be trusted, and turns every human correction into a test.
 
-## How it works (so far)
+Built in four days as a working prototype on a synthetic rubber-molding shop: 150 open quotes,
+24 customers, 12 materials and a supplier inbox full of traps.
+
+## Results
+
+| What was measured | Result |
+|---|---|
+| Supplier emails read correctly: the 15 the pipeline was built on | **15 / 15** (outcome, material, $/lb, date) |
+| Supplier emails read correctly: 10 harder ones nothing was tuned against | **9 / 10**; the miss was sent to a person, no wrong price got through |
+| Quote decisions on the full shop, vs. an independent copy of the policy | **232 / 232**: 200 settled by rules, 32 judgment calls by Claude |
+| 30 hand-built judgment calls x 3 runs (Claude Sonnet 5.5) | **87 / 90** right, same answer every run, every draft passes its checks |
+| ...of those, calls made with confidence ≥ 0.90 | **93% of calls, 100% right**. All 3 misses came in at ≤ 0.60 |
+| Prompt injection hidden in a customer note (2 cases) | Refused both times, and **flagged the bad instruction** to the account manager |
+| Cost per judgment call | **$0.009** (Sonnet 5.5) |
+
+### Sonnet vs Haiku: calibration matters more than accuracy
+
+| | Sonnet 5.5 | Haiku 5.5 |
+|---|---|---|
+| Right action | 97% | 94% |
+| Same answer on every run | 100% | 93% |
+| Cost per decision | $0.0088 | $0.0006 |
+| Confidence on its misses | **0.55 – 0.60** | **0.90** |
+
+Haiku is 15x cheaper and nearly as accurate, but it is wrong *confidently*. On a $30k quote it
+reasoned "at or above the $15,000 threshold, but standard tier, so the rule does not apply" and
+reported 0.90. Sonnet's mistakes are unsure, so its confidence can tell a reviewer which cards
+to read carefully. In a human-in-the-loop system that is the property that matters, so the
+console runs on Sonnet.
+
+### What the loop learned from real reviews
+
+In the console, a reviewer absorbed a $36 increase on a $1,124 quote instead of calling the
+customer as Claude proposed. That isn't a model error. The policy never lets Claude absorb below
+the floor, so `eval_approvals` reports it as a **policy signal**: if it repeats, the shop
+probably wants a de-minimis rule ("absorb anything under $X at risk"). Overrides the model *can*
+learn from (for example "call" changed to "email") are written out as new regression cases
+automatically.
+
+## How it works
 
 ```
-vendor email ──► extract (Claude, structured output)
-                   │  reports only what the email says
-                   ▼
-                 normalize (deterministic code)
-                   │  catalog match · unit conversion · % → $/lb · sanity checks
-                   ▼
-                 event log (SQLite, append-only, idempotent)
-                   │
-                   ▼
-                 coordinator (LangGraph, one run per event)
-                   ├─ needs_review ──────────────────────────► review item for a person
-                   └─ detected ─► record change ─► impact ─► decide ─► proposals
-                                                     │          │
-                                       which open quotes,   rules for clear cases;
-                                       margin before/after, Claude for judgment calls
-                                       $ exposure, repriced  + the draft email
-                                       unit prices
+supplier email ──► extract ─────────► normalize ──────────► event log
+                   Claude: reports    code: match catalog,  SQLite, append-only,
+                   only what the      convert units, % →    idempotent (a forwarded
+                   email says         $/lb, sanity checks   copy is a no-op)
+                                             │
+                          anything doubtful ─┴─► "needs a look" (a person answers)
+                                             │
+                                             ▼
+                   coordinator (LangGraph, one run per price change)
+                     impact ──────────► decide ─────────────────► approval queue
+                     code: which open   rules settle ~85%;        one live card per quote;
+                     quotes, margin     Claude makes the          a newer change supersedes
+                     before → after,    judgment calls and        an older card when its
+                     $ at risk, prices  writes the draft          numbers already include it
+                     that restore
+                     margin
 ```
 
-The LLM never does arithmetic or catalog lookups. Anything the code can't stand
-behind (an ambiguous material name, a >30% move that smells like a unit error,
-no effective date, low confidence) is routed to a person, not guessed.
+**Design decisions**
 
-### Deciding what to do with each quote
+- **The LLM reads; code does every number.** Claude extracts what an email says and makes
+  judgment calls. Unit conversion, catalog matching, margin maths and revised prices are all
+  deterministic, so every figure on a card can be traced to a row.
+- **Rules first.** Expired-before-the-change, price locks and above-floor increases never reach
+  the model. It is only asked what the rules can't answer.
+- **Refuse to guess.** An ambiguous material ("Black 70" from a distributor selling two),
+  a move over 30% (usually a unit slip), a missing date or low extraction confidence goes to a
+  person as a one-click question.
+- **Costs stack.** A quote hit by EPDM +9.5% and carbon black +8.3% gets one card priced on both,
+  and the card lists every change behind its numbers.
+- **A person approves everything.** Approving a revised quote writes the new prices and queues
+  the email. Approving "call first" creates a call task with the buyer's number. Every decision
+  can be undone.
 
-The shop's rules live in [data/pricing_policy.md](data/pricing_policy.md):
+### The decision policy
+
+Plain English in [data/pricing_policy.md](data/pricing_policy.md), graded against an independent
+implementation in [evals/reference_policy.py](evals/reference_policy.py):
 
 | Situation | Action | Decided by |
 |---|---|---|
 | Quote expires before the change takes effect | honor | rule |
 | Customer's price lock covers the effective date | honor (loss logged) | rule |
 | Margin still at or above the quote's floor | absorb | rule |
-| Below floor: ≥ $15k or key account | contact_customer | Claude |
-| Below floor: everything else | reprice (revised quote) | Claude |
-| Contract note says how revisions must be communicated | follow the note | Claude |
+| Below floor, ≥ $15k or key account | call the customer first | Claude |
+| Below floor, otherwise | send a revised quote | Claude |
+| A contract note says how revisions must be communicated | follow the note | Claude |
 
-Claude makes the judgment calls and writes the draft; every price in a draft
-comes from the impact calculation. Decisions are graded against an independent
-implementation of the same policy ([evals/reference_policy.py](evals/reference_policy.py)).
+## The console
 
-### The approval console
+Built for an estimator, not an engineer.
 
-Built for an estimator, not an engineer. Three lanes:
-
-- **Needs your decision:** Claude's judgment calls, sorted by dollars at risk, plus
-  supplier emails the system wouldn't guess on. One line per card (who, what we
-  recommend, margin before → after against the floor); open it for the reasons,
-  the line-by-line prices and an editable draft.
+- **Needs your decision:** Claude's judgment calls sorted by dollars at risk, plus supplier
+  emails the system wouldn't guess on. Each card says the margin move in words ("0.7 pts below
+  the 27.7% floor"), who to call or email, every cost change behind the numbers, the line-by-line
+  prices and an editable draft. It also says whether Claude's confidence clears the eval's bar.
+  This is a report only: nothing is approved automatically.
 - **Settled by rules:** honor/absorb decisions grouped by price change, confirmed in bulk.
-- **Done:** what each person decided next to what was proposed, and the outbox. Any
-  decision can be undone (an approved revision restores the old prices).
-- **Data:** read-only quotes, customers and materials, so any number on a card can be
-  checked: a quote's lines, revisions and every card raised on it; each customer's
-  buyer, account manager, lock and notes; each material's price history including
-  scheduled changes and the email each came from.
+- **Done:** what each person decided next to what was proposed, the outbox, and undo.
+- **Data:** quotes, customers and materials, so any number on a card can be checked.
+- **Supplier inbox:** each email's current status and what it led to ("17 quotes checked ·
+  5 need you"), linked to its cards. "Send test email" drops in a new one, and the activity feed
+  streams the agents working on it live.
 
-Approving a revised quote writes the new prices to the quote and queues the email;
-approving "call first" creates a call task. Every verdict, including edits and notes,
-is stored beside the original proposal; that pair is what the Day 4 eval learns from.
-An ambiguous email ("Black 70") becomes a one-click question; the answer turns into a
-price change and the agents run again. "Deliver to inbox" drops in a new supplier
-email and the agent activity feed streams the run live (SSE).
+## Evaluation
 
-## The demo shop
+| Eval | Command | What it checks |
+|---|---|---|
+| Extraction | `python -m evals.eval_extraction [--set holdout]` | outcome, material, $/lb within 0.5%, date |
+| Decisions on the shop | `python -m evals.eval_decisions` | every quote decision vs. the reference policy, and that drafts quote the computed prices |
+| Scenario suite | `python -m evals.eval_scenarios` | 30 edge cases x 3 runs x 2 models: accuracy, consistency, draft checks, cost, calibration, the confidence bar |
+| Reviews | `python -m evals.eval_approvals` | reviewer agreement by confidence; disagreements become regression cases or policy signals |
 
-A synthetic custom rubber-molding job shop (`margin_guard/seed.py`, deterministic):
-12 materials from 7 vendors, 40 parts, 24 customers (four with price locks,
-four with contract notes on how price revisions must be communicated, two with
-distractor notes), 150 open quotes and 120 closed ones. The vendor inbox
-(`data/vendor_emails.json`) has 15 emails, each with a gold label and the trap
-it tests:
+The scenario groups are the size threshold ($14,999 / $15,000 / $15,001), tier, notes that
+override the rule (including one in Spanish), decoy notes that must not ("call ahead before
+deliveries"), conditional notes, prompt injection, stacked changes and price holds that just
+ended. All evals cache their model calls, and `--replay` rescores for free.
 
-| Trap | Example |
-|---|---|
-| Unit conversion | $/kg, per 25 kg bag, $/cwt, $/metric ton |
-| Percent-only notice | "FKM 75 up 6.5%" (new cost computed from *our* cost) |
-| Duplicates | forwarded re-send; a change that was already applied |
-| Ambiguous name | "Black 70" from a distributor selling both EPDM 70 and NBR 70 |
-| Not a price change | holiday schedule, a new supplier's sales offer |
-| Advisory | "expect 3-5% next quarter, details to follow" |
+The offline test suite (`python -m pytest`) makes no API calls. It covers unit conversion,
+catalog matching, the event log, impact maths, superseding, every reviewer action including
+undo, the API, and the eval machinery itself.
+
+## Known limitations
+
+- **"Cents" can't be expressed.** On "118 cents per pound" Claude reported 118 per lb and noted
+  the problem; the 30% guardrail sent it to a person. The fix is a schema field. It was left
+  unpatched so the held-out score stays honest; it needs fresh emails to re-measure.
+- **Late-arriving earlier changes.** A card for a Nov 20 change that was decided before a Nov 1
+  change arrived doesn't include the Nov 1 increase. The Nov 1 card still flags it, but the
+  right fix is to re-decide affected cards when an earlier-dated change lands.
+- **A debatable policy edge.** On "key account + prefers email for routine changes, call over
+  $10k" at $8k, Sonnet chose a call three times out of three, at 0.55 – 0.60 confidence.
+  The written policy says the note wins. The console marks these cards as below the bar.
+- **Synthetic data.** The shop, quotes and emails are generated, and the confidence bar comes
+  from 90 runs. Real quotes and real reviews would re-set it, which is what `eval_approvals`
+  is for.
 
 ## Run it
 
 ```bash
-cp .env.example .env               # add ANTHROPIC_API_KEY
-python -m margin_guard.seed --reset
-python -m margin_guard.ingest
-python -m margin_guard.coordinator # impact + decisions for every pending event
-python -m evals.eval_extraction    # scores extraction against gold labels
-python -m evals.eval_decisions     # scores quote decisions against the policy
-python -m pytest                   # offline tests, no API calls
+cp .env.example .env                    # add ANTHROPIC_API_KEY
+python -m margin_guard.seed --reset     # build the demo shop
+python -m margin_guard.ingest           # read the supplier inbox
+python -m margin_guard.coordinator      # impact + decisions (--replay evals/results/decisions.json reuses cached calls)
 
-# console
 uvicorn margin_guard.api:app --port 8000
 cd frontend && npm install && npm run dev   # http://localhost:5174
 ```
+
+Stack: Python 3.11, LangGraph, FastAPI + SSE, SQLite (WAL), React 19 + Vite + Tailwind, and
+Claude Sonnet 5.5 through the Anthropic SDK with structured outputs.

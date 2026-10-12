@@ -1,0 +1,185 @@
+{
+  "summary": {
+    "set": "holdout",
+    "model": "claude-sonnet-5-5",
+    "emails": 10,
+    "outcome_accuracy": 0.9,
+    "gold_changes": 9,
+    "change_recall": 0.8888888888888888,
+    "price_accuracy": 0.8888888888888888,
+    "date_accuracy": 0.8888888888888888,
+    "unexpected_changes": 0
+  },
+  "emails": [
+    {
+      "id": "H01",
+      "trap": "prices in a text table, US date format",
+      "gold_outcome": "detected",
+      "outcome": "detected",
+      "outcome_ok": true,
+      "changes": [
+        {
+          "material_id": "MAT-NBR-70",
+          "found": true,
+          "price_ok": true,
+          "date_ok": true,
+          "predicted_cost": 2.36,
+          "gold_cost": 2.36
+        },
+        {
+          "material_id": "MAT-NBR-90",
+          "found": true,
+          "price_ok": true,
+          "date_ok": true,
+          "predicted_cost": 2.62,
+          "gold_cost": 2.62
+        }
+      ],
+      "unexpected_changes": []
+    },
+    {
+      "id": "H02",
+      "trap": "priced per thousand lb (M)",
+      "gold_outcome": "detected",
+      "outcome": "detected",
+      "outcome_ok": true,
+      "changes": [
+        {
+          "material_id": "MAT-CB-N550",
+          "found": true,
+          "price_ok": true,
+          "date_ok": true,
+          "predicted_cost": 1.24,
+          "gold_cost": 1.24
+        }
+      ],
+      "unexpected_changes": []
+    },
+    {
+      "id": "H03",
+      "trap": "a correction: the old wrong price appears first",
+      "gold_outcome": "detected",
+      "outcome": "detected",
+      "outcome_ok": true,
+      "changes": [
+        {
+          "material_id": "MAT-VMQ-50",
+          "found": true,
+          "price_ok": true,
+          "date_ok": true,
+          "predicted_cost": 5.406821,
+          "gold_cost": 5.4068
+        }
+      ],
+      "unexpected_changes": []
+    },
+    {
+      "id": "H04",
+      "trap": "reply thread quoting the old price twice",
+      "gold_outcome": "detected",
+      "outcome": "detected",
+      "outcome_ok": true,
+      "changes": [
+        {
+          "material_id": "MAT-SBR-60",
+          "found": true,
+          "price_ok": true,
+          "date_ok": true,
+          "predicted_cost": 1.74,
+          "gold_cost": 1.74
+        }
+      ],
+      "unexpected_changes": []
+    },
+    {
+      "id": "H05",
+      "trap": "distributor mentions another vendor and an unchanged grade",
+      "gold_outcome": "detected",
+      "outcome": "detected",
+      "outcome_ok": true,
+      "changes": [
+        {
+          "material_id": "MAT-EPDM-70",
+          "found": true,
+          "price_ok": true,
+          "date_ok": true,
+          "predicted_cost": 2.34,
+          "gold_cost": 2.34
+        }
+      ],
+      "unexpected_changes": []
+    },
+    {
+      "id": "H06",
+      "trap": "relative date ('first of next month', received Oct 16)",
+      "gold_outcome": "detected",
+      "outcome": "detected",
+      "outcome_ok": true,
+      "changes": [
+        {
+          "material_id": "MAT-FKM-75",
+          "found": true,
+          "price_ok": true,
+          "date_ok": true,
+          "predicted_cost": 15.95,
+          "gold_cost": 15.95
+        }
+      ],
+      "unexpected_changes": []
+    },
+    {
+      "id": "H07",
+      "trap": "price in cents",
+      "gold_outcome": "detected",
+      "outcome": "needs_review",
+      "outcome_ok": false,
+      "changes": [
+        {
+          "material_id": "MAT-CB-N550",
+          "found": false,
+          "price_ok": false,
+          "date_ok": false,
+          "predicted_cost": null,
+          "gold_cost": 1.18
+        }
+      ],
+      "unexpected_changes": []
+    },
+    {
+      "id": "H08",
+      "trap": "temporary surcharge, not a new list price",
+      "gold_outcome": "needs_review",
+      "outcome": "needs_review",
+      "outcome_ok": true,
+      "changes": [],
+      "unexpected_changes": []
+    },
+    {
+      "id": "H09",
+      "trap": "percentage decrease",
+      "gold_outcome": "detected",
+      "outcome": "detected",
+      "outcome_ok": true,
+      "changes": [
+        {
+          "material_id": "MAT-NR-40",
+          "found": true,
+          "price_ok": true,
+          "date_ok": true,
+          "predicted_cost": 1.8236,
+          "gold_cost": 1.8236
+        }
+      ],
+      "unexpected_changes": []
+    },
+    {
+      "id": "H10",
+      "trap": "shipping confirmation with a price in it",
+      "gold_outcome": "ignored",
+      "outcome": "ignored",
+      "outcome_ok": true,
+      "changes": [],
+      "unexpected_changes": []
+    }
+  ]
+}

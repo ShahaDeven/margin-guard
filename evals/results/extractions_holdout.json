@@ -1,0 +1,151 @@
+{
+  "H01": {
+    "email_kind": "price_change",
+    "changes": [
+      {
+        "material_text": "NBR 70",
+        "new_price": 2.36,
+        "price_unit": "lb",
+        "pack_qty": null,
+        "old_price": 2.25,
+        "pct_change": null,
+        "effective_date": "2026-12-01"
+      },
+      {
+        "material_text": "NBR 90",
+        "new_price": 2.62,
+        "price_unit": "lb",
+        "pack_qty": null,
+        "old_price": 2.48,
+        "pct_change": null,
+        "effective_date": "2026-12-01"
+      }
+    ],
+    "confidence": 0.97,
+    "rationale": "The supplier lists current and new per-lb prices for two nitrile grades, both effective 12/1/2026, so each is extracted as written."
+  },
+  "H02": {
+    "email_kind": "price_change",
+    "changes": [
+      {
+        "material_text": "N550",
+        "new_price": 1240.0,
+        "price_unit": "lb",
+        "pack_qty": 1000.0,
+        "old_price": null,
+        "pct_change": null,
+        "effective_date": "2026-12-01"
+      }
+    ],
+    "confidence": 0.8,
+    "rationale": "Supplier states N550 will be invoiced at $1,240 per M lbs (per 1,000 lb) for December 1, 2026 shipments; the schema has no thousand-pound unit, so it is recorded as lb with a pack quantity of 1000 and no conversion."
+  },
+  "H03": {
+    "email_kind": "price_change",
+    "changes": [
+      {
+        "material_text": "Silicone VMQ 50",
+        "new_price": 298.0,
+        "price_unit": "kg",
+        "pack_qty": 25.0,
+        "old_price": null,
+        "pct_change": null,
+        "effective_date": "2026-11-01"
+      }
+    ],
+    "confidence": 0.93,
+    "rationale": "A correction notice restating the price of Silicone VMQ 50 as $298.00 per 25 kg bag effective 2026-11-01, superseding the earlier $310.00 figure, which is not the old price."
+  },
+  "H04": {
+    "email_kind": "price_change",
+    "changes": [
+      {
+        "material_text": "SBR 60",
+        "new_price": 1.74,
+        "price_unit": "lb",
+        "pack_qty": null,
+        "old_price": 1.62,
+        "pct_change": null,
+        "effective_date": "2026-12-01"
+      }
+    ],
+    "confidence": 0.93,
+    "rationale": "The vendor confirms SBR 60 moves to $1.74/lb effective Dec 1, 2026, and the quoted thread shows the prior price of $1.62/lb."
+  },
+  "H05": {
+    "email_kind": "price_change",
+    "changes": [
+      {
+        "material_text": "EPDM 70",
+        "new_price": 2.34,
+        "price_unit": "lb",
+        "pack_qty": null,
+        "old_price": null,
+        "pct_change": null,
+        "effective_date": "2026-11-15"
+      }
+    ],
+    "confidence": 0.97,
+    "rationale": "Supplier announces a firm new price of $2.34/lb for EPDM 70 effective 2026-11-15; NBR 70 is unchanged and so excluded."
+  },
+  "H06": {
+    "email_kind": "price_change",
+    "changes": [
+      {
+        "material_text": "FKM 75",
+        "new_price": 15.95,
+        "price_unit": "lb",
+        "pack_qty": null,
+        "old_price": null,
+        "pct_change": null,
+        "effective_date": "2026-11-01"
+      }
+    ],
+    "confidence": 0.95,
+    "rationale": "Supplier announces FKM 75 rising to $15.95/lb effective the first of next month, which from an October 16, 2026 receipt date is 2026-11-01."
+  },
+  "H07": {
+    "email_kind": "price_change",
+    "changes": [
+      {
+        "material_text": "N550",
+        "new_price": 118.0,
+        "price_unit": "lb",
+        "pack_qty": null,
+        "old_price": null,
+        "pct_change": null,
+        "effective_date": "2027-01-01"
+      }
+    ],
+    "confidence": 0.6,
+    "rationale": "Supplier announces a firm N550 price effective 2027-01-01, quoted as 118 cents per pound; the schema has no cents field, so the price is recorded as written (118) with unit lb, though it is in cents rather than dollars."
+  },
+  "H08": {
+    "email_kind": "price_advisory",
+    "changes": [],
+    "confidence": 0.6,
+    "rationale": "The vendor announces a temporary $0.12/lb energy surcharge on silicone shipments while stating list prices are unchanged, so no specific material price is changing and it is treated as an advisory rather than a price change."
+  },
+  "H09": {
+    "email_kind": "price_change",
+    "changes": [
+      {
+        "material_text": "NR 40 compound",
+        "new_price": null,
+        "price_unit": null,
+        "pack_qty": null,
+        "old_price": null,
+        "pct_change": -3.0,
+        "effective_date": "2026-12-01"
+      }
+    ],
+    "confidence": 0.95,
+    "rationale": "Supplier announces a 3% decrease on NR 40 compound effective 2026-12-01, with no absolute price given."
+  },
+  "H10": {
+    "email_kind": "other",
+    "changes": [],
+    "confidence": 0.95,
+    "rationale": "This is a shipment notification for an existing purchase order with no announced change to pricing, so it is logistics-only."
+  }
+}

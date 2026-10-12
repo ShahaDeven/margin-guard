@@ -10,9 +10,11 @@ type Review = (body: { verdict: 'approve' | 'edit' | 'reject'; action?: string; 
 
 /** One quote Claude made a judgment call on. Closed: who, what we recommend,
  *  how much is at stake. Open: why, the numbers, and an editable draft. */
-export function DecisionCard({ p, fresh, onReview, onViewQuote }: {
+export function DecisionCard({ p, fresh, bar, onReview, onViewQuote }: {
   p: Proposal & { facts: QuoteFacts }
   fresh: boolean
+  /** Confidence bar from the scenario eval; report only, never acts. */
+  bar: number | null
   onReview: Review
   onViewQuote: (quoteId: string) => void
 }) {
@@ -72,6 +74,13 @@ export function DecisionCard({ p, fresh, onReview, onViewQuote }: {
             </span>
             <p className="flex-1 text-sm leading-relaxed text-silver">{p.rationale}</p>
           </div>
+          {bar != null && !escalated ? (
+            <p className="font-mono text-[10px] text-silver-dim">
+              {(p.confidence ?? 0) >= bar
+                ? `Clears the ${bar.toFixed(2)} confidence bar: in testing, every call this sure was right. You still approve it.`
+                : `Below the ${bar.toFixed(2)} confidence bar: Claude is less sure than usual. Read this one carefully.`}
+            </p>
+          ) : null}
 
           {f.contract_note ? (
             <p className="rounded border border-hiviz/30 bg-hiviz/[0.04] px-3 py-2 text-sm text-silver">

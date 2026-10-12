@@ -1,6 +1,6 @@
 {
   "summary": {
-    "model": "claude-sonnet-5-5",
+    "model": "replay",
     "quote_decisions": 232,
     "overall_accuracy": 1.0,
     "rule_decisions": 200,

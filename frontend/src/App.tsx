@@ -61,6 +61,7 @@ function App() {
                     key={p.id}
                     p={p}
                     fresh={c.arrived.has(p.id)}
+                    bar={ov?.autonomy?.threshold ?? null}
                     onReview={(body) => c.run(() => api.review(p.id, body))}
                     onViewQuote={c.focusQuote}
                   />
@@ -131,7 +132,14 @@ function Header({ ov, busy }: { ov: Overview | null; busy: boolean }) {
 
 function Stats({ ov }: { ov: Overview }) {
   const items = [
-    { label: 'Need your decision', value: String(ov.needs_you), sub: `${usd(ov.needs_you_exposure)} at risk`, tone: 'text-hiviz' },
+    {
+      label: 'Need your decision',
+      value: String(ov.needs_you),
+      sub: ov.autonomy?.threshold != null
+        ? `${usd(ov.needs_you_exposure)} at risk · ${ov.autonomy.would_clear} clear the ${ov.autonomy.threshold.toFixed(2)} bar`
+        : `${usd(ov.needs_you_exposure)} at risk`,
+      tone: 'text-hiviz',
+    },
     { label: 'Settled by rules', value: String(ov.rule_pending), sub: 'confirm in bulk', tone: 'text-silver-bright' },
     { label: 'Total exposure', value: usd(ov.live_exposure), sub: 'on open cards', tone: 'text-silver-bright' },
     { label: 'Done', value: String(ov.done), sub: `${ov.outbox} in outbox`, tone: 'text-cyan' },

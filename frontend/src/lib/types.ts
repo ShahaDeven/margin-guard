@@ -98,6 +98,8 @@ export interface Overview {
   live_exposure: number
   done: number
   outbox: number
+  /** Report only: judgment calls that clear the confidence bar the scenario eval found error-free. */
+  autonomy: { threshold: number | null; model: string; would_clear: number; eval_runs?: number } | null
 }
 
 export interface Email {
