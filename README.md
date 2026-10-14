@@ -73,12 +73,19 @@ reviews nobody absorbed a small increase, so its only support is the one overrid
 it. Reviewer corrections are noisy too: the same customer note drew opposite overrides.
 
 Full write-up, method and limits: **[promotion report](evals/results/promotion/promotion_report.md)**.
-Everything regenerates from cached replays with no API calls:
+The replays (the 7 `replays_C*.json` files) and the 55 reviews are committed, so everything
+regenerates with **no API key and no cost**:
 
 ```bash
-python -m evals.promotion.report     # gate verdicts, replays-needed curve, charts
-python -m evals.promotion.ledger     # correction ledger (append-only, versioned)
+pip install -r requirements-dev.txt      # adds matplotlib for the charts
+python -m evals.promotion.report         # gate verdicts, replays-needed curve, charts (~1 min)
+python -m evals.promotion.ledger         # correction ledger (append-only, versioned)
+python -m pytest                         # offline tests, including the gate and the ledger
 ```
+
+To re-run the replays yourself (needs `ANTHROPIC_API_KEY`): `python -m evals.promotion.replay --batch --dry-run`
+prices it first. Deleting the cached files and running `--batch` redoes all 7 candidates at K = 8
+(baseline at 16) for about $13 through the Message Batches API.
 
 ## How it works
 
@@ -190,7 +197,7 @@ Needs Python 3.11+ and Node 20.19+ (tested on Python 3.11 and Node 22).
 ```bash
 python -m venv .venv
 source .venv/bin/activate              # Windows: .venv\Scripts\activate
-pip install -r requirements.txt        # requirements-dev.txt adds pytest
+pip install -r requirements.txt        # requirements-dev.txt adds pytest + matplotlib (tests, gate report)
 
 # Build the demo shop and run the agents on its inbox.
 # --replay reuses the Claude calls cached in evals/results/, so this needs no API key.
