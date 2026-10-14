@@ -1,0 +1,319 @@
+{
+ "updated": "2026-10-14",
+ "entries": [
+  {
+   "id": "L-001",
+   "title": "De-minimis rule as code: absorb under $50 at risk",
+   "source": "Reviewer override on Q-2026-0169 (main shop): absorbed a ~$30 increase Claude sent to a call.",
+   "candidate": "C1a",
+   "kind": "rule",
+   "note": "",
+   "safe": {
+    "verdict": "promote",
+    "gate": "v3",
+    "k": 8,
+    "reasons": [],
+    "counts": {
+     "fixed": 7,
+     "regressed": 0,
+     "flaky": 2,
+     "stable_pass": 53,
+     "stable_fail": 0
+    },
+    "accuracy": [
+     0.875,
+     0.9859
+    ],
+    "report": "promotion_report.md"
+   },
+   "wanted": {
+    "applies": true,
+    "support": 1,
+    "contradict": 5,
+    "examples": [
+     "contradict: Q-2026-0166 Granite Industrial, $49.45 at risk, proposed contact_customer, reviewer contact_customer",
+     "contradict: Q-2026-0249 Lakeshore HVAC, $18.93 at risk, proposed contact_customer, reviewer contact_customer",
+     "contradict: Q-2026-0156 Ridgeway Lab Instruments, $46.11 at risk, proposed contact_customer, reviewer contact_customer",
+     "contradict: Q-2026-0124 Tri-County Plumbing Supply, $23.26 at risk, proposed reprice, reviewer reprice",
+     "contradict: Q-2026-0222 Tri-County Plumbing Supply, $10.99 at risk, proposed reprice, reviewer reprice"
+    ]
+   },
+   "status": "held",
+   "reason": "safe to promote, but not wanted: 1 review(s) support it, 5 contradict it",
+   "versions": [
+    {
+     "version": 1,
+     "date": "2026-10-14",
+     "status": "held",
+     "reason": "safe to promote, but not wanted: 1 review(s) support it, 5 contradict it",
+     "fingerprint": "[\"held\", \"promote\", {\"fixed\": 7, \"flaky\": 2, \"regressed\": 0, \"stable_fail\": 0, \"stable_pass\": 53}, 1, 5]"
+    }
+   ]
+  },
+  {
+   "id": "L-002",
+   "title": "De-minimis rule as policy text",
+   "source": "Same override as L-001, written into the prompt instead of code.",
+   "candidate": "C1b",
+   "kind": "policy_text",
+   "note": "",
+   "safe": {
+    "verdict": "reject",
+    "gate": "v3",
+    "k": 8,
+    "reasons": [
+     "regressed: S30, SH-0117-VMQ-50, SH-0162-VMQ-50, SH-0164-VMQ-50, SH-0162-CB-N550, SH-0119-SBR-60, SH-0162-SBR-60"
+    ],
+    "counts": {
+     "fixed": 7,
+     "regressed": 7,
+     "flaky": 6,
+     "stable_pass": 42,
+     "stable_fail": 0
+    },
+    "accuracy": [
+     0.875,
+     0.8327
+    ],
+    "report": "promotion_report.md"
+   },
+   "wanted": {
+    "applies": true,
+    "support": 1,
+    "contradict": 5,
+    "examples": [
+     "contradict: Q-2026-0166 Granite Industrial, $49.45 at risk, proposed contact_customer, reviewer contact_customer",
+     "contradict: Q-2026-0249 Lakeshore HVAC, $18.93 at risk, proposed contact_customer, reviewer contact_customer",
+     "contradict: Q-2026-0156 Ridgeway Lab Instruments, $46.11 at risk, proposed contact_customer, reviewer contact_customer",
+     "contradict: Q-2026-0124 Tri-County Plumbing Supply, $23.26 at risk, proposed reprice, reviewer reprice",
+     "contradict: Q-2026-0222 Tri-County Plumbing Supply, $10.99 at risk, proposed reprice, reviewer reprice"
+    ]
+   },
+   "status": "rejected",
+   "reason": "the gate found regressions: regressed: S30, SH-0117-VMQ-50, SH-0162-VMQ-50, SH-0164-VMQ-50, SH-0162-CB-N550, SH-0119-SBR-60, SH-0162-SBR-60",
+   "versions": [
+    {
+     "version": 1,
+     "date": "2026-10-14",
+     "status": "rejected",
+     "reason": "the gate found regressions: regressed: S30, SH-0117-VMQ-50, SH-0162-VMQ-50, SH-0164-VMQ-50, SH-0162-CB-N550, SH-0119-SBR-60, SH-0162-SBR-60",
+     "fingerprint": "[\"rejected\", \"reject\", {\"fixed\": 7, \"flaky\": 6, \"regressed\": 7, \"stable_fail\": 0, \"stable_pass\": 42}, 1, 5]"
+    }
+   ]
+  },
+  {
+   "id": "L-003",
+   "title": "Clarify notes that set their own call condition",
+   "source": "Eval miss: S24 (key account, $8k, 'call over $10k') wrong 3/3 runs at confidence 0.55-0.60.",
+   "candidate": "C2",
+   "kind": "policy_text",
+   "note": "",
+   "safe": {
+    "verdict": "hold",
+    "gate": "v3",
+    "k": 8,
+    "reasons": [
+     "target not reliably fixed: S24",
+     "dropped >= 20% but not significant (needs more replays): SH-0162-SBR-60"
+    ],
+    "counts": {
+     "fixed": 0,
+     "regressed": 0,
+     "flaky": 3,
+     "stable_pass": 59,
+     "stable_fail": 0
+    },
+    "accuracy": [
+     0.9879,
+     0.9778
+    ],
+    "report": "promotion_report.md"
+   },
+   "wanted": {
+    "applies": true,
+    "support": 0,
+    "contradict": 0,
+    "examples": []
+   },
+   "status": "held",
+   "reason": "the gate needs more replays: target not reliably fixed: S24; dropped >= 20% but not significant (needs more replays): SH-0162-SBR-60",
+   "versions": [
+    {
+     "version": 1,
+     "date": "2026-10-14",
+     "status": "held",
+     "reason": "the gate needs more replays: target not reliably fixed: S24; dropped >= 20% but not significant (needs more replays): SH-0162-SBR-60",
+     "fingerprint": "[\"held\", \"hold\", {\"fixed\": 0, \"flaky\": 3, \"regressed\": 0, \"stable_fail\": 0, \"stable_pass\": 59}, 0, 0]"
+    }
+   ]
+  },
+  {
+   "id": "L-004",
+   "title": "Tidy-up: soften the contract-note override",
+   "source": "Control: built to look harmless and be wrong.",
+   "candidate": "C3a",
+   "kind": "control",
+   "note": "",
+   "safe": {
+    "verdict": "reject",
+    "gate": "v3",
+    "k": 8,
+    "reasons": [
+     "regressed: S10, S13, S14, S16"
+    ],
+    "counts": {
+     "fixed": 0,
+     "regressed": 4,
+     "flaky": 4,
+     "stable_pass": 54,
+     "stable_fail": 0
+    },
+    "accuracy": [
+     0.9879,
+     0.8931
+    ],
+    "report": "promotion_report.md"
+   },
+   "wanted": {
+    "applies": false,
+    "support": 0,
+    "contradict": 0,
+    "examples": []
+   },
+   "status": "rejected",
+   "reason": "the gate found regressions: regressed: S10, S13, S14, S16",
+   "versions": [
+    {
+     "version": 1,
+     "date": "2026-10-14",
+     "status": "rejected",
+     "reason": "the gate found regressions: regressed: S10, S13, S14, S16",
+     "fingerprint": "[\"rejected\", \"reject\", {\"fixed\": 0, \"flaky\": 4, \"regressed\": 4, \"stable_fail\": 0, \"stable_pass\": 54}, 0, 0]"
+    }
+   ]
+  },
+  {
+   "id": "L-005",
+   "title": "Tidy-up: drop the contract-note override",
+   "source": "Control: built to look harmless and be wrong.",
+   "candidate": "C3b",
+   "kind": "control",
+   "note": "",
+   "safe": {
+    "verdict": "reject",
+    "gate": "v3",
+    "k": 8,
+    "reasons": [
+     "regressed: S13, S14, S16"
+    ],
+    "counts": {
+     "fixed": 0,
+     "regressed": 3,
+     "flaky": 5,
+     "stable_pass": 54,
+     "stable_fail": 0
+    },
+    "accuracy": [
+     0.9879,
+     0.8972
+    ],
+    "report": "promotion_report.md"
+   },
+   "wanted": {
+    "applies": false,
+    "support": 0,
+    "contradict": 0,
+    "examples": []
+   },
+   "status": "rejected",
+   "reason": "the gate found regressions: regressed: S13, S14, S16",
+   "versions": [
+    {
+     "version": 1,
+     "date": "2026-10-14",
+     "status": "rejected",
+     "reason": "the gate found regressions: regressed: S13, S14, S16",
+     "fingerprint": "[\"rejected\", \"reject\", {\"fixed\": 0, \"flaky\": 5, \"regressed\": 3, \"stable_fail\": 0, \"stable_pass\": 54}, 0, 0]"
+    }
+   ]
+  },
+  {
+   "id": "L-006",
+   "title": "Swap Sonnet for Haiku (~15x cheaper)",
+   "source": "Cost: distill onto a cheaper model if nothing regresses.",
+   "candidate": "C4",
+   "kind": "model_swap",
+   "note": "",
+   "safe": {
+    "verdict": "hold",
+    "gate": "v3",
+    "k": 8,
+    "reasons": [
+     "dropped >= 20% but not significant (needs more replays): S05, S12, S19, SH-0134-FKM-75"
+    ],
+    "counts": {
+     "fixed": 0,
+     "regressed": 0,
+     "flaky": 6,
+     "stable_pass": 56,
+     "stable_fail": 0
+    },
+    "accuracy": [
+     0.9879,
+     0.9617
+    ],
+    "report": "promotion_report.md"
+   },
+   "wanted": {
+    "applies": false,
+    "support": 0,
+    "contradict": 0,
+    "examples": []
+   },
+   "status": "held",
+   "reason": "the gate needs more replays: dropped >= 20% but not significant (needs more replays): S05, S12, S19, SH-0134-FKM-75",
+   "versions": [
+    {
+     "version": 1,
+     "date": "2026-10-14",
+     "status": "held",
+     "reason": "the gate needs more replays: dropped >= 20% but not significant (needs more replays): S05, S12, S19, SH-0134-FKM-75",
+     "fingerprint": "[\"held\", \"hold\", {\"fixed\": 0, \"flaky\": 6, \"regressed\": 0, \"stable_fail\": 0, \"stable_pass\": 56}, 0, 0]"
+    }
+   ]
+  },
+  {
+   "id": "L-007",
+   "title": "Call the customer whenever any contract note exists",
+   "source": "Pattern in the review sessions: overrides moved emails to calls on cards with contract notes, including notes about shipping and payment terms.",
+   "candidate": null,
+   "kind": "policy_text",
+   "note": "Conflicts with the written policy, which says notes that aren't about price communication must not change the decision. Needs a candidate and a gate run before anything else.",
+   "safe": null,
+   "wanted": {
+    "applies": true,
+    "support": 4,
+    "contradict": 7,
+    "examples": [
+     "support: Q-2026-0195 Meridian Rail Systems, $210.95 at risk, proposed reprice, reviewer contact_customer",
+     "support: Q-2026-0172 Sterling Fire Apparatus, $62.49 at risk, proposed reprice, reviewer contact_customer",
+     "support: Q-2026-0228 Harbor Point Foodservice, $56.65 at risk, proposed reprice, reviewer contact_customer",
+     "support: Q-2026-0184 Sterling Fire Apparatus, $124.97 at risk, proposed reprice, reviewer contact_customer (\"As the contract note is present, it is better to give a call first than sending the email\")",
+     "contradict: Q-2026-0118 Harbor Point Foodservice, $106.24 at risk, proposed reprice, reviewer reprice",
+     "contradict: Q-2026-0204 Harbor Point Foodservice, $77.91 at risk, proposed reprice, reviewer reprice"
+    ]
+   },
+   "status": "proposed",
+   "reason": "no candidate replayed yet",
+   "versions": [
+    {
+     "version": 1,
+     "date": "2026-10-14",
+     "status": "proposed",
+     "reason": "no candidate replayed yet",
+     "fingerprint": "[\"proposed\", null, null, 4, 7]"
+    }
+   ]
+  }
+ ]
+}

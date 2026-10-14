@@ -272,9 +272,11 @@ def _insert_quote(conn, rng, quote_id, customer_id, status, issued, valid_days, 
         )
 
 
-def build(conn, emails_path: Path = EMAILS_PATH) -> None:
+def build(conn, emails_path: Path = EMAILS_PATH, rng_seed: int = RNG_SEED) -> None:
+    """`rng_seed` other than the default builds a different shop (same catalog,
+    customers and inbox; different open quotes), e.g. for extra review sessions."""
     db.init_schema(conn)
-    rng = random.Random(RNG_SEED)
+    rng = random.Random(rng_seed)
 
     conn.executemany("INSERT INTO vendors VALUES (?, ?, ?)", VENDORS)
     costs = {}
@@ -353,6 +355,7 @@ def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--reset", action="store_true", help="delete the existing database first")
     ap.add_argument("--db", type=Path, default=DB_PATH)
+    ap.add_argument("--rng-seed", type=int, default=RNG_SEED, help="build a different shop (default %(default)s)")
     args = ap.parse_args()
 
     if args.db.exists():
@@ -360,7 +363,7 @@ def main() -> None:
             raise SystemExit(f"{args.db} already exists; pass --reset to rebuild it")
         args.db.unlink()
     conn = db.connect(args.db)
-    build(conn)
+    build(conn, rng_seed=args.rng_seed)
     counts = {t: conn.execute(f"SELECT COUNT(*) FROM {t}").fetchone()[0]
               for t in ("materials", "parts", "customers", "quotes", "quote_lines", "inbox_emails")}
     open_q = conn.execute("SELECT COUNT(*) FROM quotes WHERE status = 'open'").fetchone()[0]

@@ -9,3 +9,4 @@ data/*.db-wal
 data/*.db-shm
 frontend/node_modules/
 frontend/dist/
+data/review_shops/

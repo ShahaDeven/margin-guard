@@ -23,7 +23,7 @@ build-backend = "setuptools.build_meta"
 # The repo root also holds frontend/, data/ and tests/, so name the packages
 # explicitly instead of letting setuptools guess (it refuses to).
 [tool.setuptools]
-packages = ["margin_guard", "evals"]
+packages = ["margin_guard", "evals", "evals.promotion"]
 
 [tool.setuptools.package-data]
 margin_guard = ["schema.sql"]

@@ -47,6 +47,39 @@ probably wants a de-minimis rule ("absorb anything under $X at risk"). Overrides
 learn from (for example "call" changed to "email") are written out as new regression cases
 automatically.
 
+## When is a change safe to promote?
+
+A correction suggests a change: a new rule, a policy edit, a cheaper model. But Claude doesn't
+answer the same way every time, so one before/after run can't tell a regression from noise. The
+promotion gate replays each candidate change against 62 cases (the 30 scenarios + the shop's 32
+judgment calls), 8 times each, and decides **promote / hold / reject** per case, with a noise
+floor measured by replaying the unchanged system against itself.
+
+| Finding | |
+|---|---|
+| With nothing changed, one run vs another flags a "regression" | **48%** of the time, all from 2 of 62 cases that wobble on their own |
+| The gate (per-case Fisher test, false-discovery control, noise floor) on the same no-op | **0%** false alarms at every replay count |
+| Replays per case before the correct change is promoted | **4** (it fixes 7 targets, 0 regressions) |
+| The same de-minimis rule written as prompt text instead of code | fixes the same 7, **breaks 7 others**; aggregate accuracy calls it a wash (CI crosses 0) |
+| Deliberately bad "tidy-up" policy edits (controls) | never promoted at any replay count; rejected at 8 |
+| Sonnet → Haiku swap | **hold**: 6 cases got worse, none conclusively yet |
+
+![Probability of promoting each change, by number of replays](evals/results/promotion/charts/replays_needed.png)
+
+Every proposed change goes into a **[correction ledger](evals/results/promotion/ledger.md)** that
+keeps two questions apart: is it *safe* (the gate) and is it *wanted* (what reviewers did on the
+cards it would change). The de-minimis rule passes the gate but is **held**: across 55 later
+reviews nobody absorbed a small increase, so its only support is the one override that suggested
+it. Reviewer corrections are noisy too: the same customer note drew opposite overrides.
+
+Full write-up, method and limits: **[promotion report](evals/results/promotion/promotion_report.md)**.
+Everything regenerates from cached replays with no API calls:
+
+```bash
+python -m evals.promotion.report     # gate verdicts, replays-needed curve, charts
+python -m evals.promotion.ledger     # correction ledger (append-only, versioned)
+```
+
 ## How it works
 
 ```
@@ -122,6 +155,9 @@ Built for an estimator, not an engineer.
 | Decisions on the shop | `python -m evals.eval_decisions` | every quote decision vs. the reference policy, and that drafts quote the computed prices |
 | Scenario suite | `python -m evals.eval_scenarios` | 30 edge cases x 3 runs x 2 models: accuracy, consistency, draft checks, cost, calibration, the confidence bar |
 | Reviews | `python -m evals.eval_approvals` | reviewer agreement by confidence; disagreements become regression cases or policy signals |
+| Promotion gate | `python -m evals.promotion.replay --batch` | replays candidate changes K times per case (Message Batches API, cached prompt); `--dry-run` prices it first |
+| Gate report | `python -m evals.promotion.report` | per-case verdicts, noise floor, replays-needed curve, cost; no API calls |
+| Correction ledger | `python -m evals.promotion.ledger` | each proposed change: safe (gate) vs wanted (reviews), versioned |
 
 The scenario groups are the size threshold ($14,999 / $15,000 / $15,001), tier, notes that
 override the rule (including one in Spanish), decoy notes that must not ("call ahead before

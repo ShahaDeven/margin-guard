@@ -1,0 +1,9387 @@
+{
+ "SH-0193-VMQ-50:1": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2331,
+    "output_tokens": 380,
+    "seconds": 4.36
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "1d1bdf3dcc1ee3dd"
+ },
+ "SH-0247-FKM-75:0": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2517,
+    "output_tokens": 676,
+    "seconds": 5.37
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "3c3789016f51e094"
+ },
+ "SH-0247-FKM-75:1": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.93,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2517,
+    "output_tokens": 684,
+    "seconds": 5.53
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "3c3789016f51e094"
+ },
+ "SH-0247-FKM-75:2": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.93,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2517,
+    "output_tokens": 728,
+    "seconds": 5.77
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "3c3789016f51e094"
+ },
+ "SH-0134-FKM-75:1": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.96,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2257,
+    "output_tokens": 745,
+    "seconds": 6.12
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "343ebac2310d5f37"
+ },
+ "SH-0134-FKM-75:2": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.96,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2257,
+    "output_tokens": 713,
+    "seconds": 6.13
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "343ebac2310d5f37"
+ },
+ "SH-0156-CB-N550:0": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.96,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2333,
+    "output_tokens": 649,
+    "seconds": 5.53
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "f788ed2de799cdcc"
+ },
+ "SH-0156-CB-N550:1": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.97,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2333,
+    "output_tokens": 717,
+    "seconds": 5.61
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "f788ed2de799cdcc"
+ },
+ "SH-0162-CB-N550:0": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.93,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2474,
+    "output_tokens": 666,
+    "seconds": 5.13
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "288b3d824c368d32"
+ },
+ "SH-0162-CB-N550:1": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.9,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2474,
+    "output_tokens": 670,
+    "seconds": 5.03
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "288b3d824c368d32"
+ },
+ "SH-0162-CB-N550:2": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.93,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2474,
+    "output_tokens": 715,
+    "seconds": 5.12
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "288b3d824c368d32"
+ },
+ "SH-0156-CB-N550:2": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.96,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2333,
+    "output_tokens": 743,
+    "seconds": 6.34
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "f788ed2de799cdcc"
+ },
+ "SH-0169-CB-N550:0": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2168,
+    "output_tokens": 600,
+    "seconds": 5.13
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "8ca9e2444fa5bb89"
+ },
+ "SH-0169-CB-N550:1": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.93,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2168,
+    "output_tokens": 581,
+    "seconds": 4.83
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "8ca9e2444fa5bb89"
+ },
+ "SH-0169-CB-N550:2": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.9,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2168,
+    "output_tokens": 617,
+    "seconds": 4.87
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "8ca9e2444fa5bb89"
+ },
+ "SH-0185-CB-N550:0": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2348,
+    "output_tokens": 657,
+    "seconds": 5.25
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "6c7243366630e8f2"
+ },
+ "SH-0185-CB-N550:1": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2348,
+    "output_tokens": 652,
+    "seconds": 5.29
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "6c7243366630e8f2"
+ },
+ "SH-0185-CB-N550:2": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.96,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2348,
+    "output_tokens": 660,
+    "seconds": 5.5
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "6c7243366630e8f2"
+ },
+ "SH-0103-SBR-60:0": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2439,
+    "output_tokens": 409,
+    "seconds": 3.52
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "413e70df639262e4"
+ },
+ "SH-0204-CB-N550:0": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.97,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2165,
+    "output_tokens": 642,
+    "seconds": 5.54
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "bd5715c1f6331c47"
+ },
+ "SH-0103-SBR-60:1": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2439,
+    "output_tokens": 393,
+    "seconds": 3.59
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "413e70df639262e4"
+ },
+ "SH-0103-SBR-60:2": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2439,
+    "output_tokens": 396,
+    "seconds": 3.24
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "413e70df639262e4"
+ },
+ "SH-0204-CB-N550:1": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.97,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2165,
+    "output_tokens": 647,
+    "seconds": 5.04
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "bd5715c1f6331c47"
+ },
+ "SH-0204-CB-N550:2": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.97,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2165,
+    "output_tokens": 650,
+    "seconds": 5.19
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "bd5715c1f6331c47"
+ },
+ "SH-0119-SBR-60:1": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2442,
+    "output_tokens": 732,
+    "seconds": 5.68
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "ff3b42798916e651"
+ },
+ "SH-0157-SBR-60:0": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.97,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2331,
+    "output_tokens": 669,
+    "seconds": 5.03
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "b3657984bc25c3c5"
+ },
+ "SH-0119-SBR-60:0": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.93,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2442,
+    "output_tokens": 735,
+    "seconds": 5.91
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "ff3b42798916e651"
+ },
+ "SH-0119-SBR-60:2": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2442,
+    "output_tokens": 729,
+    "seconds": 5.75
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "ff3b42798916e651"
+ },
+ "SH-0157-SBR-60:1": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.97,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2331,
+    "output_tokens": 638,
+    "seconds": 5.2
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "b3657984bc25c3c5"
+ },
+ "SH-0157-SBR-60:2": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.97,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2331,
+    "output_tokens": 688,
+    "seconds": 5.44
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "b3657984bc25c3c5"
+ },
+ "SH-0162-SBR-60:0": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.9,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2720,
+    "output_tokens": 148,
+    "seconds": 1.91
+   }
+  ],
+  "draft_ok": false,
+  "failed_checks": [
+   "prices_exact",
+   "addresses_buyer"
+  ],
+  "fp": "a33c19dab987a296"
+ },
+ "SH-0162-SBR-60:1": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.9,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2720,
+    "output_tokens": 155,
+    "seconds": 1.86
+   }
+  ],
+  "draft_ok": false,
+  "failed_checks": [
+   "prices_exact",
+   "addresses_buyer"
+  ],
+  "fp": "a33c19dab987a296"
+ },
+ "SH-0162-SBR-60:2": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.9,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2720,
+    "output_tokens": 157,
+    "seconds": 2.05
+   }
+  ],
+  "draft_ok": false,
+  "failed_checks": [
+   "prices_exact",
+   "addresses_buyer"
+  ],
+  "fp": "a33c19dab987a296"
+ },
+ "SH-0177-SBR-60:0": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.96,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2330,
+    "output_tokens": 705,
+    "seconds": 5.22
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "d0f07f5fd68dd0ba"
+ },
+ "SH-0177-SBR-60:1": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.97,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2330,
+    "output_tokens": 706,
+    "seconds": 5.82
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "d0f07f5fd68dd0ba"
+ },
+ "SH-0177-SBR-60:2": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.96,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2330,
+    "output_tokens": 682,
+    "seconds": 5.48
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "d0f07f5fd68dd0ba"
+ },
+ "SH-0217-SBR-60:2": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2347,
+    "output_tokens": 633,
+    "seconds": 4.97
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "ea17055d4285f4d2"
+ },
+ "SH-0217-SBR-60:1": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.96,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2347,
+    "output_tokens": 689,
+    "seconds": 5.29
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "ea17055d4285f4d2"
+ },
+ "SH-0217-SBR-60:0": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.96,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2347,
+    "output_tokens": 688,
+    "seconds": 5.55
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "ea17055d4285f4d2"
+ },
+ "SH-0239-SBR-60:0": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2715,
+    "output_tokens": 688,
+    "seconds": 5.19
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "24dc96b6d37ecf33"
+ },
+ "SH-0239-SBR-60:2": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.96,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2715,
+    "output_tokens": 765,
+    "seconds": 5.54
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "24dc96b6d37ecf33"
+ },
+ "SH-0239-SBR-60:1": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.96,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2715,
+    "output_tokens": 779,
+    "seconds": 6.09
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "24dc96b6d37ecf33"
+ },
+ "SH-0242-SBR-60:0": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2842,
+    "output_tokens": 716,
+    "seconds": 5.46
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "bb5fdcfea548f659"
+ },
+ "SH-0242-SBR-60:1": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.93,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2842,
+    "output_tokens": 816,
+    "seconds": 5.87
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "bb5fdcfea548f659"
+ },
+ "SH-0242-SBR-60:2": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.93,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2842,
+    "output_tokens": 851,
+    "seconds": 6.78
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "bb5fdcfea548f659"
+ },
+ "S01:2": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.97,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2051,
+    "output_tokens": 310,
+    "seconds": 2.93
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "bf31c03ab39a7923"
+ },
+ "S01:0": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.97,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2051,
+    "output_tokens": 315,
+    "seconds": 3.1
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "bf31c03ab39a7923"
+ },
+ "S01:1": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.97,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2051,
+    "output_tokens": 322,
+    "seconds": 3.13
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "bf31c03ab39a7923"
+ },
+ "S02:0": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.96,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2049,
+    "output_tokens": 541,
+    "seconds": 4.4
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "adc56065a8e6187a"
+ },
+ "S02:2": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2049,
+    "output_tokens": 543,
+    "seconds": 4.68
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "adc56065a8e6187a"
+ },
+ "S02:1": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.97,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2049,
+    "output_tokens": 565,
+    "seconds": 4.77
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "adc56065a8e6187a"
+ },
+ "S04:0": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.97,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2049,
+    "output_tokens": 330,
+    "seconds": 2.72
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "89ef4fb992e10c26"
+ },
+ "S04:1": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.97,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2049,
+    "output_tokens": 325,
+    "seconds": 2.75
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "89ef4fb992e10c26"
+ },
+ "S04:2": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.97,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2049,
+    "output_tokens": 341,
+    "seconds": 3.22
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "89ef4fb992e10c26"
+ },
+ "S03:1": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.97,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2051,
+    "output_tokens": 562,
+    "seconds": 5.77
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "bc3c21e5a1b6649b"
+ },
+ "S03:2": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2051,
+    "output_tokens": 584,
+    "seconds": 5.75
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "bc3c21e5a1b6649b"
+ },
+ "S03:0": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.97,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2051,
+    "output_tokens": 610,
+    "seconds": 6.28
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "bc3c21e5a1b6649b"
+ },
+ "S05:0": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.96,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2050,
+    "output_tokens": 521,
+    "seconds": 4.26
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "19b83bef4bbd85d8"
+ },
+ "S05:1": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2050,
+    "output_tokens": 549,
+    "seconds": 4.36
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "19b83bef4bbd85d8"
+ },
+ "S05:2": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2050,
+    "output_tokens": 586,
+    "seconds": 4.76
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "19b83bef4bbd85d8"
+ },
+ "S06:1": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.93,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2048,
+    "output_tokens": 557,
+    "seconds": 4.41
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "6055bbf0a8c72674"
+ },
+ "S06:0": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2048,
+    "output_tokens": 559,
+    "seconds": 4.55
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "6055bbf0a8c72674"
+ },
+ "S06:2": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.93,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2048,
+    "output_tokens": 601,
+    "seconds": 5.1
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "6055bbf0a8c72674"
+ },
+ "S07:0": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.97,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2049,
+    "output_tokens": 575,
+    "seconds": 4.86
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "fe6cc8e45cac281a"
+ },
+ "S07:1": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.97,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2049,
+    "output_tokens": 639,
+    "seconds": 5.06
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "fe6cc8e45cac281a"
+ },
+ "S07:2": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.97,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2049,
+    "output_tokens": 604,
+    "seconds": 4.52
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "fe6cc8e45cac281a"
+ },
+ "S08:1": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2050,
+    "output_tokens": 624,
+    "seconds": 4.82
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "e678c45034d88af6"
+ },
+ "S08:0": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2050,
+    "output_tokens": 590,
+    "seconds": 5.01
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "e678c45034d88af6"
+ },
+ "S08:2": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2050,
+    "output_tokens": 604,
+    "seconds": 4.44
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "e678c45034d88af6"
+ },
+ "S09:0": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2071,
+    "output_tokens": 342,
+    "seconds": 2.99
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "065be43ef5793990"
+ },
+ "S09:1": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2071,
+    "output_tokens": 344,
+    "seconds": 3.15
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "065be43ef5793990"
+ },
+ "S09:2": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2071,
+    "output_tokens": 329,
+    "seconds": 2.89
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "065be43ef5793990"
+ },
+ "S10:1": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.96,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2071,
+    "output_tokens": 350,
+    "seconds": 3.03
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "ee734f71068297f2"
+ },
+ "S10:0": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.96,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2071,
+    "output_tokens": 348,
+    "seconds": 3.18
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "ee734f71068297f2"
+ },
+ "S10:2": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.96,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2071,
+    "output_tokens": 350,
+    "seconds": 3.14
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "ee734f71068297f2"
+ },
+ "S11:0": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2076,
+    "output_tokens": 556,
+    "seconds": 4.47
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "f3fd7dc2e1e5bdc2"
+ },
+ "S11:1": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.93,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2076,
+    "output_tokens": 588,
+    "seconds": 4.47
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "f3fd7dc2e1e5bdc2"
+ },
+ "S11:2": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.93,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2076,
+    "output_tokens": 588,
+    "seconds": 4.62
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "f3fd7dc2e1e5bdc2"
+ },
+ "S12:0": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.93,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2076,
+    "output_tokens": 615,
+    "seconds": 4.95
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "8a74e3c67b53ca6a"
+ },
+ "S12:1": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2076,
+    "output_tokens": 569,
+    "seconds": 4.93
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "8a74e3c67b53ca6a"
+ },
+ "S12:2": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2076,
+    "output_tokens": 594,
+    "seconds": 4.5
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "8a74e3c67b53ca6a"
+ },
+ "S13:0": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2055,
+    "output_tokens": 342,
+    "seconds": 3.79
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "74288a844a35b634"
+ },
+ "S13:1": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2055,
+    "output_tokens": 345,
+    "seconds": 3.5
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "74288a844a35b634"
+ },
+ "S13:2": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2055,
+    "output_tokens": 354,
+    "seconds": 3.57
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "74288a844a35b634"
+ },
+ "S14:1": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.93,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2087,
+    "output_tokens": 334,
+    "seconds": 2.79
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "96158dcc29168754"
+ },
+ "S14:0": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.93,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2087,
+    "output_tokens": 353,
+    "seconds": 3.14
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "96158dcc29168754"
+ },
+ "S14:2": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.93,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2087,
+    "output_tokens": 377,
+    "seconds": 3.69
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "96158dcc29168754"
+ },
+ "S16:0": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.96,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2071,
+    "output_tokens": 364,
+    "seconds": 3.52
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "ec0d5655dedadb72"
+ },
+ "S15:1": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.9,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2080,
+    "output_tokens": 605,
+    "seconds": 4.71
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "d239948b674249e9"
+ },
+ "S15:0": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.9,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2080,
+    "output_tokens": 612,
+    "seconds": 5.29
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "d239948b674249e9"
+ },
+ "S16:1": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.96,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2071,
+    "output_tokens": 348,
+    "seconds": 3.43
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "ec0d5655dedadb72"
+ },
+ "S16:2": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2071,
+    "output_tokens": 343,
+    "seconds": 3.37
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "ec0d5655dedadb72"
+ },
+ "S15:2": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.9,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2080,
+    "output_tokens": 617,
+    "seconds": 5.1
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "d239948b674249e9"
+ },
+ "S17:1": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2078,
+    "output_tokens": 321,
+    "seconds": 3.05
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "4c53074a5766cbcf"
+ },
+ "S17:0": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2078,
+    "output_tokens": 340,
+    "seconds": 3.17
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "4c53074a5766cbcf"
+ },
+ "S17:2": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2078,
+    "output_tokens": 335,
+    "seconds": 3.03
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "4c53074a5766cbcf"
+ },
+ "S18:2": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.9,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2067,
+    "output_tokens": 578,
+    "seconds": 4.72
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "1c7aa24df8dcb3b7"
+ },
+ "S18:0": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.9,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2067,
+    "output_tokens": 637,
+    "seconds": 5.45
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "1c7aa24df8dcb3b7"
+ },
+ "S18:1": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.9,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2067,
+    "output_tokens": 608,
+    "seconds": 4.91
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "1c7aa24df8dcb3b7"
+ },
+ "S19:0": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2075,
+    "output_tokens": 572,
+    "seconds": 4.48
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "7539da66ca4e6a41"
+ },
+ "S19:1": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2075,
+    "output_tokens": 543,
+    "seconds": 4.56
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "7539da66ca4e6a41"
+ },
+ "S19:2": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2075,
+    "output_tokens": 602,
+    "seconds": 5.04
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "7539da66ca4e6a41"
+ },
+ "S20:1": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2074,
+    "output_tokens": 335,
+    "seconds": 2.93
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "d5560e5ebfb4838a"
+ },
+ "S20:0": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2074,
+    "output_tokens": 339,
+    "seconds": 3.02
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "d5560e5ebfb4838a"
+ },
+ "S20:2": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2074,
+    "output_tokens": 322,
+    "seconds": 2.86
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "d5560e5ebfb4838a"
+ },
+ "S22:0": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.93,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2075,
+    "output_tokens": 124,
+    "seconds": 1.97
+   }
+  ],
+  "draft_ok": false,
+  "failed_checks": [
+   "prices_exact",
+   "addresses_buyer"
+  ],
+  "fp": "668f5e38cf719ae5"
+ },
+ "S21:1": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.93,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2081,
+    "output_tokens": 366,
+    "seconds": 3.35
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "ef18668386dc1058"
+ },
+ "S22:2": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.93,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2075,
+    "output_tokens": 216,
+    "seconds": 2.63
+   }
+  ],
+  "draft_ok": false,
+  "failed_checks": [
+   "prices_exact"
+  ],
+  "fp": "668f5e38cf719ae5"
+ },
+ "S21:2": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.93,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2081,
+    "output_tokens": 388,
+    "seconds": 3.72
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "ef18668386dc1058"
+ },
+ "S22:1": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.93,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2075,
+    "output_tokens": 372,
+    "seconds": 3.65
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "668f5e38cf719ae5"
+ },
+ "S21:0": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.93,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2081,
+    "output_tokens": 357,
+    "seconds": 5.19
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "ef18668386dc1058"
+ },
+ "S23:0": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.93,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2075,
+    "output_tokens": 357,
+    "seconds": 3.12
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "b48e917e0f0020ca"
+ },
+ "S23:1": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.93,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2075,
+    "output_tokens": 329,
+    "seconds": 3.02
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "b48e917e0f0020ca"
+ },
+ "S24:0": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.93,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2074,
+    "output_tokens": 320,
+    "seconds": 3.04
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "4d59a3819d6cb9fc"
+ },
+ "S24:1": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.93,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2074,
+    "output_tokens": 320,
+    "seconds": 2.84
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "4d59a3819d6cb9fc"
+ },
+ "S23:2": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.93,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2075,
+    "output_tokens": 328,
+    "seconds": 5.02
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "b48e917e0f0020ca"
+ },
+ "S24:2": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.93,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2074,
+    "output_tokens": 347,
+    "seconds": 3.47
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "4d59a3819d6cb9fc"
+ },
+ "S25:0": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2083,
+    "output_tokens": 332,
+    "seconds": 3.01
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "68a909654b8eecea"
+ },
+ "S25:1": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.93,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2083,
+    "output_tokens": 332,
+    "seconds": 3.08
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "68a909654b8eecea"
+ },
+ "S25:2": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2083,
+    "output_tokens": 335,
+    "seconds": 3.09
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "68a909654b8eecea"
+ },
+ "S27:0": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.97,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2405,
+    "output_tokens": 388,
+    "seconds": 3.07
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "c906c1318b0ba84e"
+ },
+ "S26:0": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.93,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2075,
+    "output_tokens": 669,
+    "seconds": 5.61
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "cb4779b74e39cfe8"
+ },
+ "S27:1": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.97,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2405,
+    "output_tokens": 394,
+    "seconds": 3.96
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "c906c1318b0ba84e"
+ },
+ "S27:2": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.97,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2405,
+    "output_tokens": 359,
+    "seconds": 3.06
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "c906c1318b0ba84e"
+ },
+ "S26:2": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.9,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2075,
+    "output_tokens": 655,
+    "seconds": 5.08
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "cb4779b74e39cfe8"
+ },
+ "S26:1": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.9,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2075,
+    "output_tokens": 664,
+    "seconds": 5.43
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "cb4779b74e39cfe8"
+ },
+ "S28:0": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.96,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2298,
+    "output_tokens": 675,
+    "seconds": 4.82
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "660380510f792a2f"
+ },
+ "S29:1": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.9,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2076,
+    "output_tokens": 346,
+    "seconds": 3.5
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "3a59482915c37ac8"
+ },
+ "S29:0": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.9,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2076,
+    "output_tokens": 343,
+    "seconds": 3.79
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "3a59482915c37ac8"
+ },
+ "S29:2": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.9,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2076,
+    "output_tokens": 354,
+    "seconds": 3.53
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "3a59482915c37ac8"
+ },
+ "S28:1": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.97,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2298,
+    "output_tokens": 691,
+    "seconds": 4.97
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "660380510f792a2f"
+ },
+ "S28:2": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.97,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2298,
+    "output_tokens": 646,
+    "seconds": 4.88
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "660380510f792a2f"
+ },
+ "S30:1": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.6,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2077,
+    "output_tokens": 322,
+    "seconds": 2.93
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "952abea6d88139da"
+ },
+ "S30:0": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.6,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2077,
+    "output_tokens": 367,
+    "seconds": 3.52
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "952abea6d88139da"
+ },
+ "S30:2": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.6,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2077,
+    "output_tokens": 334,
+    "seconds": 3.77
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "952abea6d88139da"
+ },
+ "SH-0156-EPDM-70:0": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.96,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2220,
+    "output_tokens": 638,
+    "seconds": 5.15
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "3c9571435c033ebb"
+ },
+ "SH-0156-EPDM-70:1": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2220,
+    "output_tokens": 615,
+    "seconds": 5.09
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "3c9571435c033ebb"
+ },
+ "SH-0156-EPDM-70:2": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2220,
+    "output_tokens": 646,
+    "seconds": 6.62
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "3c9571435c033ebb"
+ },
+ "SH-0169-EPDM-70:0": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2056,
+    "output_tokens": 636,
+    "seconds": 5.46
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "25d0f2d05f494cf4"
+ },
+ "SH-0169-EPDM-70:2": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2056,
+    "output_tokens": 588,
+    "seconds": 4.66
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "25d0f2d05f494cf4"
+ },
+ "SH-0169-EPDM-70:1": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2056,
+    "output_tokens": 666,
+    "seconds": 5.94
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "25d0f2d05f494cf4"
+ },
+ "SH-0185-EPDM-70:0": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.96,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2224,
+    "output_tokens": 633,
+    "seconds": 5.02
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "d7c6941542915101"
+ },
+ "SH-0185-EPDM-70:1": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.96,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2224,
+    "output_tokens": 600,
+    "seconds": 4.7
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "d7c6941542915101"
+ },
+ "SH-0185-EPDM-70:2": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.97,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2224,
+    "output_tokens": 678,
+    "seconds": 5.37
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "d7c6941542915101"
+ },
+ "SH-0204-EPDM-70:1": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.96,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2052,
+    "output_tokens": 610,
+    "seconds": 5.1
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "5e14407e3fcf252b"
+ },
+ "SH-0204-EPDM-70:0": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.96,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2052,
+    "output_tokens": 621,
+    "seconds": 5.33
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "5e14407e3fcf252b"
+ },
+ "SH-0202-NBR-70:1": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2063,
+    "output_tokens": 330,
+    "seconds": 3.26
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "59e8afc1b0ef21cd"
+ },
+ "SH-0204-EPDM-70:2": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.96,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2052,
+    "output_tokens": 603,
+    "seconds": 5.04
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "5e14407e3fcf252b"
+ },
+ "SH-0202-NBR-70:0": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2063,
+    "output_tokens": 329,
+    "seconds": 3.72
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "59e8afc1b0ef21cd"
+ },
+ "SH-0202-NBR-70:2": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2063,
+    "output_tokens": 322,
+    "seconds": 3.45
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "59e8afc1b0ef21cd"
+ },
+ "SH-0112-VMQ-50:1": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2066,
+    "output_tokens": 583,
+    "seconds": 5.01
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "539018eba3358939"
+ },
+ "SH-0112-VMQ-50:2": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2066,
+    "output_tokens": 595,
+    "seconds": 5.12
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "539018eba3358939"
+ },
+ "SH-0112-VMQ-50:0": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2066,
+    "output_tokens": 651,
+    "seconds": 5.41
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "539018eba3358939"
+ },
+ "SH-0116-VMQ-50:0": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.96,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2225,
+    "output_tokens": 680,
+    "seconds": 5.37
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "4c52c6b2e4878590"
+ },
+ "SH-0116-VMQ-50:1": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.97,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2225,
+    "output_tokens": 654,
+    "seconds": 5.38
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "4c52c6b2e4878590"
+ },
+ "SH-0116-VMQ-50:2": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.97,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2225,
+    "output_tokens": 648,
+    "seconds": 5.42
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "4c52c6b2e4878590"
+ },
+ "SH-0129-VMQ-50:0": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2481,
+    "output_tokens": 409,
+    "seconds": 3.33
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "a9dd4aaf0d7ed3a4"
+ },
+ "SH-0129-VMQ-50:1": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2481,
+    "output_tokens": 407,
+    "seconds": 3.66
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "a9dd4aaf0d7ed3a4"
+ },
+ "SH-0117-VMQ-50:2": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2481,
+    "output_tokens": 687,
+    "seconds": 5.15
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "092a80702ab666de"
+ },
+ "SH-0117-VMQ-50:1": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.97,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2481,
+    "output_tokens": 704,
+    "seconds": 5.3
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "092a80702ab666de"
+ },
+ "SH-0117-VMQ-50:0": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2481,
+    "output_tokens": 777,
+    "seconds": 5.7
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "092a80702ab666de"
+ },
+ "SH-0129-VMQ-50:2": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2481,
+    "output_tokens": 426,
+    "seconds": 3.7
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "a9dd4aaf0d7ed3a4"
+ },
+ "SH-0162-VMQ-50:0": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.9,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2359,
+    "output_tokens": 658,
+    "seconds": 4.76
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "7bbb95def059cfce"
+ },
+ "SH-0162-VMQ-50:1": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.9,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2359,
+    "output_tokens": 713,
+    "seconds": 5.64
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "7bbb95def059cfce"
+ },
+ "SH-0162-VMQ-50:2": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.9,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2359,
+    "output_tokens": 633,
+    "seconds": 4.81
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "7bbb95def059cfce"
+ },
+ "SH-0193-VMQ-50:0": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.97,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2331,
+    "output_tokens": 408,
+    "seconds": 3.39
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "1d1bdf3dcc1ee3dd"
+ },
+ "SH-0193-VMQ-50:2": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2331,
+    "output_tokens": 372,
+    "seconds": 2.86
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "1d1bdf3dcc1ee3dd"
+ },
+ "SH-0164-VMQ-50:2": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2400,
+    "output_tokens": 664,
+    "seconds": 7.36
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "e3742fb95dbbe2b5"
+ },
+ "SH-0164-VMQ-50:1": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2400,
+    "output_tokens": 699,
+    "seconds": 8.76
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "e3742fb95dbbe2b5"
+ },
+ "SH-0164-VMQ-50:0": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2400,
+    "output_tokens": 686,
+    "seconds": 9.02
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "e3742fb95dbbe2b5"
+ },
+ "SH-0225-VMQ-50:0": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2089,
+    "output_tokens": 585,
+    "seconds": 5.03
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "0e223e5cb2c7417a"
+ },
+ "SH-0225-VMQ-50:1": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2089,
+    "output_tokens": 575,
+    "seconds": 4.75
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "0e223e5cb2c7417a"
+ },
+ "SH-0225-VMQ-50:2": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2089,
+    "output_tokens": 553,
+    "seconds": 4.42
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "0e223e5cb2c7417a"
+ },
+ "SH-0231-VMQ-50:1": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.96,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2059,
+    "output_tokens": 331,
+    "seconds": 3.35
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "4a794c9e17cbb0d0"
+ },
+ "SH-0231-VMQ-50:0": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.97,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2059,
+    "output_tokens": 344,
+    "seconds": 3.5
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "4a794c9e17cbb0d0"
+ },
+ "SH-0231-VMQ-50:2": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.96,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2059,
+    "output_tokens": 330,
+    "seconds": 3.31
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "4a794c9e17cbb0d0"
+ },
+ "SH-0235-VMQ-50:0": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.96,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2061,
+    "output_tokens": 373,
+    "seconds": 3.35
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "64d7555e8a7c6fd1"
+ },
+ "SH-0235-VMQ-50:1": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.97,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2061,
+    "output_tokens": 342,
+    "seconds": 2.99
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "64d7555e8a7c6fd1"
+ },
+ "SH-0235-VMQ-50:2": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.97,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2061,
+    "output_tokens": 340,
+    "seconds": 3.16
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "64d7555e8a7c6fd1"
+ },
+ "SH-0247-VMQ-50:0": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.97,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2372,
+    "output_tokens": 571,
+    "seconds": 4.47
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "c850378b2ec5b546"
+ },
+ "SH-0247-VMQ-50:2": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.97,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2372,
+    "output_tokens": 601,
+    "seconds": 4.46
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "c850378b2ec5b546"
+ },
+ "SH-0247-VMQ-50:1": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.97,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2372,
+    "output_tokens": 608,
+    "seconds": 4.96
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "c850378b2ec5b546"
+ },
+ "SH-0101-FKM-75:0": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2519,
+    "output_tokens": 682,
+    "seconds": 5.17
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "1404e01176e8d98a"
+ },
+ "SH-0101-FKM-75:1": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2519,
+    "output_tokens": 689,
+    "seconds": 5.12
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "1404e01176e8d98a"
+ },
+ "SH-0101-FKM-75:2": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2519,
+    "output_tokens": 729,
+    "seconds": 5.48
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "1404e01176e8d98a"
+ },
+ "SH-0134-FKM-75:0": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.96,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 2257,
+    "output_tokens": 703,
+    "seconds": 5.79
+   }
+  ],
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "343ebac2310d5f37"
+ },
+ "S26:3": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.93,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 688,
+    "output_tokens": 661,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "cb4779b74e39cfe8"
+ },
+ "S23:6": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.93,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 688,
+    "output_tokens": 336,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "b48e917e0f0020ca"
+ },
+ "S07:3": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.96,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 662,
+    "output_tokens": 577,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "fe6cc8e45cac281a"
+ },
+ "S13:3": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 668,
+    "output_tokens": 337,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "74288a844a35b634"
+ },
+ "SH-0129-VMQ-50:7": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 1094,
+    "output_tokens": 410,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "a9dd4aaf0d7ed3a4"
+ },
+ "S23:5": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.93,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 688,
+    "output_tokens": 347,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "b48e917e0f0020ca"
+ },
+ "SH-0169-EPDM-70:5": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 669,
+    "output_tokens": 571,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "25d0f2d05f494cf4"
+ },
+ "S18:4": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.93,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 680,
+    "output_tokens": 571,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "1c7aa24df8dcb3b7"
+ },
+ "SH-0185-CB-N550:4": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.97,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 961,
+    "output_tokens": 668,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "6c7243366630e8f2"
+ },
+ "S09:6": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 684,
+    "output_tokens": 347,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "065be43ef5793990"
+ },
+ "S16:7": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 684,
+    "output_tokens": 370,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "ec0d5655dedadb72"
+ },
+ "SH-0193-VMQ-50:6": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.96,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 944,
+    "output_tokens": 387,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "1d1bdf3dcc1ee3dd"
+ },
+ "S25:3": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 696,
+    "output_tokens": 332,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "68a909654b8eecea"
+ },
+ "SH-0134-FKM-75:5": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 870,
+    "output_tokens": 720,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "343ebac2310d5f37"
+ },
+ "SH-0162-VMQ-50:7": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.9,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 972,
+    "output_tokens": 621,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "7bbb95def059cfce"
+ },
+ "S24:6": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.93,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 687,
+    "output_tokens": 333,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "4d59a3819d6cb9fc"
+ },
+ "SH-0112-VMQ-50:6": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 679,
+    "output_tokens": 606,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "539018eba3358939"
+ },
+ "SH-0103-SBR-60:4": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.96,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 1052,
+    "output_tokens": 412,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "413e70df639262e4"
+ },
+ "S08:5": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 663,
+    "output_tokens": 571,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "e678c45034d88af6"
+ },
+ "SH-0247-VMQ-50:4": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.97,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 985,
+    "output_tokens": 626,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "c850378b2ec5b546"
+ },
+ "SH-0119-SBR-60:7": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.93,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 1055,
+    "output_tokens": 709,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "ff3b42798916e651"
+ },
+ "S25:4": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 696,
+    "output_tokens": 351,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "68a909654b8eecea"
+ },
+ "SH-0235-VMQ-50:7": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 674,
+    "output_tokens": 342,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "64d7555e8a7c6fd1"
+ },
+ "S13:6": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 668,
+    "output_tokens": 353,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "74288a844a35b634"
+ },
+ "S24:3": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.93,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 687,
+    "output_tokens": 331,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "4d59a3819d6cb9fc"
+ },
+ "SH-0156-CB-N550:5": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.97,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 946,
+    "output_tokens": 695,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "f788ed2de799cdcc"
+ },
+ "S09:7": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 684,
+    "output_tokens": 339,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "065be43ef5793990"
+ },
+ "SH-0177-SBR-60:6": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.97,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 943,
+    "output_tokens": 682,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "d0f07f5fd68dd0ba"
+ },
+ "SH-0101-FKM-75:7": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 1132,
+    "output_tokens": 753,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "1404e01176e8d98a"
+ },
+ "SH-0247-FKM-75:6": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.93,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 1130,
+    "output_tokens": 696,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "3c3789016f51e094"
+ },
+ "S10:5": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.97,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 684,
+    "output_tokens": 339,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "ee734f71068297f2"
+ },
+ "S14:4": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.93,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 700,
+    "output_tokens": 345,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "96158dcc29168754"
+ },
+ "S10:7": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.97,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 684,
+    "output_tokens": 334,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "ee734f71068297f2"
+ },
+ "SH-0204-CB-N550:6": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.97,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 778,
+    "output_tokens": 633,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "bd5715c1f6331c47"
+ },
+ "S20:4": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 687,
+    "output_tokens": 328,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "d5560e5ebfb4838a"
+ },
+ "S03:3": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.97,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 664,
+    "output_tokens": 530,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "bc3c21e5a1b6649b"
+ },
+ "S30:5": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.6,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 690,
+    "output_tokens": 358,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "952abea6d88139da"
+ },
+ "S02:7": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 662,
+    "output_tokens": 552,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "adc56065a8e6187a"
+ },
+ "SH-0247-VMQ-50:7": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.97,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 985,
+    "output_tokens": 672,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "c850378b2ec5b546"
+ },
+ "SH-0225-VMQ-50:3": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 702,
+    "output_tokens": 565,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "0e223e5cb2c7417a"
+ },
+ "SH-0193-VMQ-50:5": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.97,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 944,
+    "output_tokens": 371,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "1d1bdf3dcc1ee3dd"
+ },
+ "S01:5": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 664,
+    "output_tokens": 315,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "bf31c03ab39a7923"
+ },
+ "S26:5": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.93,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 688,
+    "output_tokens": 642,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "cb4779b74e39cfe8"
+ },
+ "SH-0157-SBR-60:3": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.97,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 944,
+    "output_tokens": 665,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "b3657984bc25c3c5"
+ },
+ "S17:5": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.96,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 691,
+    "output_tokens": 336,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "4c53074a5766cbcf"
+ },
+ "S15:3": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.9,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 693,
+    "output_tokens": 578,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "d239948b674249e9"
+ },
+ "S18:6": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.93,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 680,
+    "output_tokens": 605,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "1c7aa24df8dcb3b7"
+ },
+ "SH-0217-SBR-60:5": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.96,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 960,
+    "output_tokens": 660,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "ea17055d4285f4d2"
+ },
+ "SH-0156-CB-N550:3": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.97,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 946,
+    "output_tokens": 657,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "f788ed2de799cdcc"
+ },
+ "SH-0247-FKM-75:7": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 1130,
+    "output_tokens": 671,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "3c3789016f51e094"
+ },
+ "S13:7": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 668,
+    "output_tokens": 327,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "74288a844a35b634"
+ },
+ "SH-0231-VMQ-50:4": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.96,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 672,
+    "output_tokens": 337,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "4a794c9e17cbb0d0"
+ },
+ "SH-0217-SBR-60:3": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.96,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 960,
+    "output_tokens": 671,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "ea17055d4285f4d2"
+ },
+ "SH-0134-FKM-75:6": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 870,
+    "output_tokens": 674,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "343ebac2310d5f37"
+ },
+ "SH-0156-EPDM-70:7": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.97,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 833,
+    "output_tokens": 620,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "3c9571435c033ebb"
+ },
+ "S04:3": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.97,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 662,
+    "output_tokens": 337,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "89ef4fb992e10c26"
+ },
+ "SH-0202-NBR-70:7": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 676,
+    "output_tokens": 327,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "59e8afc1b0ef21cd"
+ },
+ "S28:5": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.97,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 911,
+    "output_tokens": 701,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "660380510f792a2f"
+ },
+ "S12:3": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 689,
+    "output_tokens": 561,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "8a74e3c67b53ca6a"
+ },
+ "S22:7": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.9,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 688,
+    "output_tokens": 144,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": false,
+  "failed_checks": [
+   "prices_exact",
+   "addresses_buyer"
+  ],
+  "fp": "668f5e38cf719ae5"
+ },
+ "SH-0156-CB-N550:6": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.97,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 946,
+    "output_tokens": 707,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "f788ed2de799cdcc"
+ },
+ "SH-0156-CB-N550:7": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.97,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 946,
+    "output_tokens": 724,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "f788ed2de799cdcc"
+ },
+ "SH-0185-EPDM-70:5": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.97,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 837,
+    "output_tokens": 599,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "d7c6941542915101"
+ },
+ "SH-0247-VMQ-50:5": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.97,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 985,
+    "output_tokens": 598,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "c850378b2ec5b546"
+ },
+ "S28:7": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.97,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 911,
+    "output_tokens": 704,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "660380510f792a2f"
+ },
+ "SH-0239-SBR-60:7": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.97,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 1328,
+    "output_tokens": 786,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "24dc96b6d37ecf33"
+ },
+ "SH-0101-FKM-75:5": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 1132,
+    "output_tokens": 783,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "1404e01176e8d98a"
+ },
+ "S12:7": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.93,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 689,
+    "output_tokens": 633,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "8a74e3c67b53ca6a"
+ },
+ "S30:3": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.6,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 690,
+    "output_tokens": 371,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "952abea6d88139da"
+ },
+ "SH-0117-VMQ-50:6": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 1094,
+    "output_tokens": 672,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "092a80702ab666de"
+ },
+ "SH-0239-SBR-60:4": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.97,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 1328,
+    "output_tokens": 755,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "24dc96b6d37ecf33"
+ },
+ "SH-0185-EPDM-70:4": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.97,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 837,
+    "output_tokens": 648,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "d7c6941542915101"
+ },
+ "SH-0103-SBR-60:5": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 1052,
+    "output_tokens": 418,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "413e70df639262e4"
+ },
+ "S27:7": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.97,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 1018,
+    "output_tokens": 395,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "c906c1318b0ba84e"
+ },
+ "S24:5": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.93,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 687,
+    "output_tokens": 329,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "4d59a3819d6cb9fc"
+ },
+ "SH-0119-SBR-60:4": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 1055,
+    "output_tokens": 751,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "ff3b42798916e651"
+ },
+ "S08:7": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 663,
+    "output_tokens": 611,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "e678c45034d88af6"
+ },
+ "SH-0157-SBR-60:5": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.97,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 944,
+    "output_tokens": 729,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "b3657984bc25c3c5"
+ },
+ "SH-0164-VMQ-50:6": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 1013,
+    "output_tokens": 697,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "e3742fb95dbbe2b5"
+ },
+ "S05:7": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 663,
+    "output_tokens": 571,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "19b83bef4bbd85d8"
+ },
+ "S18:7": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.93,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 680,
+    "output_tokens": 600,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "1c7aa24df8dcb3b7"
+ },
+ "SH-0169-CB-N550:5": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.93,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 781,
+    "output_tokens": 614,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "8ca9e2444fa5bb89"
+ },
+ "S04:4": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.97,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 662,
+    "output_tokens": 322,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "89ef4fb992e10c26"
+ },
+ "S21:5": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.93,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 694,
+    "output_tokens": 363,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "ef18668386dc1058"
+ },
+ "S09:4": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 684,
+    "output_tokens": 329,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "065be43ef5793990"
+ },
+ "S03:6": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 664,
+    "output_tokens": 600,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "bc3c21e5a1b6649b"
+ },
+ "S09:3": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 684,
+    "output_tokens": 401,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "065be43ef5793990"
+ },
+ "SH-0112-VMQ-50:5": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 679,
+    "output_tokens": 607,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "539018eba3358939"
+ },
+ "S07:5": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.96,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 662,
+    "output_tokens": 614,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "fe6cc8e45cac281a"
+ },
+ "S24:7": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.93,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 687,
+    "output_tokens": 339,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "4d59a3819d6cb9fc"
+ },
+ "S15:4": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.9,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 693,
+    "output_tokens": 639,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "d239948b674249e9"
+ },
+ "SH-0169-EPDM-70:3": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 669,
+    "output_tokens": 591,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "25d0f2d05f494cf4"
+ },
+ "SH-0162-CB-N550:7": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 1087,
+    "output_tokens": 696,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "288b3d824c368d32"
+ },
+ "S19:5": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 688,
+    "output_tokens": 597,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "7539da66ca4e6a41"
+ },
+ "S04:5": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.97,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 662,
+    "output_tokens": 346,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "89ef4fb992e10c26"
+ },
+ "S26:4": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 688,
+    "output_tokens": 640,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "cb4779b74e39cfe8"
+ },
+ "SH-0117-VMQ-50:5": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 1094,
+    "output_tokens": 660,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "092a80702ab666de"
+ },
+ "SH-0225-VMQ-50:4": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 702,
+    "output_tokens": 617,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "0e223e5cb2c7417a"
+ },
+ "S30:6": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.55,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 690,
+    "output_tokens": 335,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "952abea6d88139da"
+ },
+ "SH-0162-VMQ-50:6": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.93,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 972,
+    "output_tokens": 637,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "7bbb95def059cfce"
+ },
+ "SH-0162-SBR-60:5": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 1333,
+    "output_tokens": 778,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "a33c19dab987a296"
+ },
+ "SH-0204-EPDM-70:4": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.97,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 665,
+    "output_tokens": 611,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "5e14407e3fcf252b"
+ },
+ "S14:5": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.93,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 700,
+    "output_tokens": 354,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "96158dcc29168754"
+ },
+ "S09:5": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 684,
+    "output_tokens": 330,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "065be43ef5793990"
+ },
+ "S25:7": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 696,
+    "output_tokens": 319,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "68a909654b8eecea"
+ },
+ "SH-0235-VMQ-50:5": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 674,
+    "output_tokens": 328,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "64d7555e8a7c6fd1"
+ },
+ "SH-0204-EPDM-70:6": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.96,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 665,
+    "output_tokens": 581,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "5e14407e3fcf252b"
+ },
+ "SH-0117-VMQ-50:7": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 1094,
+    "output_tokens": 683,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "092a80702ab666de"
+ },
+ "SH-0204-EPDM-70:5": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.97,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 665,
+    "output_tokens": 612,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "5e14407e3fcf252b"
+ },
+ "SH-0202-NBR-70:3": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 676,
+    "output_tokens": 348,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "59e8afc1b0ef21cd"
+ },
+ "S03:7": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 664,
+    "output_tokens": 522,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "bc3c21e5a1b6649b"
+ },
+ "SH-0101-FKM-75:4": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 1132,
+    "output_tokens": 715,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "1404e01176e8d98a"
+ },
+ "SH-0204-EPDM-70:7": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.97,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 665,
+    "output_tokens": 581,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "5e14407e3fcf252b"
+ },
+ "S20:6": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 687,
+    "output_tokens": 313,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "d5560e5ebfb4838a"
+ },
+ "S01:4": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 664,
+    "output_tokens": 340,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "bf31c03ab39a7923"
+ },
+ "S22:3": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.9,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 688,
+    "output_tokens": 315,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "668f5e38cf719ae5"
+ },
+ "S16:3": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 684,
+    "output_tokens": 352,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "ec0d5655dedadb72"
+ },
+ "S14:3": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.93,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 700,
+    "output_tokens": 333,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "96158dcc29168754"
+ },
+ "SH-0202-NBR-70:5": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 676,
+    "output_tokens": 376,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "59e8afc1b0ef21cd"
+ },
+ "S18:5": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.93,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 680,
+    "output_tokens": 570,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "1c7aa24df8dcb3b7"
+ },
+ "SH-0164-VMQ-50:7": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 1013,
+    "output_tokens": 602,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "e3742fb95dbbe2b5"
+ },
+ "S06:7": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 661,
+    "output_tokens": 559,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "6055bbf0a8c72674"
+ },
+ "S27:5": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.97,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 1018,
+    "output_tokens": 378,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "c906c1318b0ba84e"
+ },
+ "SH-0193-VMQ-50:4": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.97,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 944,
+    "output_tokens": 402,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "1d1bdf3dcc1ee3dd"
+ },
+ "S29:4": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.9,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 689,
+    "output_tokens": 358,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "3a59482915c37ac8"
+ },
+ "SH-0129-VMQ-50:5": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 1094,
+    "output_tokens": 431,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "a9dd4aaf0d7ed3a4"
+ },
+ "SH-0162-SBR-60:7": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.93,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 1333,
+    "output_tokens": 730,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "a33c19dab987a296"
+ },
+ "S20:3": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 687,
+    "output_tokens": 335,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "d5560e5ebfb4838a"
+ },
+ "S19:7": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 688,
+    "output_tokens": 588,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "7539da66ca4e6a41"
+ },
+ "S14:6": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.93,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 700,
+    "output_tokens": 349,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "96158dcc29168754"
+ },
+ "SH-0116-VMQ-50:3": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 838,
+    "output_tokens": 662,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "4c52c6b2e4878590"
+ },
+ "S27:3": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.96,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 1018,
+    "output_tokens": 401,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "c906c1318b0ba84e"
+ },
+ "S21:4": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.93,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 694,
+    "output_tokens": 353,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "ef18668386dc1058"
+ },
+ "S16:5": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 684,
+    "output_tokens": 351,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "ec0d5655dedadb72"
+ },
+ "S23:3": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.93,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 688,
+    "output_tokens": 349,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "b48e917e0f0020ca"
+ },
+ "S30:4": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.55,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 690,
+    "output_tokens": 356,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "952abea6d88139da"
+ },
+ "SH-0185-EPDM-70:7": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.97,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 837,
+    "output_tokens": 632,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "d7c6941542915101"
+ },
+ "SH-0239-SBR-60:6": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.97,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 1328,
+    "output_tokens": 800,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "24dc96b6d37ecf33"
+ },
+ "SH-0185-CB-N550:6": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.97,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 961,
+    "output_tokens": 680,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "6c7243366630e8f2"
+ },
+ "SH-0162-SBR-60:6": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.93,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 1333,
+    "output_tokens": 800,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "a33c19dab987a296"
+ },
+ "SH-0101-FKM-75:3": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.97,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 1132,
+    "output_tokens": 714,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "1404e01176e8d98a"
+ },
+ "SH-0204-CB-N550:7": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.97,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 778,
+    "output_tokens": 644,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "bd5715c1f6331c47"
+ },
+ "SH-0247-VMQ-50:6": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.97,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 985,
+    "output_tokens": 630,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "c850378b2ec5b546"
+ },
+ "SH-0129-VMQ-50:4": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 1094,
+    "output_tokens": 448,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "a9dd4aaf0d7ed3a4"
+ },
+ "SH-0185-CB-N550:7": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.97,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 961,
+    "output_tokens": 668,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "6c7243366630e8f2"
+ },
+ "S10:4": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.96,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 684,
+    "output_tokens": 351,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "ee734f71068297f2"
+ },
+ "SH-0235-VMQ-50:3": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 674,
+    "output_tokens": 340,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "64d7555e8a7c6fd1"
+ },
+ "S06:6": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 661,
+    "output_tokens": 606,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "6055bbf0a8c72674"
+ },
+ "S04:6": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.97,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 662,
+    "output_tokens": 327,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "89ef4fb992e10c26"
+ },
+ "S19:3": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 688,
+    "output_tokens": 559,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "7539da66ca4e6a41"
+ },
+ "S28:4": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.97,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 911,
+    "output_tokens": 680,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "660380510f792a2f"
+ },
+ "SH-0162-SBR-60:4": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 1333,
+    "output_tokens": 719,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "a33c19dab987a296"
+ },
+ "SH-0242-SBR-60:4": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 1455,
+    "output_tokens": 840,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "bb5fdcfea548f659"
+ },
+ "SH-0103-SBR-60:3": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 1052,
+    "output_tokens": 452,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "413e70df639262e4"
+ },
+ "S15:5": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.9,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 693,
+    "output_tokens": 639,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "d239948b674249e9"
+ },
+ "SH-0185-EPDM-70:3": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.97,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 837,
+    "output_tokens": 656,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "d7c6941542915101"
+ },
+ "S28:3": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.97,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 911,
+    "output_tokens": 653,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "660380510f792a2f"
+ },
+ "SH-0247-VMQ-50:3": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.97,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 985,
+    "output_tokens": 653,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "c850378b2ec5b546"
+ },
+ "SH-0119-SBR-60:3": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 1055,
+    "output_tokens": 701,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "ff3b42798916e651"
+ },
+ "S29:7": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.9,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 689,
+    "output_tokens": 324,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "3a59482915c37ac8"
+ },
+ "SH-0193-VMQ-50:3": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.96,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 944,
+    "output_tokens": 407,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "1d1bdf3dcc1ee3dd"
+ },
+ "SH-0116-VMQ-50:6": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 838,
+    "output_tokens": 651,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "4c52c6b2e4878590"
+ },
+ "SH-0117-VMQ-50:3": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 1094,
+    "output_tokens": 704,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "092a80702ab666de"
+ },
+ "S28:6": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.97,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 911,
+    "output_tokens": 670,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "660380510f792a2f"
+ },
+ "S06:3": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 661,
+    "output_tokens": 560,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "6055bbf0a8c72674"
+ },
+ "SH-0157-SBR-60:4": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.96,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 944,
+    "output_tokens": 767,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "b3657984bc25c3c5"
+ },
+ "SH-0169-EPDM-70:4": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 669,
+    "output_tokens": 567,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "25d0f2d05f494cf4"
+ },
+ "S11:5": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 689,
+    "output_tokens": 554,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "f3fd7dc2e1e5bdc2"
+ },
+ "SH-0117-VMQ-50:4": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 1094,
+    "output_tokens": 669,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "092a80702ab666de"
+ },
+ "S11:7": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 689,
+    "output_tokens": 572,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "f3fd7dc2e1e5bdc2"
+ },
+ "SH-0235-VMQ-50:6": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 674,
+    "output_tokens": 334,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "64d7555e8a7c6fd1"
+ },
+ "SH-0185-EPDM-70:6": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.97,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 837,
+    "output_tokens": 664,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "d7c6941542915101"
+ },
+ "SH-0164-VMQ-50:3": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 1013,
+    "output_tokens": 640,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "e3742fb95dbbe2b5"
+ },
+ "SH-0169-CB-N550:6": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 781,
+    "output_tokens": 648,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "8ca9e2444fa5bb89"
+ },
+ "S03:5": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 664,
+    "output_tokens": 555,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "bc3c21e5a1b6649b"
+ },
+ "SH-0231-VMQ-50:5": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.96,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 672,
+    "output_tokens": 333,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "4a794c9e17cbb0d0"
+ },
+ "SH-0116-VMQ-50:7": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 838,
+    "output_tokens": 637,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "4c52c6b2e4878590"
+ },
+ "SH-0217-SBR-60:7": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 960,
+    "output_tokens": 680,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "ea17055d4285f4d2"
+ },
+ "S20:7": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 687,
+    "output_tokens": 321,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "d5560e5ebfb4838a"
+ },
+ "SH-0103-SBR-60:6": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 1052,
+    "output_tokens": 459,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "413e70df639262e4"
+ },
+ "S29:5": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.9,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 689,
+    "output_tokens": 352,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "3a59482915c37ac8"
+ },
+ "S13:4": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 668,
+    "output_tokens": 381,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "74288a844a35b634"
+ },
+ "S19:4": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 688,
+    "output_tokens": 581,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "7539da66ca4e6a41"
+ },
+ "S30:7": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.6,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 690,
+    "output_tokens": 367,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "952abea6d88139da"
+ },
+ "S02:6": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 662,
+    "output_tokens": 527,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "adc56065a8e6187a"
+ },
+ "SH-0242-SBR-60:5": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.93,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 1455,
+    "output_tokens": 777,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "bb5fdcfea548f659"
+ },
+ "S11:6": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.93,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 689,
+    "output_tokens": 587,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "f3fd7dc2e1e5bdc2"
+ },
+ "SH-0101-FKM-75:6": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 1132,
+    "output_tokens": 696,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "1404e01176e8d98a"
+ },
+ "SH-0204-EPDM-70:3": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.97,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 665,
+    "output_tokens": 576,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "5e14407e3fcf252b"
+ },
+ "SH-0162-SBR-60:3": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 1333,
+    "output_tokens": 830,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "a33c19dab987a296"
+ },
+ "SH-0162-VMQ-50:4": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.9,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 972,
+    "output_tokens": 653,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "7bbb95def059cfce"
+ },
+ "S17:6": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.97,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 691,
+    "output_tokens": 317,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "4c53074a5766cbcf"
+ },
+ "S05:4": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.97,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 663,
+    "output_tokens": 529,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "19b83bef4bbd85d8"
+ },
+ "S04:7": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.97,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 662,
+    "output_tokens": 339,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "89ef4fb992e10c26"
+ },
+ "SH-0242-SBR-60:7": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 1455,
+    "output_tokens": 848,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "bb5fdcfea548f659"
+ },
+ "SH-0169-CB-N550:7": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.93,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 781,
+    "output_tokens": 608,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "8ca9e2444fa5bb89"
+ },
+ "SH-0156-EPDM-70:4": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.97,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 833,
+    "output_tokens": 657,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "3c9571435c033ebb"
+ },
+ "SH-0162-CB-N550:6": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 1087,
+    "output_tokens": 716,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "288b3d824c368d32"
+ },
+ "S23:7": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.93,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 688,
+    "output_tokens": 338,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "b48e917e0f0020ca"
+ },
+ "S20:5": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 687,
+    "output_tokens": 316,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "d5560e5ebfb4838a"
+ },
+ "SH-0134-FKM-75:4": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.96,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 870,
+    "output_tokens": 674,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "343ebac2310d5f37"
+ },
+ "S13:5": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 668,
+    "output_tokens": 346,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "74288a844a35b634"
+ },
+ "SH-0204-CB-N550:3": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.97,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 778,
+    "output_tokens": 635,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "bd5715c1f6331c47"
+ },
+ "S22:6": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.9,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 688,
+    "output_tokens": 310,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "668f5e38cf719ae5"
+ },
+ "S05:5": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.97,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 663,
+    "output_tokens": 571,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "19b83bef4bbd85d8"
+ },
+ "S22:4": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.9,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 688,
+    "output_tokens": 132,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": false,
+  "failed_checks": [
+   "prices_exact",
+   "addresses_buyer"
+  ],
+  "fp": "668f5e38cf719ae5"
+ },
+ "SH-0156-CB-N550:4": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.96,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 946,
+    "output_tokens": 699,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "f788ed2de799cdcc"
+ },
+ "S29:6": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.9,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 689,
+    "output_tokens": 364,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "3a59482915c37ac8"
+ },
+ "SH-0225-VMQ-50:5": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 702,
+    "output_tokens": 568,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "0e223e5cb2c7417a"
+ },
+ "S02:4": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 662,
+    "output_tokens": 503,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "adc56065a8e6187a"
+ },
+ "SH-0129-VMQ-50:6": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 1094,
+    "output_tokens": 450,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "a9dd4aaf0d7ed3a4"
+ },
+ "S17:7": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.96,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 691,
+    "output_tokens": 333,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "4c53074a5766cbcf"
+ },
+ "S21:6": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.93,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 694,
+    "output_tokens": 340,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "ef18668386dc1058"
+ },
+ "S16:6": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 684,
+    "output_tokens": 327,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "ec0d5655dedadb72"
+ },
+ "SH-0162-CB-N550:4": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.97,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 1087,
+    "output_tokens": 705,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "288b3d824c368d32"
+ },
+ "S15:6": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.9,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 693,
+    "output_tokens": 634,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "d239948b674249e9"
+ },
+ "SH-0134-FKM-75:7": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 870,
+    "output_tokens": 662,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "343ebac2310d5f37"
+ },
+ "SH-0119-SBR-60:6": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.9,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 1055,
+    "output_tokens": 702,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "ff3b42798916e651"
+ },
+ "SH-0177-SBR-60:7": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.97,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 943,
+    "output_tokens": 664,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "d0f07f5fd68dd0ba"
+ },
+ "SH-0169-EPDM-70:7": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 669,
+    "output_tokens": 585,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "25d0f2d05f494cf4"
+ },
+ "S02:5": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 662,
+    "output_tokens": 551,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "adc56065a8e6187a"
+ },
+ "SH-0157-SBR-60:7": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.96,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 944,
+    "output_tokens": 694,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "b3657984bc25c3c5"
+ },
+ "S07:7": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 662,
+    "output_tokens": 584,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "fe6cc8e45cac281a"
+ },
+ "S17:4": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.96,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 691,
+    "output_tokens": 332,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "4c53074a5766cbcf"
+ },
+ "S26:7": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 688,
+    "output_tokens": 676,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "cb4779b74e39cfe8"
+ },
+ "S18:3": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.93,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 680,
+    "output_tokens": 584,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "1c7aa24df8dcb3b7"
+ },
+ "SH-0217-SBR-60:4": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.96,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 960,
+    "output_tokens": 646,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "ea17055d4285f4d2"
+ },
+ "S26:6": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 688,
+    "output_tokens": 652,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "cb4779b74e39cfe8"
+ },
+ "S01:6": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 664,
+    "output_tokens": 319,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "bf31c03ab39a7923"
+ },
+ "SH-0164-VMQ-50:5": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 1013,
+    "output_tokens": 673,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "e3742fb95dbbe2b5"
+ },
+ "S12:4": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 689,
+    "output_tokens": 599,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "8a74e3c67b53ca6a"
+ },
+ "SH-0247-FKM-75:4": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.93,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 1130,
+    "output_tokens": 665,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "3c3789016f51e094"
+ },
+ "S10:6": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.97,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 684,
+    "output_tokens": 347,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "ee734f71068297f2"
+ },
+ "SH-0112-VMQ-50:7": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 679,
+    "output_tokens": 613,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "539018eba3358939"
+ },
+ "SH-0235-VMQ-50:4": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 674,
+    "output_tokens": 333,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "64d7555e8a7c6fd1"
+ },
+ "SH-0112-VMQ-50:4": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 679,
+    "output_tokens": 578,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "539018eba3358939"
+ },
+ "SH-0247-FKM-75:3": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 1130,
+    "output_tokens": 713,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "3c3789016f51e094"
+ },
+ "S11:3": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 689,
+    "output_tokens": 589,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "f3fd7dc2e1e5bdc2"
+ },
+ "SH-0112-VMQ-50:3": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 679,
+    "output_tokens": 625,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "539018eba3358939"
+ },
+ "SH-0169-EPDM-70:6": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 669,
+    "output_tokens": 559,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "25d0f2d05f494cf4"
+ },
+ "SH-0156-EPDM-70:6": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.97,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 833,
+    "output_tokens": 600,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "3c9571435c033ebb"
+ },
+ "S14:7": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.93,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 700,
+    "output_tokens": 374,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "96158dcc29168754"
+ },
+ "SH-0242-SBR-60:6": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 1455,
+    "output_tokens": 816,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "bb5fdcfea548f659"
+ },
+ "S01:7": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 664,
+    "output_tokens": 312,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "bf31c03ab39a7923"
+ },
+ "S21:7": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.93,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 694,
+    "output_tokens": 393,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "ef18668386dc1058"
+ },
+ "SH-0156-EPDM-70:3": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.97,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 833,
+    "output_tokens": 623,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "3c9571435c033ebb"
+ },
+ "SH-0204-CB-N550:4": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.97,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 778,
+    "output_tokens": 632,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "bd5715c1f6331c47"
+ },
+ "SH-0116-VMQ-50:4": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.96,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 838,
+    "output_tokens": 680,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "4c52c6b2e4878590"
+ },
+ "S06:4": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.93,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 661,
+    "output_tokens": 595,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "6055bbf0a8c72674"
+ },
+ "S29:3": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.9,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 689,
+    "output_tokens": 329,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "3a59482915c37ac8"
+ },
+ "SH-0164-VMQ-50:4": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 1013,
+    "output_tokens": 631,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "e3742fb95dbbe2b5"
+ },
+ "SH-0185-CB-N550:5": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.97,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 961,
+    "output_tokens": 678,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "6c7243366630e8f2"
+ },
+ "S25:5": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 696,
+    "output_tokens": 348,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "68a909654b8eecea"
+ },
+ "SH-0177-SBR-60:3": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.97,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 943,
+    "output_tokens": 751,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "d0f07f5fd68dd0ba"
+ },
+ "SH-0231-VMQ-50:6": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.96,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 672,
+    "output_tokens": 336,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "4a794c9e17cbb0d0"
+ },
+ "SH-0177-SBR-60:5": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.96,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 943,
+    "output_tokens": 664,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "d0f07f5fd68dd0ba"
+ },
+ "S25:6": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 696,
+    "output_tokens": 326,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "68a909654b8eecea"
+ },
+ "SH-0247-FKM-75:5": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 1130,
+    "output_tokens": 680,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "3c3789016f51e094"
+ },
+ "S27:6": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.97,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 1018,
+    "output_tokens": 387,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "c906c1318b0ba84e"
+ },
+ "SH-0162-VMQ-50:3": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.9,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 972,
+    "output_tokens": 641,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "7bbb95def059cfce"
+ },
+ "S05:6": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.97,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 663,
+    "output_tokens": 583,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "19b83bef4bbd85d8"
+ },
+ "S08:4": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 663,
+    "output_tokens": 600,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "e678c45034d88af6"
+ },
+ "S22:5": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.9,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 688,
+    "output_tokens": 140,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": false,
+  "failed_checks": [
+   "prices_exact",
+   "addresses_buyer"
+  ],
+  "fp": "668f5e38cf719ae5"
+ },
+ "S05:3": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.97,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 663,
+    "output_tokens": 584,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "19b83bef4bbd85d8"
+ },
+ "SH-0231-VMQ-50:3": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 672,
+    "output_tokens": 331,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "4a794c9e17cbb0d0"
+ },
+ "SH-0202-NBR-70:6": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 676,
+    "output_tokens": 317,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "59e8afc1b0ef21cd"
+ },
+ "SH-0225-VMQ-50:7": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 702,
+    "output_tokens": 610,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "0e223e5cb2c7417a"
+ },
+ "SH-0239-SBR-60:5": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.97,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 1328,
+    "output_tokens": 809,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "24dc96b6d37ecf33"
+ },
+ "SH-0119-SBR-60:5": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 1055,
+    "output_tokens": 708,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "ff3b42798916e651"
+ },
+ "S12:5": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 689,
+    "output_tokens": 595,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "8a74e3c67b53ca6a"
+ },
+ "S07:6": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.96,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 662,
+    "output_tokens": 633,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "fe6cc8e45cac281a"
+ },
+ "S27:4": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.96,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 1018,
+    "output_tokens": 390,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "c906c1318b0ba84e"
+ },
+ "S01:3": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 664,
+    "output_tokens": 318,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "bf31c03ab39a7923"
+ },
+ "SH-0129-VMQ-50:3": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 1094,
+    "output_tokens": 422,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "a9dd4aaf0d7ed3a4"
+ },
+ "SH-0193-VMQ-50:7": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.97,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 944,
+    "output_tokens": 388,
+    "cache_creation_input_tokens": 1387,
+    "cache_read_input_tokens": 0,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "1d1bdf3dcc1ee3dd"
+ },
+ "S08:3": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 663,
+    "output_tokens": 624,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "e678c45034d88af6"
+ },
+ "SH-0162-CB-N550:3": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 1087,
+    "output_tokens": 643,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "288b3d824c368d32"
+ },
+ "SH-0204-CB-N550:5": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.97,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 778,
+    "output_tokens": 614,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "bd5715c1f6331c47"
+ },
+ "SH-0231-VMQ-50:7": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.96,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 672,
+    "output_tokens": 331,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "4a794c9e17cbb0d0"
+ },
+ "SH-0162-CB-N550:5": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 1087,
+    "output_tokens": 714,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "288b3d824c368d32"
+ },
+ "S16:4": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 684,
+    "output_tokens": 343,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "ec0d5655dedadb72"
+ },
+ "SH-0202-NBR-70:4": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 676,
+    "output_tokens": 338,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "59e8afc1b0ef21cd"
+ },
+ "S02:3": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 662,
+    "output_tokens": 519,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "adc56065a8e6187a"
+ },
+ "SH-0185-CB-N550:3": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.97,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 961,
+    "output_tokens": 656,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "6c7243366630e8f2"
+ },
+ "SH-0134-FKM-75:3": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.96,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 870,
+    "output_tokens": 668,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "343ebac2310d5f37"
+ },
+ "S21:3": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.93,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 694,
+    "output_tokens": 365,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "ef18668386dc1058"
+ },
+ "SH-0156-EPDM-70:5": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.97,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 833,
+    "output_tokens": 633,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "3c9571435c033ebb"
+ },
+ "S03:4": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.97,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 664,
+    "output_tokens": 589,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "bc3c21e5a1b6649b"
+ },
+ "S17:3": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.96,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 691,
+    "output_tokens": 326,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "4c53074a5766cbcf"
+ },
+ "SH-0169-CB-N550:4": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 781,
+    "output_tokens": 657,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "8ca9e2444fa5bb89"
+ },
+ "SH-0177-SBR-60:4": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.97,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 943,
+    "output_tokens": 693,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "d0f07f5fd68dd0ba"
+ },
+ "SH-0157-SBR-60:6": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.97,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 944,
+    "output_tokens": 691,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "b3657984bc25c3c5"
+ },
+ "S11:4": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 689,
+    "output_tokens": 569,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "f3fd7dc2e1e5bdc2"
+ },
+ "S19:6": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 688,
+    "output_tokens": 604,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "7539da66ca4e6a41"
+ },
+ "SH-0116-VMQ-50:5": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.96,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 838,
+    "output_tokens": 641,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "4c52c6b2e4878590"
+ },
+ "S23:4": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.93,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 688,
+    "output_tokens": 344,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "b48e917e0f0020ca"
+ },
+ "SH-0239-SBR-60:3": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.97,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 1328,
+    "output_tokens": 856,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "24dc96b6d37ecf33"
+ },
+ "S12:6": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 689,
+    "output_tokens": 565,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "8a74e3c67b53ca6a"
+ },
+ "S08:6": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 663,
+    "output_tokens": 627,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "e678c45034d88af6"
+ },
+ "SH-0169-CB-N550:3": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.93,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 781,
+    "output_tokens": 596,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "8ca9e2444fa5bb89"
+ },
+ "SH-0242-SBR-60:3": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 1455,
+    "output_tokens": 832,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "bb5fdcfea548f659"
+ },
+ "S07:4": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.97,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 662,
+    "output_tokens": 571,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "fe6cc8e45cac281a"
+ },
+ "S15:7": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.9,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 693,
+    "output_tokens": 604,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "d239948b674249e9"
+ },
+ "SH-0162-VMQ-50:5": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.9,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 972,
+    "output_tokens": 677,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "7bbb95def059cfce"
+ },
+ "S24:4": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.93,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 687,
+    "output_tokens": 328,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "4d59a3819d6cb9fc"
+ },
+ "SH-0217-SBR-60:6": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.96,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 960,
+    "output_tokens": 664,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "ea17055d4285f4d2"
+ },
+ "SH-0103-SBR-60:7": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.97,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 1052,
+    "output_tokens": 403,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "413e70df639262e4"
+ },
+ "S10:3": {
+  "action": "reprice",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.97,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 684,
+    "output_tokens": 348,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "ee734f71068297f2"
+ },
+ "S06:5": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.93,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 661,
+    "output_tokens": 583,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "6055bbf0a8c72674"
+ },
+ "SH-0225-VMQ-50:6": {
+  "action": "contact_customer",
+  "decided_by": "llm",
+  "rule_id": null,
+  "confidence": 0.95,
+  "usage": [
+   {
+    "model": "claude-sonnet-5-5",
+    "input_tokens": 702,
+    "output_tokens": 648,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1387,
+    "batch": true
+   }
+  ],
+  "mode": "batch",
+  "draft_ok": true,
+  "failed_checks": [],
+  "fp": "0e223e5cb2c7417a"
+ }
+}
