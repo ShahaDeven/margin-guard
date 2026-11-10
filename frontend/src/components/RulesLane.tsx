@@ -1,6 +1,7 @@
-import { ACTION_TEXT, materialLabel, pct, shortDate, signedPct, usd } from '../lib/format'
+import { ACTION_TEXT, pct, shortDate, signedPct, usd } from '../lib/format'
 import type { Proposal, QuoteFacts } from '../lib/types'
 import { Button } from './Button'
+import { Family } from './QuoteParts'
 
 const RULE_TEXT: Record<string, string> = {
   expires_before_change: 'expires before the change',
@@ -22,29 +23,32 @@ export function RulesLane({ cards, onConfirm }: { cards: (Proposal & { facts: Qu
         const e = rows[0].event
         const exposure = rows.reduce((s, r) => s + r.exposure_usd, 0)
         return (
-          <section key={eventId} className="rounded-lg border border-line bg-panel">
-            <header className="flex flex-wrap items-center justify-between gap-3 border-b border-line px-5 py-3">
+          <section key={eventId} className="rounded-sm border border-rule bg-sheet">
+            <header className="flex flex-wrap items-center justify-between gap-3 border-b border-rule px-5 py-3">
               <div>
-                <p className="text-sm font-semibold text-silver-bright">
-                  {materialLabel(e.material_id)} <span className="font-mono text-silver-dim">{signedPct(e.pct_change)}</span>
-                  <span className="font-normal text-silver-dim"> · from {shortDate(e.effective_date)} · {e.vendor_name}</span>
+                <p className="text-sm font-semibold text-ink-bright">
+                  <Family id={e.material_id ?? ''} /> <span className="font-label text-ink-dim">{signedPct(e.pct_change)}</span>
+                  <span className="font-normal text-ink-dim"> · from {shortDate(e.effective_date)} · {e.vendor_name}</span>
                 </p>
-                <p className="mt-0.5 font-mono text-[11px] text-silver-dim">
+                <p className="mt-0.5 font-label text-[12px] text-ink-dim">
                   {rows.length} quotes · {usd(exposure)} absorbed or locked in
                 </p>
               </div>
-              <Button tone="cyan" small onClick={() => onConfirm(eventId)}>CONFIRM ALL {rows.length}</Button>
+              <Button tone="go" small onClick={() => onConfirm(eventId)}>CONFIRM ALL {rows.length}</Button>
             </header>
-            <table className="w-full text-sm">
+            <table className="w-full table-fixed text-sm">
+              <colgroup>
+                <col className="w-32" /><col /><col className="w-28" /><col className="w-56" /><col className="w-36" /><col className="w-28" />
+              </colgroup>
               <tbody>
                 {rows.map((r) => (
-                  <tr key={r.id} className="border-t border-line/50 first:border-t-0">
-                    <td className="py-2 pl-5 font-mono text-xs text-silver-dim">{r.facts.quote_id}</td>
-                    <td className="py-2 text-silver">{r.facts.customer_name}</td>
-                    <td className="py-2 text-silver-bright">{ACTION_TEXT[r.action].short}</td>
-                    <td className="py-2 text-silver-dim">{RULE_TEXT[r.rule_id ?? ''] ?? r.rule_id}</td>
-                    <td className="py-2 font-mono text-xs text-silver-dim">{pct(r.facts.margin_before)} → {pct(r.facts.margin_after)}</td>
-                    <td className="py-2 pr-5 text-right font-mono text-xs text-silver">{usd(r.exposure_usd)}</td>
+                  <tr key={r.id} className="border-t border-rule/50 first:border-t-0">
+                    <td className="py-2 pl-5 font-label text-xs text-ink-dim">{r.facts.quote_id}</td>
+                    <td className="py-2 text-ink">{r.facts.customer_name}</td>
+                    <td className="py-2 text-ink-bright">{ACTION_TEXT[r.action].short}</td>
+                    <td className="py-2 text-ink-dim">{RULE_TEXT[r.rule_id ?? ''] ?? r.rule_id}</td>
+                    <td className="py-2 font-label text-xs text-ink-dim">{pct(r.facts.margin_before)} → {pct(r.facts.margin_after)}</td>
+                    <td className="py-2 pr-5 text-right font-label text-xs text-ink">{usd(r.exposure_usd)}</td>
                   </tr>
                 ))}
               </tbody>
@@ -57,5 +61,5 @@ export function RulesLane({ cards, onConfirm }: { cards: (Proposal & { facts: Qu
 }
 
 export function Empty({ text }: { text: string }) {
-  return <p className="rounded-lg border border-dashed border-line px-5 py-10 text-center text-sm text-silver-dim">{text}</p>
+  return <p className="rounded-sm border border-dashed border-rule px-5 py-10 text-center text-sm text-ink-dim">{text}</p>
 }

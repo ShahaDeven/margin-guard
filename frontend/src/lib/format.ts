@@ -28,3 +28,17 @@ export const ACTION_TEXT: Record<Action, { verb: string; short: string }> = {
 }
 
 export const CHOOSABLE: Action[] = ['reprice', 'contact_customer', 'absorb', 'honor']
+
+/** Material families, as the catalogue tabs them. Filled once from /api/materials. */
+const families = new Map<string, string>()
+export const setFamilies = (materials: { id: string; category: string }[]) =>
+  materials.forEach((m) => families.set(m.id, m.category))
+export const familyOf = (id: string | null | undefined) => (id && families.get(id)) || 'other'
+
+/** Background class for a family's catalogue tab (literal, so Tailwind sees it). */
+export const FAMILY_BG: Record<string, string> = {
+  elastomer: 'bg-elastomer',
+  filler: 'bg-filler',
+  metal: 'bg-metal',
+  other: 'bg-ink-dim',
+}

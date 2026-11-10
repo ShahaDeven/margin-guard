@@ -1,0 +1,134 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "cramped-padding",
+        "value": "*",
+        "files": [
+          ".impeccable/mocks/decision/assigned.html"
+        ],
+        "createdAt": "2026-11-10T22:30:23.521Z",
+        "reason": "Claude: throwaway direction-round sketch, not shipping UI; superseded by the built console"
+      },
+      {
+        "rule": "low-contrast",
+        "value": "*",
+        "files": [
+          ".impeccable/mocks/decision/assigned.html"
+        ],
+        "createdAt": "2026-11-10T22:30:23.916Z",
+        "reason": "Claude: throwaway direction-round sketch, not shipping UI; superseded by the built console"
+      },
+      {
+        "rule": "cramped-padding",
+        "value": "*",
+        "files": [
+          ".impeccable/mocks/decision/model-pick.html"
+        ],
+        "createdAt": "2026-11-10T22:30:24.317Z",
+        "reason": "Claude: throwaway direction-round sketch, not shipping UI; superseded by the built console"
+      },
+      {
+        "rule": "low-contrast",
+        "value": "*",
+        "files": [
+          ".impeccable/mocks/decision/model-pick.html"
+        ],
+        "createdAt": "2026-11-10T22:30:24.697Z",
+        "reason": "Claude: throwaway direction-round sketch, not shipping UI; superseded by the built console"
+      },
+      {
+        "rule": "cramped-padding",
+        "value": "*",
+        "files": [
+          ".impeccable/mocks/decision/challenger-transit.html"
+        ],
+        "createdAt": "2026-11-10T22:30:25.111Z",
+        "reason": "Claude: throwaway direction-round sketch, not shipping UI; superseded by the built console"
+      },
+      {
+        "rule": "low-contrast",
+        "value": "*",
+        "files": [
+          ".impeccable/mocks/decision/challenger-transit.html"
+        ],
+        "createdAt": "2026-11-10T22:30:25.576Z",
+        "reason": "Claude: throwaway direction-round sketch, not shipping UI; superseded by the built console"
+      },
+      {
+        "rule": "cramped-padding",
+        "value": "*",
+        "files": [
+          ".impeccable/mocks/decision/challenger-coupons.html"
+        ],
+        "createdAt": "2026-11-10T22:30:25.953Z",
+        "reason": "Claude: throwaway direction-round sketch, not shipping UI; superseded by the built console"
+      },
+      {
+        "rule": "low-contrast",
+        "value": "*",
+        "files": [
+          ".impeccable/mocks/decision/challenger-coupons.html"
+        ],
+        "createdAt": "2026-11-10T22:30:26.335Z",
+        "reason": "Claude: throwaway direction-round sketch, not shipping UI; superseded by the built console"
+      },
+      {
+        "rule": "cramped-padding",
+        "value": "*",
+        "files": [
+          ".impeccable/mocks/decision/canon.html"
+        ],
+        "createdAt": "2026-11-10T22:30:26.704Z",
+        "reason": "Claude: throwaway direction-round sketch, not shipping UI; superseded by the built console"
+      },
+      {
+        "rule": "low-contrast",
+        "value": "*",
+        "files": [
+          ".impeccable/mocks/decision/canon.html"
+        ],
+        "createdAt": "2026-11-10T22:30:27.107Z",
+        "reason": "Claude: throwaway direction-round sketch, not shipping UI; superseded by the built console"
+      },
+      {
+        "rule": "design-system-font",
+        "value": "*",
+        "files": [
+          ".impeccable/mocks/decision/model-pick.html"
+        ],
+        "createdAt": "2026-11-10T22:45:50.176Z",
+        "reason": "Claude: spent direction-round sketch showing an alternative world's own fonts; not shipping UI"
+      },
+      {
+        "rule": "design-system-font",
+        "value": "*",
+        "files": [
+          ".impeccable/mocks/decision/challenger-transit.html"
+        ],
+        "createdAt": "2026-11-10T22:45:50.584Z",
+        "reason": "Claude: spent direction-round sketch showing an alternative world's own fonts; not shipping UI"
+      },
+      {
+        "rule": "design-system-font",
+        "value": "*",
+        "files": [
+          ".impeccable/mocks/decision/challenger-coupons.html"
+        ],
+        "createdAt": "2026-11-10T22:45:51.004Z",
+        "reason": "Claude: spent direction-round sketch showing an alternative world's own fonts; not shipping UI"
+      },
+      {
+        "rule": "design-system-font",
+        "value": "*",
+        "files": [
+          ".impeccable/mocks/decision/canon.html"
+        ],
+        "createdAt": "2026-11-10T22:45:51.540Z",
+        "reason": "Claude: spent direction-round sketch showing an alternative world's own fonts; not shipping UI"
+      }
+    ]
+  }
+}

@@ -45,13 +45,13 @@ export function DataLane({ asOf, version, focusedQuote, onFocusHandled }: {
   return (
     <div className="space-y-4">
       <div className="flex flex-wrap items-center gap-3">
-        <div className="flex rounded-md border border-line bg-panel p-0.5">
+        <div className="flex rounded-sm border border-rule bg-sheet p-0.5">
           {(['quotes', 'customers', 'materials'] as View[]).map((v) => (
             <button
               key={v}
               type="button"
               onClick={() => setView(v)}
-              className={`rounded px-3 py-1.5 text-sm capitalize transition-colors ${view === v ? 'bg-panel-2 text-silver-bright' : 'text-silver-dim hover:text-silver'}`}
+              className={`rounded px-3 py-1.5 text-sm capitalize transition-colors ${view === v ? 'bg-sheet-2 text-ink-bright' : 'text-ink-dim hover:text-ink'}`}
             >
               {v}
             </button>
@@ -61,20 +61,20 @@ export function DataLane({ asOf, version, focusedQuote, onFocusHandled }: {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder={view === 'quotes' ? 'Search quote or customer…' : view === 'customers' ? 'Search customer, buyer, manager…' : 'Search material…'}
-          className="min-w-56 flex-1 rounded border border-line bg-panel-2 px-3 py-1.5 text-sm text-silver outline-none focus:border-line-bright"
+          className="min-w-56 flex-1 rounded border border-rule bg-sheet-2 px-3 py-1.5 text-sm text-ink outline-none focus:border-rule-bright"
         />
         {view === 'quotes' ? (
-          <label className="flex items-center gap-2 text-sm text-silver-dim">
-            <input type="checkbox" checked={openOnly} onChange={(e) => setOpenOnly(e.target.checked)} className="accent-purple" />
+          <label className="flex items-center gap-2 text-sm text-ink-dim">
+            <input type="checkbox" checked={openOnly} onChange={(e) => setOpenOnly(e.target.checked)} className="accent-ink-dim" />
             open only
           </label>
         ) : null}
       </div>
 
       {view === 'quotes' ? (
-        <div className="overflow-hidden rounded-lg border border-line bg-panel">
+        <div className="overflow-hidden rounded-sm border border-rule bg-sheet">
           <table className="w-full text-sm">
-            <thead className="border-b border-line text-left font-mono text-[10px] uppercase tracking-wider text-silver-dim">
+            <thead className="border-b border-rule text-left font-label text-[12px] uppercase tracking-wider text-ink-dim">
               <tr>
                 <th className="px-4 py-2 font-normal">Quote</th>
                 <th className="py-2 font-normal">Customer</th>
@@ -91,8 +91,8 @@ export function DataLane({ asOf, version, focusedQuote, onFocusHandled }: {
               ))}
             </tbody>
           </table>
-          {!shownQuotes.length ? <p className="px-4 py-6 text-center text-sm text-silver-dim">No quotes match.</p> : null}
-          <p className="border-t border-line px-4 py-2 font-mono text-[10px] text-silver-dim">
+          {!shownQuotes.length ? <p className="px-4 py-6 text-center text-sm text-ink-dim">No quotes match.</p> : null}
+          <p className="border-t border-rule px-4 py-2 font-label text-[12px] text-ink-dim">
             {shownQuotes.length} of {quotes.length} quotes · margin is at current quoted prices and the costs when quoted
           </p>
         </div>
@@ -101,22 +101,22 @@ export function DataLane({ asOf, version, focusedQuote, onFocusHandled }: {
       {view === 'customers' ? (
         <div className="grid gap-3 md:grid-cols-2">
           {customers.filter((c) => match(c.name, c.buyer_name, c.account_manager, c.id)).map((c) => (
-            <article key={c.id} className="rounded-lg border border-line bg-panel px-4 py-3">
+            <article key={c.id} className="rounded-sm border border-rule bg-sheet px-4 py-3">
               <div className="flex flex-wrap items-center gap-2">
-                <span className="font-semibold text-silver-bright">{c.name}</span>
-                {c.tier === 'key' ? <span className="rounded border border-purple/40 px-1.5 py-px font-mono text-[10px] text-purple">KEY</span> : null}
+                <span className="font-semibold text-ink-bright">{c.name}</span>
+                {c.tier === 'key' ? <span className="rounded border border-rule-bright px-1.5 py-px font-label text-[12px] text-ink">KEY</span> : null}
                 {c.price_lock_until ? (
-                  <span className="rounded border border-cyan/40 px-1.5 py-px font-mono text-[10px] text-cyan">LOCKED TO {shortDate(c.price_lock_until).toUpperCase()}</span>
+                  <span className="rounded border border-go/40 px-1.5 py-px font-label text-[12px] text-go">LOCKED TO {shortDate(c.price_lock_until).toUpperCase()}</span>
                 ) : null}
-                <span className="ml-auto font-mono text-[10px] text-silver-dim">{c.id}</span>
+                <span className="ml-auto font-label text-[12px] text-ink-dim">{c.id}</span>
               </div>
-              <p className="mt-2 text-sm text-silver">
-                {c.buyer_name} · <a className="font-mono text-cyan" href={`tel:${c.buyer_phone.replace(/[^\d+]/g, '')}`}>{c.buyer_phone}</a>
+              <p className="mt-2 text-sm text-ink">
+                {c.buyer_name} · <a className="font-label text-go" href={`tel:${c.buyer_phone.replace(/[^\d+]/g, '')}`}>{c.buyer_phone}</a>
               </p>
-              <p className="text-xs text-silver-dim">{c.buyer_email}</p>
-              <p className="mt-1 text-xs text-silver-dim">Account manager: {c.account_manager} · {c.account_manager_phone}</p>
-              {c.contract_note ? <p className="mt-2 rounded border border-hiviz/25 bg-hiviz/3 px-2 py-1 text-xs text-silver">{c.contract_note}</p> : null}
-              <p className="mt-2 font-mono text-[11px] text-silver-dim">
+              <p className="text-xs text-ink-dim">{c.buyer_email}</p>
+              <p className="mt-1 text-xs text-ink-dim">Account manager: {c.account_manager} · {c.account_manager_phone}</p>
+              {c.contract_note ? <p className="mt-2 rounded border border-attn/25 bg-attn/3 px-2 py-1 text-xs text-ink">{c.contract_note}</p> : null}
+              <p className="mt-2 font-label text-[12px] text-ink-dim">
                 {c.open_quotes} open quotes · {usd(c.open_value_usd)} · {c.won_quotes} won this year
               </p>
             </article>
@@ -127,19 +127,19 @@ export function DataLane({ asOf, version, focusedQuote, onFocusHandled }: {
       {view === 'materials' ? (
         <div className="space-y-3">
           {materials.filter((m) => match(m.name, m.id, ...m.aliases)).map((m) => (
-            <article key={m.id} className="rounded-lg border border-line bg-panel px-4 py-3">
+            <article key={m.id} className="rounded-sm border border-rule bg-sheet px-4 py-3">
               <div className="flex flex-wrap items-baseline gap-x-3">
-                <span className="font-semibold text-silver-bright">{m.name}</span>
-                <span className="font-mono text-xs text-silver-dim">{materialLabel(m.id)} · {m.category}</span>
-                <span className="ml-auto font-mono text-silver-bright">${m.cost_per_lb.toFixed(4)}<span className="text-xs text-silver-dim">/lb today</span></span>
+                <span className="font-semibold text-ink-bright">{m.name}</span>
+                <span className="font-label text-xs text-ink-dim">{materialLabel(m.id)} · {m.category}</span>
+                <span className="ml-auto font-label text-ink-bright">${m.cost_per_lb.toFixed(4)}<span className="text-xs text-ink-dim">/lb today</span></span>
               </div>
-              <ol className="mt-2 space-y-0.5 overflow-x-auto whitespace-pre font-mono text-xs">
+              <ol className="mt-2 space-y-0.5 overflow-x-auto whitespace-pre font-label text-xs">
                 {m.history.map((h, i) => {
                   const prev = m.history[i - 1]
                   const delta = prev ? (h.cost_per_lb - prev.cost_per_lb) / prev.cost_per_lb : null
                   const future = h.effective_date > asOf
                   return (
-                    <li key={`${h.effective_date}-${i}`} className={future ? 'text-hiviz' : 'text-silver-dim'}>
+                    <li key={`${h.effective_date}-${i}`} className={future ? 'text-attn' : 'text-ink-dim'}>
                       {future ? 'scheduled ' : 'since     '}{shortDate(h.effective_date).padEnd(7)}  ${h.cost_per_lb.toFixed(4)}/lb
                       {delta != null ? `  ${delta >= 0 ? '+' : ''}${(delta * 100).toFixed(1)}%` : ''}
                       {h.vendor_name ? `  · ${h.vendor_name}` : ''}{h.email_id ? ` (${h.email_id})` : ''}
@@ -147,8 +147,8 @@ export function DataLane({ asOf, version, focusedQuote, onFocusHandled }: {
                   )
                 })}
               </ol>
-              <p className="mt-2 text-xs text-silver-dim">Used in: {m.parts.join(' · ') || 'no parts'}</p>
-              <p className="mt-0.5 text-xs text-silver-dim">Vendors call it: {m.aliases.join(', ')}</p>
+              <p className="mt-2 text-xs text-ink-dim">Used in: {m.parts.join(' · ') || 'no parts'}</p>
+              <p className="mt-0.5 text-xs text-ink-dim">Vendors call it: {m.aliases.join(', ')}</p>
             </article>
           ))}
         </div>
@@ -158,7 +158,7 @@ export function DataLane({ asOf, version, focusedQuote, onFocusHandled }: {
 }
 
 const STATUS_TONE: Record<string, string> = {
-  open: 'text-cyan', won: 'text-silver', lost: 'text-silver-dim', expired: 'text-silver-dim',
+  open: 'text-go', won: 'text-ink', lost: 'text-ink-dim', expired: 'text-ink-dim',
 }
 
 function QuoteRow({ x, open, onToggle, version }: { x: DataQuote; open: boolean; onToggle: () => void; version: number }) {
@@ -170,36 +170,36 @@ function QuoteRow({ x, open, onToggle, version }: { x: DataQuote; open: boolean;
 
   return (
     <>
-      <tr onClick={onToggle} className={`cursor-pointer border-t border-line/60 hover:bg-panel-2 ${open ? 'bg-panel-2' : ''}`}>
-        <td className="px-4 py-2 font-mono text-xs text-silver">
+      <tr onClick={onToggle} className={`cursor-pointer border-t border-rule/60 hover:bg-sheet-2 ${open ? 'bg-sheet-2' : ''}`}>
+        <td className="px-4 py-2 font-label text-xs text-ink">
           {x.id}
-          {x.revisions ? <span className="ml-2 rounded bg-purple/15 px-1 text-[10px] text-purple">revised</span> : null}
+          {x.revisions ? <span className="ml-2 rounded-sm bg-ink/10 px-1 text-[12px] text-ink">revised</span> : null}
         </td>
-        <td className="py-2 text-silver">{x.customer_name}{x.tier === 'key' ? <span className="ml-1.5 text-[10px] text-purple">KEY</span> : null}</td>
-        <td className="py-2 text-right font-mono text-xs text-silver">{usd(x.value_usd)}</td>
-        <td className="py-2 text-right font-mono text-xs">
-          <span className={below ? 'text-signal' : 'text-silver'}>{pct(x.margin)}</span>
-          <span className="text-silver-dim"> / {pct(x.margin_floor)}</span>
+        <td className="py-2 text-ink">{x.customer_name}{x.tier === 'key' ? <span className="ml-1.5 text-[12px] text-ink">KEY</span> : null}</td>
+        <td className="py-2 text-right font-label text-xs text-ink">{usd(x.value_usd)}</td>
+        <td className="py-2 text-right font-label text-xs">
+          <span className={below ? 'text-stop' : 'text-ink'}>{pct(x.margin)}</span>
+          <span className="text-ink-dim"> / {pct(x.margin_floor)}</span>
         </td>
-        <td className="py-2 pl-4 font-mono text-xs text-silver-dim">{shortDate(x.valid_until)}</td>
-        <td className={`py-2 font-mono text-xs ${STATUS_TONE[x.status]}`}>{x.status}</td>
-        <td className="py-2 pr-4 text-right font-mono text-xs">
-          {x.open_cards ? <span className="text-hiviz">{x.open_cards} open</span> : <span className="text-silver-dim">-</span>}
+        <td className="py-2 pl-4 font-label text-xs text-ink-dim">{shortDate(x.valid_until)}</td>
+        <td className={`py-2 font-label text-xs ${STATUS_TONE[x.status]}`}>{x.status}</td>
+        <td className="py-2 pr-4 text-right font-label text-xs">
+          {x.open_cards ? <span className="text-attn">{x.open_cards} open</span> : <span className="text-ink-dim">-</span>}
         </td>
       </tr>
       {open && detail ? (
-        <tr className="bg-panel-2/60">
+        <tr className="bg-sheet-2/60">
           <td colSpan={7} className="space-y-4 px-4 py-4">
-            <div className="flex flex-wrap gap-x-6 gap-y-1 text-xs text-silver-dim">
+            <div className="flex flex-wrap gap-x-6 gap-y-1 text-xs text-ink-dim">
               <span>Issued {shortDate(detail.issued_date)} · valid until {shortDate(detail.valid_until)}</span>
-              <span>Buyer: <span className="text-silver">{detail.buyer_name}</span> · <span className="font-mono text-cyan">{detail.buyer_phone}</span></span>
+              <span>Buyer: <span className="text-ink">{detail.buyer_name}</span> · <span className="font-label text-go">{detail.buyer_phone}</span></span>
               <span>Account manager: {detail.account_manager}</span>
-              {detail.price_lock_until ? <span className="text-cyan">Price lock to {shortDate(detail.price_lock_until)}</span> : null}
+              {detail.price_lock_until ? <span className="text-go">Price lock to {shortDate(detail.price_lock_until)}</span> : null}
             </div>
-            {detail.contract_note ? <p className="text-xs text-silver">Contract note: {detail.contract_note}</p> : null}
+            {detail.contract_note ? <p className="text-xs text-ink">Contract note: {detail.contract_note}</p> : null}
 
-            <table className="w-full font-mono text-xs">
-              <thead className="text-left text-[10px] uppercase tracking-wider text-silver-dim">
+            <table className="w-full font-label text-xs">
+              <thead className="text-left text-[12px] uppercase tracking-wider text-ink-dim">
                 <tr>
                   <th className="pb-1.5 font-normal">Part</th>
                   <th className="pb-1.5 font-normal">Made from</th>
@@ -210,12 +210,12 @@ function QuoteRow({ x, open, onToggle, version }: { x: DataQuote; open: boolean;
               </thead>
               <tbody>
                 {detail.lines.map((l) => (
-                  <tr key={l.id} className="border-t border-line/50">
-                    <td className="py-1.5 font-sans text-[13px] text-silver">{l.part_name}</td>
-                    <td className="py-1.5 font-sans text-xs text-silver-dim">{l.materials}</td>
-                    <td className="py-1.5 text-right text-silver-dim">{l.qty.toLocaleString()}</td>
-                    <td className="py-1.5 text-right text-silver-dim">{unitPrice(l.material_cost_basis + l.conversion_cost)}</td>
-                    <td className="py-1.5 text-right text-silver">{unitPrice(l.unit_price)}</td>
+                  <tr key={l.id} className="border-t border-rule/50">
+                    <td className="py-1.5 font-sans text-[13px] text-ink">{l.part_name}</td>
+                    <td className="py-1.5 font-sans text-xs text-ink-dim">{l.materials}</td>
+                    <td className="py-1.5 text-right text-ink-dim">{l.qty.toLocaleString()}</td>
+                    <td className="py-1.5 text-right text-ink-dim">{unitPrice(l.material_cost_basis + l.conversion_cost)}</td>
+                    <td className="py-1.5 text-right text-ink">{unitPrice(l.unit_price)}</td>
                   </tr>
                 ))}
               </tbody>
@@ -223,10 +223,10 @@ function QuoteRow({ x, open, onToggle, version }: { x: DataQuote; open: boolean;
 
             {detail.revisions.length ? (
               <div>
-                <p className="font-mono text-[10px] uppercase tracking-wider text-purple">Price revisions</p>
-                <ul className="mt-1 space-y-0.5 font-mono text-xs text-silver">
+                <p className="font-label text-[12px] uppercase tracking-wider text-ink">Price revisions</p>
+                <ul className="mt-1 space-y-0.5 font-label text-xs text-ink">
                   {detail.revisions.map((r) => (
-                    <li key={r.id}>{r.part_name}: {unitPrice(r.old_price)} → <span className="text-cyan">{unitPrice(r.new_price)}</span></li>
+                    <li key={r.id}>{r.part_name}: {unitPrice(r.old_price)} → <span className="text-go">{unitPrice(r.new_price)}</span></li>
                   ))}
                 </ul>
               </div>
@@ -234,19 +234,19 @@ function QuoteRow({ x, open, onToggle, version }: { x: DataQuote; open: boolean;
 
             {detail.cards.length ? (
               <div>
-                <p className="font-mono text-[10px] uppercase tracking-wider text-silver-dim">Cards raised on this quote</p>
+                <p className="font-label text-[12px] uppercase tracking-wider text-ink-dim">Cards raised on this quote</p>
                 <ul className="mt-1 space-y-0.5 text-xs">
                   {detail.cards.map((c) => (
-                    <li key={c.id} className="text-silver-dim">
-                      <span className="font-mono">{c.status.padEnd(10)}</span>{' '}
-                      <span className="text-silver">{ACTION_TEXT[c.final_action ?? c.action].short}</span>
+                    <li key={c.id} className="text-ink-dim">
+                      <span className="font-label">{c.status.padEnd(10)}</span>{' '}
+                      <span className="text-ink">{ACTION_TEXT[c.final_action ?? c.action].short}</span>
                       {' '}· {materialLabel(c.material_id)} via {c.email_id} · {c.decided_by === 'llm' ? 'Claude' : c.decided_by}
                       {c.exposure_usd ? ` · ${usd(c.exposure_usd)} at risk` : ''}
                     </li>
                   ))}
                 </ul>
               </div>
-            ) : <p className="text-xs text-silver-dim">No supplier change has touched this quote.</p>}
+            ) : <p className="text-xs text-ink-dim">No supplier change has touched this quote.</p>}
           </td>
         </tr>
       ) : null}

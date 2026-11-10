@@ -1,0 +1,45 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@500;600;700&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#151A2B;--navy2:#1D2338;--line:#2C3450;--stock:#F3EFE6;--stock2:#E6E0D2;--rule:#C9C0AC;--ink:#1F2233;--carbon:#6B4FA0;--red:#C8323C;--green:#2E8B6A;--pale:#B7BCCD}
+*{box-sizing:border-box;margin:0}
+body{width:1440px;height:900px;overflow:hidden;background:var(--navy);color:var(--stock);font:14px/1.4 'Barlow Semi Condensed',system-ui,sans-serif}
+.top{height:56px;display:flex;align-items:center;gap:20px;padding:0 28px;border-bottom:1px solid var(--line)}
+.brand{font-weight:700;font-size:19px;letter-spacing:.12em}.brand b{color:var(--red)}
+.meta{margin-left:auto;color:var(--pale);font-size:13px}
+.kp{display:flex;gap:40px;padding:14px 28px;border-bottom:1px solid var(--line)}
+.kp div small{display:block;font-weight:600;font-size:11px;letter-spacing:.12em;color:var(--pale);text-transform:uppercase}
+.kp strong{font:700 26px 'Courier Prime';color:var(--stock)}
+.wrap{display:grid;grid-template-columns:1fr 300px;gap:24px;padding:18px 28px}
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin-bottom:14px}
+.tabs div{padding:9px 16px;color:var(--pale);font-weight:600;letter-spacing:.06em;text-transform:uppercase;font-size:13px}.tabs .on{color:var(--stock);box-shadow:inset 0 -3px var(--red)}
+.cp{position:relative;display:grid;grid-template-columns:150px 1fr 1fr 1fr 150px;background:var(--stock);color:var(--ink);margin-bottom:12px;border-radius:3px}
+.cp>div{padding:10px 14px;border-right:1px dashed var(--rule)}.cp>div:last-child{border:0}
+.cp small{display:block;font-weight:600;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#5F5A4F}
+.head{background:var(--stock2)}.head b{display:block;font-weight:700;font-size:15px;letter-spacing:.04em}
+.num{font:700 19px 'Courier Prime';color:var(--carbon)}.num.r{color:var(--red)}
+.stamp{position:absolute;right:170px;top:12px;transform:rotate(-8deg);border:2.5px solid var(--red);color:var(--red);font-weight:700;letter-spacing:.2em;padding:2px 10px;font-size:14px}
+.stamp.v{border-color:var(--green);color:var(--green)}
+.act{font-weight:700;letter-spacing:.1em;font-size:12px;text-transform:uppercase;color:var(--carbon)}
+.side{border:1px solid var(--line);background:var(--navy2);border-radius:3px}
+.side h6{padding:12px 14px;border-bottom:1px solid var(--line);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--pale)}
+.m{padding:10px 14px;border-bottom:1px solid var(--line)}.m b{display:block}.m span{color:var(--pale);font-size:12px}
+</style></head><body>
+<div class="top"><div class="brand">MARGIN<b>GUARD</b></div><span style="color:var(--pale)">Quote book · every change stamped, nothing erased</span><div class="meta">Shop date Oct 15, 2026 · agents idle</div></div>
+<div class="kp"><div><small>At risk on open quotes</small><strong>$27,902</strong></div><div><small>Below floor</small><strong style="color:#F07A80">21</strong></div><div><small>Leaked on won jobs</small><strong>$6,151</strong></div><div><small>Voided by restatement</small><strong>50</strong></div></div>
+<div class="wrap"><div>
+<div class="tabs"><div class="on">Needs your decision 21</div><div>Settled by rules 150</div><div>Done</div><div>Data</div></div>
+<div class="cp"><div class="head"><small>Coupon</small><b>Q-2026-0101</b><small style="margin-top:6px">Bluewater Filtration</small></div><div><small>Value</small><span class="num">$68,527</span></div><div><small>Margin</small><span class="num r">25.2→22.6%</span><small>floor 23.7%</small></div><div><small>At risk</small><span class="num">$1,782</span></div><div><small>Action</small><span class="act">Call first</span></div></div>
+<div class="cp"><div class="head"><small>Coupon</small><b>Q-2026-0164</b><small style="margin-top:6px">Harbor Point</small></div><div><small>Value</small><span class="num">$41,803</span></div><div><small>Margin</small><span class="num r">30.7→27.0%</span><small>floor 27.7%</small></div><div><small>At risk</small><span class="num">$1,547</span></div><div><small>Action</small><span class="act">Call first</span></div></div>
+<div class="cp" style="opacity:.75"><div class="head"><small>Coupon</small><b>Q-2026-0164</b><small style="margin-top:6px">Harbor Point · Nov 15</small></div><div><small>Value</small><span class="num">$41,803</span></div><div><small>Margin</small><span class="num">30.7→27.3%</span></div><div><small>At risk</small><span class="num">$1,402</span></div><div><small>Replaced by</small><span class="act">Rev B</span></div><span class="stamp">VOID</span></div>
+<div class="cp"><div class="head"><small>Coupon</small><b>Q-2026-0157</b><small style="margin-top:6px">Granite Industrial · key</small></div><div><small>Value</small><span class="num">$48,618</span></div><div><small>Margin</small><span class="num r">33.9→31.8%</span><small>floor 32.9%</small></div><div><small>At risk</small><span class="num">$1,021</span></div><div><small>Action</small><span class="act">Call first</span></div></div>
+<div class="cp"><div class="head"><small>Coupon</small><b>Q-2026-0103</b><small style="margin-top:6px">Frontier Rail Car</small></div><div><small>Value</small><span class="num">$6,589</span></div><div><small>Margin</small><span class="num">29.1→26.8%</span></div><div><small>At risk</small><span class="num">$152</span></div><div><small>Action</small><span class="act">Revised</span></div><span class="stamp v">VALID</span></div>
+</div>
+<aside class="side"><h6>Supplier inbox</h6>
+<div class="m"><b>Midwest Polymer</b><span>E01 · EPDM 70 $2.27/lb · Nov 1</span></div>
+<div class="m"><b>Summit Silicones</b><span>E03 · VMQ 50 $310 / 25 kg bag</span></div>
+<div class="m"><b>Keystone Rubber</b><span>E07 · "Black 70" · needs a look</span></div>
+<div class="m"><b>Ridgeline Carbon</b><span>E09 · N550 $118/cwt</span></div>
+</aside></div>
+</body></html>

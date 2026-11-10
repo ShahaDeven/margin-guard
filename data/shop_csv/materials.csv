@@ -1,0 +1,13 @@
+id,name,category,cost_per_lb,aliases
+MAT-CB-N550,Carbon black N550,filler,1.09,N550|N-550|carbon black N550|carbon black
+MAT-CR-60,Neoprene (CR) 60 Shore A compound,elastomer,3.4,Neoprene 60|CR 60|polychloroprene 60|neoprene
+MAT-EPDM-50,EPDM 50 Shore A compound,elastomer,1.95,EPDM 50|EPDM-50|EPDM50
+MAT-EPDM-60,EPDM 60 Shore A compound,elastomer,2.05,EPDM 60|EPDM-60|EPDM60
+MAT-EPDM-70,EPDM 70 Shore A compound,elastomer,2.1,EPDM 70|EPDM-70|EPDM70|Black 70
+MAT-FKM-75,Fluoroelastomer (FKM) 75 Shore A compound,elastomer,14.8,FKM 75|Viton 75|fluoroelastomer 75|FKM
+MAT-NBR-70,Nitrile (NBR) 70 Shore A compound,elastomer,2.25,NBR 70|Nitrile 70|Buna-N 70|Black 70
+MAT-NBR-90,Nitrile (NBR) 90 Shore A compound,elastomer,2.48,NBR 90|Nitrile 90|Buna-N 90
+MAT-NR-40,Natural rubber 40 Shore A compound,elastomer,1.88,NR 40|natural rubber 40|natural rubber
+MAT-SBR-60,SBR 60 Shore A compound,elastomer,1.62,SBR 60|SBR-60|styrene butadiene 60
+MAT-STL-1018,1018 cold-rolled steel bar (inserts),metal,0.84,1018|1018 steel|C1018 bar|1018 cold rolled
+MAT-VMQ-50,Silicone (VMQ) 50 Shore A compound,elastomer,5.1,silicone 50|VMQ 50|silicone

@@ -19,7 +19,7 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from sse_starlette.sse import EventSourceResponse
 
-from . import actions, coordinator, db, ingest
+from . import actions, coordinator, db, ingest, leakage
 from .config import AS_OF, DB_PATH, MODEL, ROOT
 
 DEMO_EMAILS_PATH = ROOT / "data" / "demo_emails.json"
@@ -238,7 +238,14 @@ def inbox() -> list[dict]:
 @app.get("/api/materials")
 def materials() -> list[dict]:
     with _conn_lock:
-        return [dict(r) for r in conn().execute("SELECT id, name, cost_per_lb FROM materials ORDER BY id")]
+        return [dict(r) for r in conn().execute("SELECT id, name, category, cost_per_lb FROM materials ORDER BY id")]
+
+
+@app.get("/api/leakage")
+def leakage_report() -> dict:
+    """Margin leaked on won jobs because costs moved between quote and order."""
+    with _conn_lock:
+        return leakage.analyze(conn())
 
 
 @app.get("/api/outbox")

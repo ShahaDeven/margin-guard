@@ -1,0 +1,119 @@
+{
+  "title": "Choose the console's visual world",
+  "question": "The roll assigned The Supply Catalogue, translated to dark (you pinned dark-only). Keep it, take an alternate, or re-roll.",
+  "options": [
+    {
+      "id": "assigned", "kind": "assigned", "label": "The Supply Catalogue", "kicker": "THE ROLL",
+      "lineage": "Industrial supply catalogues: dense spec tables, family tabs, line-art parts",
+      "thesis": "Every quote reads like a catalogue page: specs in tight tables, the moved figure tabbed in its material family's colour.",
+      "palette": ["#131416", "#1B1D20", "#ECE6D6", "#4FB477", "#E0A43A", "#E5533D", "#7FA7D9"],
+      "materials": ["tabular spec tables", "material-family tab rail", "hairline rules on graphite stock"],
+      "viewport": "Owner strip of four figures on top; a left rail of material-family tabs (Elastomer, Filler, Metal); the work area is a dense spec table of the quotes a change hits. Cream catalogue stock is translated to graphite for the pinned dark theme.",
+      "risk": "Dense tables tip into spreadsheet drudgery if the family tab colours are timid.",
+      "raised": [
+        {"from": "challenger-proof", "raise": "Every headline figure names the row it came from: each claim sits beside its proof."},
+        {"from": "challenger-folio", "raise": "All margin bars share one fixed scale, so cards compare at a glance down the column."},
+        {"from": "challenger-feed", "raise": "Focus mode: one card owns the work area and the next is one keystroke (J) away."},
+        {"from": "challenger-specimen", "raise": "One what-if control (cost change %) reflows every affected margin live."}
+      ],
+      "html": ".impeccable/mocks/decision/assigned.html"
+    },
+    {
+      "id": "model-pick", "kind": "pick", "label": "The Redline Blueprint", "kicker": "IMPECCABLE’S PICK",
+      "lineage": "Cyanotype customer drawings with engineers' redline revisions",
+      "thesis": "Quotes as drawings under revision: every cost change is a redline, every restated card a new Rev letter.",
+      "palette": ["#0A1C2F", "#0E2740", "#DCE8F2", "#7FC4E8", "#F0544A", "#6FD39A", "#F2C94C"],
+      "materials": ["cyanotype ground", "drawing title blocks", "revision triangles"],
+      "viewport": "Standard top bar and lanes; each card closes in a title block (quote, customer, Rev B); changed figures are struck through and redlined.",
+      "risk": "Blueprint is what most engineering products reach for first; it lands familiar.",
+      "html": ".impeccable/mocks/decision/model-pick.html"
+    },
+    {
+      "id": "challenger-transit", "kind": "challenger", "catalogId": "wayfinding-cartography-signage-midnight-transit-diagram",
+      "label": "Cost Line Map", "verdict": "competitive",
+      "lineage": "Midnight enamel transit diagrams",
+      "thesis": "A supplier change runs as a coloured line through materials to every quote it stops at; interchanges are quotes hit twice.",
+      "palette": ["#0D1B3A", "#F4F1EA", "#E2412F", "#2F6FE0", "#F0A830", "#2FA66B"],
+      "materials": ["enamel ground", "45/90-degree line diagram", "interchange rings"],
+      "viewport": "Top bar and queue; above the queue a line diagram from supplier email to material to affected quotes, rings marking stacked changes.",
+      "case": "Wins clarity (the one-email-to-many-quotes cascade reads at once) but job shops don't live in transit maps.",
+      "risk": "The diagram competes with the queue for the first glance.",
+      "hero": "https://impeccable.style/worlds/cards/wayfinding-cartography-signage-midnight-transit-diagram-hero.webp",
+      "html": ".impeccable/mocks/decision/challenger-transit.html"
+    },
+    {
+      "id": "challenger-coupons", "kind": "challenger", "catalogId": "vernacular-ephemera-jet-age-ticket-wallet",
+      "label": "Carbon-copy Coupons", "verdict": "competitive",
+      "lineage": "Jet-age ticket wallets and multi-part carbon forms",
+      "thesis": "Each card is a coupon in a quote book: approved stamps VALID, superseded stamps VOID; nothing disappears, it cancels.",
+      "palette": ["#151A2B", "#F3EFE6", "#C8323C", "#6B4FA0", "#2E8B6A"],
+      "materials": ["coupon stock", "carbon numerals in ruled fare boxes", "state stamps"],
+      "viewport": "Queue of coupons on a navy ground; figures in carbon-purple numerals in ruled boxes; state stamps across each corner.",
+      "case": "Wins audience (shops still run on carbon forms; stamps match the audit trail) but light coupons fight the pinned dark.",
+      "risk": "Light coupons on a dark page make a contrast jump on every row.",
+      "hero": "https://impeccable.style/worlds/cards/vernacular-ephemera-jet-age-ticket-wallet-hero.webp",
+      "html": ".impeccable/mocks/decision/challenger-coupons.html"
+    },
+    {
+      "id": "challenger-proof", "kind": "challenger", "catalogId": "digital-design-canon-monochrome-product-marketing",
+      "label": "Claim and Proof", "verdict": "declined",
+      "lineage": "Monochrome product marketing",
+      "thesis": "One neutral scale, one accent, every claim beside the screenshot that proves it.",
+      "palette": ["#0B0B0C", "#F5F5F5", "#7C5CFF"],
+      "materials": ["neutral scale", "framed screenshots"],
+      "viewport": "Alternating claim and proof pairs.",
+      "case": "Fuses into the category default: loses audience and adds no clarity the console lacks.",
+      "risk": "Indistinguishable from any dark SaaS dashboard.",
+      "kept": "Every figure paired with its proof row."
+    },
+    {
+      "id": "challenger-folio", "kind": "challenger", "catalogId": "editorial-sequence-montage-botanical-folio-season",
+      "label": "Seasonal Folio", "verdict": "declined",
+      "lineage": "Botanical folio plates",
+      "thesis": "A quote's margin shown stage by stage on fixed-scale plates.",
+      "palette": ["#F3EAD6", "#5B6B3A", "#B23A2B", "#2B2622"],
+      "materials": ["cream plates", "sepia hairlines"],
+      "viewport": "Quoted, change, after, revised as five aligned plates.",
+      "case": "Loses both: foreign to shops and slower to read than a table.",
+      "risk": "Reads as a book, not a tool.",
+      "kept": "One fixed scale across every margin bar."
+    },
+    {
+      "id": "challenger-feed", "kind": "challenger", "catalogId": "pop-culture-shelf-vertical-video-feed-surface",
+      "label": "One at a Time", "verdict": "declined",
+      "lineage": "Vertical media feeds",
+      "thesis": "One card fills the screen; the next is one snap away.",
+      "palette": ["#000000", "#FFFFFF", "#FE2C55"],
+      "materials": ["full-bleed frame", "glyph rail"],
+      "viewport": "A single decision card owns the viewport.",
+      "case": "Loses both: estimators compare cards, and a feed hides the queue.",
+      "risk": "Hides the size of the queue.",
+      "kept": "A focus mode with the next card one keystroke away."
+    },
+    {
+      "id": "challenger-specimen", "kind": "challenger", "catalogId": "variable-font-specimen",
+      "label": "Live Specimen", "verdict": "declined",
+      "lineage": "Variable-font specimens",
+      "thesis": "One axis slider morphs the whole grid live.",
+      "palette": ["#F7F6F2", "#111111", "#FF5A1F"],
+      "materials": ["paper white", "monospace readouts"],
+      "viewport": "A slider driving every figure on the page.",
+      "case": "Loses both as a world; its one-control discipline transfers.",
+      "risk": "A type showcase, not a work surface.",
+      "kept": "One what-if control that reflows every margin."
+    }
+  ],
+  "reroll": {"registers": ["safer", "bolder"]},
+  "buildPath": {"value": "code", "toggle": false},
+  "canon": true,
+  "canonCard": {
+    "kind": "canon", "label": "The category standard",
+    "thesis": "A well-made dark B2B dashboard: neutral greys, one blue accent, cards and tables.",
+    "palette": ["#0F1115", "#1A1D23", "#E6E8EB", "#3B82F6"],
+    "materials": ["neutral cards", "sortable tables"],
+    "viewport": "Top bar, KPI row, tabbed queue, at full craft.",
+    "risk": "Indistinguishable from the competition by design.",
+    "html": ".impeccable/mocks/decision/canon.html"
+  },
+  "steer": true
+}

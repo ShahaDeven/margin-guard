@@ -56,8 +56,27 @@ MATERIALS = [
 # Costs that changed before AS_OF: (material_id, cost_per_lb, effective_date).
 # EPDM-60's Oct 1 increase was already applied, which is the trap behind email E13.
 PRICE_HISTORY_OVERRIDES = {
-    "MAT-EPDM-60": [(1.98, "2026-07-01"), (2.05, "2026-10-01")],
+    "MAT-EPDM-60": [(1.98, "2025-10-01"), (2.05, "2026-10-01")],
 }
+
+# A year of costs behind the closed quotes, so the margin-leakage report has
+# history to work on. Every change is effective on or before Jul 1, 2026 and ends
+# at today's catalog cost, so open quotes (all issued after Aug 16) and every
+# decision on them are unchanged. Mostly increases, with two decreases (SBR, steel).
+YEAR_HISTORY = {
+    "MAT-EPDM-50": [(1.82, "2025-10-01"), (1.89, "2026-03-01"), (1.95, "2026-06-01")],
+    "MAT-EPDM-70": [(1.92, "2025-10-01"), (1.98, "2026-02-01"), (2.04, "2026-04-15"), (2.10, "2026-07-01")],
+    "MAT-NBR-70": [(2.08, "2025-10-01"), (2.16, "2026-02-15"), (2.25, "2026-05-15")],
+    "MAT-NBR-90": [(2.31, "2025-10-01"), (2.40, "2026-03-15"), (2.48, "2026-06-15")],
+    "MAT-SBR-60": [(1.55, "2025-10-01"), (1.66, "2026-03-01"), (1.62, "2026-06-01")],
+    "MAT-NR-40": [(1.74, "2025-10-01"), (1.81, "2026-01-15"), (1.88, "2026-05-01")],
+    "MAT-CR-60": [(3.18, "2025-10-01"), (3.29, "2026-02-01"), (3.40, "2026-04-01")],
+    "MAT-VMQ-50": [(4.62, "2025-10-01"), (4.85, "2026-03-01"), (5.10, "2026-06-01")],
+    "MAT-FKM-75": [(13.90, "2025-10-01"), (14.35, "2026-02-15"), (14.80, "2026-05-15")],
+    "MAT-CB-N550": [(1.01, "2025-10-01"), (1.05, "2026-03-01"), (1.09, "2026-07-01")],
+    "MAT-STL-1018": [(0.78, "2025-10-01"), (0.81, "2026-02-01"), (0.88, "2026-04-01"), (0.84, "2026-07-01")],
+}
+PRICE_HISTORY_OVERRIDES |= YEAR_HISTORY
 
 # (id, name, conversion_cost_per_unit, [(material_id, lb_per_unit, scrap_rate)])
 PARTS = [
@@ -247,14 +266,16 @@ def _price_change_key(vendor_id: str, material_id: str, cost_per_lb: float, effe
     return f"price_change:{vendor_id}:{material_id}:{cost_per_lb:.4f}:{effective}"
 
 
-def _insert_quote(conn, rng, quote_id, customer_id, status, issued, valid_days, costs):
+def _insert_quote(conn, rng, quote_id, customer_id, status, issued, valid_days, costs, ordered=None):
     valid_until = issued + timedelta(days=valid_days)
     target_margin = round(rng.uniform(0.22, 0.35), 3)
     # Competitive bids are quoted close to the floor, so headroom varies a lot.
     margin_floor = max(0.18, round(target_margin - rng.choice([0.01, 0.015, 0.02, 0.03, 0.05, 0.08]), 3))
     conn.execute(
-        "INSERT INTO quotes VALUES (?, ?, ?, ?, ?, ?)",
-        (quote_id, customer_id, status, issued.isoformat(), valid_until.isoformat(), margin_floor),
+        "INSERT INTO quotes (id, customer_id, status, issued_date, valid_until, margin_floor, ordered_date)"
+        " VALUES (?, ?, ?, ?, ?, ?, ?)",
+        (quote_id, customer_id, status, issued.isoformat(), valid_until.isoformat(), margin_floor,
+         ordered.isoformat() if ordered else None),
     )
     parts = rng.sample(CUSTOMER_PARTS[customer_id], k=rng.randint(1, min(3, len(CUSTOMER_PARTS[customer_id]))))
     part_index = {p[0]: p for p in PARTS}
@@ -335,11 +356,21 @@ def build(conn, emails_path: Path = EMAILS_PATH, rng_seed: int = RNG_SEED) -> No
         seq += 1
         n += 1
 
-    # Closed history (won/lost) for later analysis.
+    # Closed history (won/lost) for the margin-leakage report. A won quote's
+    # order date is when the customer accepted it, within its validity.
+    # Drawn from a separate generator so the open quotes above never shift.
+    closed_rng = random.Random(f"{rng_seed}:closed")
     for _ in range(N_CLOSED_QUOTES):
         issued = date(2026, 1, 5) + timedelta(days=rng.randint(0, 220))
         status = rng.choice(["won", "won", "lost"])
-        _insert_quote(conn, rng, f"Q-2026-{seq:04d}", rng.choice(customer_ids), status, issued, 30, costs)
+        # Same validity mix as open quotes; a won quote is ordered within it, and before today.
+        valid_days = closed_rng.choice([30, 45, 60, 60, 90, 90, 120])
+        ordered = None
+        if status == "won":
+            latest = min(valid_days, (AS_OF - issued).days - 1)
+            ordered = issued + timedelta(days=closed_rng.randint(min(2, latest), latest))
+        _insert_quote(conn, rng, f"Q-2026-{seq:04d}", rng.choice(customer_ids), status, issued, valid_days, costs,
+                      ordered)
         seq += 1
 
     emails = json.loads(Path(emails_path).read_text(encoding="utf-8"))

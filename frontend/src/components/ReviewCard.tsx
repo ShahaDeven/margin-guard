@@ -22,48 +22,53 @@ export function ReviewCard({
   const name = (id: string) => materials.find((m) => m.id === id)?.name ?? materialLabel(id)
 
   return (
-    <article className="rounded-lg border border-hiviz/40 bg-hiviz/[0.03]">
-      <div className="flex flex-wrap items-center justify-between gap-2 border-b border-hiviz/15 px-5 py-3">
-        <div className="flex items-center gap-2.5">
-          <span className="h-1.5 w-1.5 rounded-full bg-hiviz mg-breathe" />
-          <span className="font-mono text-[11px] font-semibold tracking-wider text-hiviz">SUPPLIER EMAIL NEEDS A LOOK</span>
-        </div>
-        <span className="font-mono text-[11px] text-silver-dim">{f.email_id} · {email?.vendor_name ?? email?.from_addr ?? 'unknown sender'}</span>
-      </div>
+    <article className="rounded-sm border border-attn/50 bg-attn/3">
       <div className="space-y-4 px-5 py-4">
         <div>
-          <p className="text-[15px] font-semibold text-silver-bright">{email?.subject ?? p.event.email_subject}</p>
-          <ul className="mt-1.5 space-y-0.5 text-sm text-silver">
+          <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+            <h2 className="text-[16px] font-semibold text-ink-bright">
+              <span className="mr-2 rounded-sm bg-attn px-1.5 py-px align-[1px] font-label text-[12px] font-semibold text-ground">Needs a look</span>
+              {email?.subject ?? p.event.email_subject}
+            </h2>
+            <span className="font-label text-[13px] text-ink-dim">{f.email_id} · {email?.vendor_name ?? email?.from_addr ?? 'unknown sender'}</span>
+          </div>
+          <ul className="mt-2 list-disc space-y-0.5 pl-5 text-sm text-ink marker:text-attn">
             {(f.review_reasons ?? []).map((r) => (
-              <li key={r}>· {r}</li>
+              <li key={r}>{r}</li>
             ))}
           </ul>
         </div>
         {email ? (
-          <pre className="max-h-48 overflow-auto whitespace-pre-wrap rounded border border-line bg-panel px-3 py-2 font-sans text-[13px] leading-relaxed text-silver">
-            {email.body}
-          </pre>
+          <details className="group">
+            <summary className="inline-flex cursor-pointer select-none items-center gap-1.5 font-label text-[13px] font-semibold text-ink-dim hover:text-ink-bright">
+              <svg width="10" height="10" viewBox="0 0 10 10" aria-hidden className="transition-transform group-open:rotate-90"><path d="M3 1.5 L7 5 L3 8.5" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" /></svg>
+              <span className="group-open:hidden">Show the email</span><span className="hidden group-open:inline">Hide the email</span>
+            </summary>
+            <pre className="mt-2 max-h-48 overflow-auto whitespace-pre-wrap rounded-sm border border-rule bg-sheet px-3 py-2 font-sans text-[13px] leading-relaxed text-ink">
+              {email.body}
+            </pre>
+          </details>
         ) : null}
 
         {canResolve && candidates.length ? (
           <div className="space-y-2">
-            <p className="text-sm text-silver">
+            <p className="text-sm text-ink">
               ${f.new_cost_per_lb?.toFixed(2)}/lb from {shortDate(f.effective_date)}. Which material is "{f.material_text}"?
             </p>
             <div className="flex flex-wrap gap-2">
               {candidates.map((id) => (
-                <Button key={id} tone="hiviz" disabled={sending} onClick={() => { setSending(true); onResolve(id) }}>
+                <Button key={id} tone="attn" disabled={sending} onClick={() => { setSending(true); onResolve(id) }}>
                   It's {name(id)}
                 </Button>
               ))}
               <Button disabled={sending} onClick={() => { setSending(true); onDismiss() }}>Neither, dismiss</Button>
             </div>
-            <p className="font-mono text-[10px] text-silver-dim">Your answer becomes a price change, and the agents check every open quote that uses it.</p>
+            <p className="font-label text-[12px] text-ink-dim">Your answer becomes a price change, and the agents check every open quote that uses it.</p>
           </div>
         ) : (
           <div className="flex items-center gap-3">
             <Button disabled={sending} onClick={() => { setSending(true); onDismiss() }}>Noted, dismiss</Button>
-            <span className="font-mono text-[10px] text-silver-dim">No exact price and date to apply, so there's nothing for the agents to act on yet.</span>
+            <span className="font-label text-[12px] text-ink-dim">No exact price and date to apply, so there's nothing for the agents to act on yet.</span>
           </div>
         )}
       </div>

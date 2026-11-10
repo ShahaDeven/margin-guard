@@ -1,0 +1,74 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Archivo+Narrow:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--ground:#131416;--sheet:#1B1D20;--sheet2:#222428;--rule:#2E3135;--ink:#ECE6D6;--ink2:#A9A493;--ink3:#8E897D;--green:#4FB477;--ochre:#E0A43A;--red:#E5533D;--blue:#7FA7D9;--elast:#C9784A;--fill:#8A8F98;--metal:#5E9BB5}
+*{box-sizing:border-box;margin:0}
+body{width:1440px;height:900px;overflow:hidden;background:var(--ground);color:var(--ink);font:14px/1.45 Archivo,system-ui,sans-serif;font-variant-numeric:tabular-nums}
+.top{height:56px;display:flex;align-items:center;gap:24px;padding:0 28px;border-bottom:1px solid var(--rule)}
+.brand{font:700 18px 'Archivo Narrow';letter-spacing:.06em}.brand b{color:var(--ochre)}
+.top .meta{margin-left:auto;color:var(--ink2);font-size:13px}
+.strip{display:grid;grid-template-columns:repeat(4,1fr);border-bottom:1px solid var(--rule)}
+.k{padding:14px 28px;border-right:1px solid var(--rule)}.k:last-child{border:0}
+.k small{display:block;font:600 11px 'Archivo Narrow';letter-spacing:.08em;text-transform:uppercase;color:var(--ink3)}
+.k strong{font:600 28px 'Archivo Narrow'}.k span{display:block;font-size:12px;color:var(--ink2)}
+.body{display:grid;grid-template-columns:220px 1fr;height:calc(900px - 56px - 86px)}
+.rail{border-right:1px solid var(--rule);padding:18px 0}
+.rail h6{font:600 11px 'Archivo Narrow';letter-spacing:.08em;text-transform:uppercase;color:var(--ink3);padding:0 20px 8px}
+.tab{display:flex;align-items:center;gap:10px;padding:10px 20px;font-weight:500;color:var(--ink2)}
+.tab i{width:6px;height:28px;border-radius:1px}.tab em{margin-left:auto;font-style:normal;font-size:12px;color:var(--ink3)}
+.tab.on{background:var(--sheet);color:var(--ink)}
+main{padding:18px 28px;overflow:hidden}
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--rule);margin-bottom:14px}
+.tabs div{padding:9px 16px;color:var(--ink2);font-weight:500}.tabs .on{color:var(--ink);box-shadow:inset 0 -2px var(--ochre)}
+.tabs em{font-style:normal;color:var(--ink3);margin-left:6px;font-size:12px}
+.sec{display:flex;align-items:baseline;gap:12px;margin:4px 0 8px}
+.sec h2{font:700 20px 'Archivo Narrow';letter-spacing:.02em}.sec p{color:var(--ink2);font-size:13px}
+table{width:100%;border-collapse:collapse;background:var(--sheet)}
+th{font:600 11px 'Archivo Narrow';letter-spacing:.08em;text-transform:uppercase;color:var(--ink3);text-align:left;padding:8px 12px;border-bottom:1px solid var(--rule)}
+th.r,td.r{text-align:right}
+td{padding:10px 12px;border-bottom:1px solid var(--rule)}
+td .pn{font-weight:600}td .sub{display:block;color:var(--ink3);font-size:12px}
+.fam{display:inline-block;width:4px;height:16px;vertical-align:-3px;margin-right:8px}
+.moved{color:var(--ochre);font-weight:600}.below{color:var(--red);font-weight:600}.ok{color:var(--green)}
+.bar{position:relative;height:8px;width:150px;background:var(--sheet2)}
+.bar .z{position:absolute;inset:0 auto 0 0;background:rgba(229,83,61,.18)}
+.bar .f{position:absolute;top:-3px;bottom:-3px;width:2px;background:var(--ochre)}
+.bar .m{position:absolute;top:3px;height:2px;background:var(--red)}
+.act{font:600 12px 'Archivo Narrow';letter-spacing:.06em;text-transform:uppercase;padding:4px 8px;border:1px solid var(--rule)}
+.act.call{color:var(--ochre);border-color:rgba(224,164,58,.5)}.act.rep{color:var(--blue);border-color:rgba(127,167,217,.5)}
+.src{color:var(--ink3);font-size:12px}
+</style></head><body>
+<div class="top"><div class="brand">MARGIN<b>GUARD</b></div><div style="color:var(--ink2)">Supplier inbox · 15 emails · 2 need a look</div><div class="meta">Shop date Oct 15, 2026 · agents idle</div></div>
+<div class="strip">
+<div class="k"><small>At risk on open quotes</small><strong>$27,902</strong><span>171 live cards · from impact.py rows</span></div>
+<div class="k"><small>Below margin floor</small><strong class="below">21</strong><span>need your decision</span></div>
+<div class="k"><small>Leaked on won jobs, 2026</small><strong>$6,151</strong><span>56 of 88 jobs · replacement cost</span></div>
+<div class="k"><small>Settled by rules</small><strong>150</strong><span>confirm in bulk</span></div>
+</div>
+<div class="body">
+<nav class="rail"><h6>Material family</h6>
+<div class="tab on"><i style="background:var(--elast)"></i>Elastomer<em>9 materials</em></div>
+<div class="tab"><i style="background:var(--fill)"></i>Filler<em>1</em></div>
+<div class="tab"><i style="background:var(--metal)"></i>Metal<em>1</em></div>
+<h6 style="margin-top:22px">Supplier changes</h6>
+<div class="tab"><i style="background:var(--elast)"></i>EPDM 70 +8.1%<em>Nov 1</em></div>
+<div class="tab"><i style="background:var(--elast)"></i>VMQ 50 +10.3%<em>Nov 1</em></div>
+<div class="tab"><i style="background:var(--elast)"></i>SBR 60 +4.9%<em>Nov 15</em></div>
+<div class="tab"><i style="background:var(--fill)"></i>N550 +8.3%<em>Nov 1</em></div>
+</nav>
+<main>
+<div class="tabs"><div class="on">Needs your decision<em>21</em></div><div>Settled by rules<em>150</em></div><div>Done<em>0</em></div><div>Data</div><div>Leakage</div></div>
+<div class="sec"><h2>Elastomer · quotes below floor</h2><p>Sorted by dollars at risk. Margin bars share one scale.</p></div>
+<table>
+<tr><th>Quote</th><th>Customer</th><th class="r">Value</th><th>Moved cost</th><th>Margin vs floor</th><th class="r">At risk</th><th>Recommended</th></tr>
+<tr><td><span class="fam" style="background:var(--elast)"></span><span class="pn">Q-2026-0101</span></td><td>Bluewater Filtration<span class="sub">standard</span></td><td class="r">$68,527</td><td><span class="moved">VMQ 50 $5.10→$5.62</span><span class="sub">Summit Silicones, Nov 1</span></td><td><div class="bar"><div class="z" style="width:46%"></div><div class="f" style="left:46%"></div><div class="m" style="left:30%;width:30%"></div></div><span class="sub below">25.2% → 22.6%, 1.1 pts below 23.7%</span></td><td class="r">$1,782</td><td><span class="act call">Call first</span></td></tr>
+<tr><td><span class="fam" style="background:var(--elast)"></span><span class="pn">Q-2026-0119</span></td><td>Frontier Rail Car<span class="sub">standard</span></td><td class="r">$61,959</td><td><span class="moved">SBR 60 $1.62→$1.70</span><span class="sub">Midwest Polymer, Nov 15</span></td><td><div class="bar"><div class="z" style="width:40%"></div><div class="f" style="left:40%"></div><div class="m" style="left:34%;width:24%"></div></div><span class="sub below">24.6% → 22.2%, 0.4 pts below 22.6%</span></td><td class="r">$1,487</td><td><span class="act call">Call first</span></td></tr>
+<tr><td><span class="fam" style="background:var(--elast)"></span><span class="pn">Q-2026-0157</span></td><td>Granite Industrial<span class="sub">key account</span></td><td class="r">$48,618</td><td><span class="moved">EPDM 70 $2.10→$2.27</span><span class="sub">Midwest Polymer, Nov 1</span></td><td><div class="bar"><div class="z" style="width:52%"></div><div class="f" style="left:52%"></div><div class="m" style="left:44%;width:20%"></div></div><span class="sub below">33.9% → 31.8%, 1.1 pts below 32.9%</span></td><td class="r">$1,021</td><td><span class="act call">Call first</span></td></tr>
+<tr><td><span class="fam" style="background:var(--elast)"></span><span class="pn">Q-2026-0164</span></td><td>Harbor Point Foodservice<span class="sub">standard</span></td><td class="r">$41,803</td><td><span class="moved">VMQ 50 $5.10→$5.62</span><span class="sub">restated: N550 arrived later</span></td><td><div class="bar"><div class="z" style="width:44%"></div><div class="f" style="left:44%"></div><div class="m" style="left:38%;width:28%"></div></div><span class="sub below">30.7% → 27.0%, 0.7 pts below 27.7%</span></td><td class="r">$1,547</td><td><span class="act call">Call first</span></td></tr>
+<tr><td><span class="fam" style="background:var(--elast)"></span><span class="pn">Q-2026-0103</span></td><td>Frontier Rail Car<span class="sub">standard</span></td><td class="r">$6,589</td><td><span class="moved">NBR 70 $2.25→$2.36</span><span class="sub">Great Lakes, Nov 15</span></td><td><div class="bar"><div class="z" style="width:48%"></div><div class="f" style="left:48%"></div><div class="m" style="left:42%;width:22%"></div></div><span class="sub below">29.1% → 26.8%, 0.8 pts below 27.6%</span></td><td class="r">$152</td><td><span class="act rep">Revise quote</span></td></tr>
+<tr><td><span class="fam" style="background:var(--elast)"></span><span class="pn">Q-2026-0231</span></td><td>Northfield Appliance<span class="sub">standard</span></td><td class="r">$1,285</td><td><span class="moved">EPDM 60 $2.05→$2.19</span><span class="sub">Midwest Polymer, Nov 20</span></td><td><div class="bar"><div class="z" style="width:54%"></div><div class="f" style="left:54%"></div><div class="m" style="left:36%;width:36%"></div></div><span class="sub below">30.4% → 26.5%, 2.9 pts below 29.4%</span></td><td class="r">$50</td><td><span class="act rep">Revise quote</span></td></tr>
+</table>
+<p class="src" style="margin-top:10px">Every figure traces to a quote line and a price-history row. Press J for focus mode.</p>
+</main></div>
+</body></html>

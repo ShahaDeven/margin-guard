@@ -1,27 +1,44 @@
+@import "@fontsource/archivo/400.css";
+@import "@fontsource/archivo/500.css";
+@import "@fontsource/archivo/600.css";
+@import "@fontsource/archivo/700.css";
+@import "@fontsource/archivo-narrow/500.css";
+@import "@fontsource/archivo-narrow/600.css";
+@import "@fontsource/archivo-narrow/700.css";
 @import "tailwindcss";
 
-/* Black Arrows palette, shared with MarketPulse. Same curation rules:
-   purple = Claude / brand, cyan = healthy / approve, hi-viz = needs a person,
-   signal red = below floor / faults only. Mono for numbers and labels, sans for prose,
-   because estimators read sentences, not telemetry. */
+/* The Supply Catalogue. Graphite catalogue stock, paper-white ink, hairline rules,
+   a deep catalogue-green navigation band. Colour carries a job, never decoration:
+   go = approve / healthy, attn = needs a person, stop = below floor / faults,
+   claude = the model's judgment. Material families get their own catalogue tabs: deep copper elastomer
+   (browner and darker than the ochre role), slate filler, steel-blue metal. */
 @theme {
-  --color-weave: #0a0a0a;
-  --color-panel: #101216;
-  --color-panel-2: #161a20;
-  --color-line: #23272f;
-  --color-line-bright: #333944;
+  --color-ground: #131416;
+  --color-sheet: #1b1d20;
+  --color-sheet-2: #24262a;
+  --color-rule: #2e3135;
+  --color-rule-bright: #474a50;
 
-  --color-silver: #c2c8cf;
-  --color-silver-bright: #eceef1;
-  --color-silver-dim: #7c828b;
+  --color-ink-bright: #f1ebdc;
+  --color-ink: #d2cbb9;
+  --color-ink-dim: #a29c8b;
 
-  --color-purple: #a96bff;
-  --color-cyan: #00d7b6;
-  --color-hiviz: #ccff00;
-  --color-signal: #ff4d3d;
+  --color-shell: #173b2b;
+  --color-shell-2: #1f4a37;
+  --color-shell-ink: #e4efe5;
+  --color-shell-dim: #a8c4b0;
 
-  --font-sans: "Segoe UI", ui-sans-serif, system-ui, Roboto, Helvetica, sans-serif;
-  --font-mono: "Cascadia Code", "JetBrains Mono", ui-monospace, Consolas, monospace;
+  --color-go: #5cc48a;
+  --color-attn: #e3a53c;
+  --color-stop: #ef6249;
+  --color-claude: #b7a3f2;
+
+  --color-elastomer: #b0603a;
+  --color-filler: #a2a8b0;
+  --color-metal: #7ea3d3;
+
+  --font-sans: "Archivo", ui-sans-serif, system-ui, "Segoe UI", sans-serif;
+  --font-label: "Archivo Narrow", "Archivo", ui-sans-serif, system-ui, sans-serif;
 }
 
 :root { color-scheme: dark; }
@@ -30,26 +47,29 @@ html, body, #root { height: 100%; }
 
 body {
   margin: 0;
-  background: var(--color-weave);
-  color: var(--color-silver);
+  background: var(--color-ground);
+  color: var(--color-ink);
   font-family: var(--font-sans);
+  font-variant-numeric: tabular-nums;
   -webkit-font-smoothing: antialiased;
-  background-image:
-    linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
-  background-size: 44px 44px;
 }
+
+::selection { background: color-mix(in oklab, var(--color-attn) 35%, transparent); color: var(--color-ink-bright); }
+input, textarea { caret-color: var(--color-attn); }
+input::placeholder, textarea::placeholder { color: var(--color-ink-dim); }
+:focus-visible { outline: 2px solid var(--color-attn); outline-offset: 2px; }
+a { text-underline-offset: 3px; }
 
 @keyframes mg-breathe {
   0%, 100% { opacity: 0.55; }
   50% { opacity: 1; }
 }
 @keyframes mg-arrive {
-  from { opacity: 0; transform: translateY(-4px); }
+  from { opacity: 0.4; transform: translateY(-3px); }
   to { opacity: 1; transform: none; }
 }
 .mg-breathe { animation: mg-breathe 1.6s ease-in-out infinite; }
-.mg-arrive { animation: mg-arrive 0.35s ease-out; }
+.mg-arrive { animation: mg-arrive 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
 
 @media (prefers-reduced-motion: reduce) {
   .mg-breathe, .mg-arrive { animation: none; }
@@ -57,5 +77,8 @@ body {
 
 * {
   scrollbar-width: thin;
-  scrollbar-color: var(--color-line-bright) transparent;
+  scrollbar-color: var(--color-rule-bright) transparent;
 }
+
+details > summary { list-style: none; }
+details > summary::-webkit-details-marker { display: none; }

@@ -1,0 +1,57 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&family=Barlow+Condensed:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--deep:#0A1C2F;--ground:#0E2740;--panel:#123050;--line:#2A4C70;--ink:#DCE8F2;--ink2:#9DB7CE;--cyan:#7FC4E8;--red:#F0544A;--green:#6FD39A;--yellow:#F2C94C}
+*{box-sizing:border-box;margin:0}
+body{width:1440px;height:900px;overflow:hidden;color:var(--ink);font:14px/1.45 Barlow,system-ui,sans-serif;font-variant-numeric:tabular-nums;
+background:var(--ground);background-image:linear-gradient(rgba(127,196,232,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(127,196,232,.07) 1px,transparent 1px);background-size:24px 24px}
+.top{height:56px;display:flex;align-items:center;gap:24px;padding:0 28px;background:var(--deep);border-bottom:1px solid var(--line)}
+.brand{font:700 19px 'Barlow Condensed';letter-spacing:.14em}.brand b{color:var(--cyan)}
+.meta{margin-left:auto;color:var(--ink2);font-size:13px}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border-bottom:1px solid var(--line)}
+.k{background:var(--deep);padding:14px 28px}.k small{font:600 11px 'Barlow Condensed';letter-spacing:.12em;color:var(--ink2);text-transform:uppercase}
+.k strong{display:block;font:600 28px 'Barlow Condensed'}.k span{font-size:12px;color:var(--ink2)}
+.wrap{display:grid;grid-template-columns:300px 1fr;gap:24px;padding:20px 28px}
+.inbox{border:1px solid var(--line);background:rgba(10,28,47,.8)}
+.inbox h6{font:600 11px 'Barlow Condensed';letter-spacing:.12em;text-transform:uppercase;color:var(--ink2);padding:12px 16px;border-bottom:1px solid var(--line)}
+.mail{padding:10px 16px;border-bottom:1px solid var(--line)}.mail b{display:block;font-weight:500}.mail span{color:var(--ink2);font-size:12px}
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin-bottom:14px}
+.tabs div{padding:9px 16px;color:var(--ink2)}.tabs .on{color:var(--ink);box-shadow:inset 0 -2px var(--cyan)}
+.card{display:grid;grid-template-columns:1fr 260px;border:1px solid var(--cyan);background:rgba(10,28,47,.85);margin-bottom:14px}
+.main{padding:16px 18px}.main h3{font:600 17px Barlow}.main p{color:var(--ink2);margin-top:4px}
+.fig{display:flex;gap:28px;margin-top:12px}.fig div small{display:block;font:600 11px 'Barlow Condensed';letter-spacing:.12em;color:var(--ink2);text-transform:uppercase}
+.fig strong{font:600 20px 'Barlow Condensed'}.strike{text-decoration:line-through;color:var(--ink2);font-weight:500;margin-right:6px}
+.red{color:var(--red)}.tri{display:inline-block;border:1.5px solid var(--red);color:var(--red);font:700 10px 'Barlow Condensed';padding:0 4px;margin-left:6px;clip-path:polygon(50% 0,100% 100%,0 100%);width:20px;text-align:center;padding-top:5px}
+.tb{border-left:1px solid var(--cyan);display:grid;grid-template-rows:repeat(4,1fr)}
+.tb div{border-bottom:1px solid var(--line);padding:6px 12px}.tb div:last-child{border:0}
+.tb small{display:block;font:600 10px 'Barlow Condensed';letter-spacing:.12em;color:var(--ink2);text-transform:uppercase}
+.btns{display:flex;gap:8px;margin-top:14px}.btn{font:600 12px 'Barlow Condensed';letter-spacing:.1em;padding:6px 12px;border:1px solid var(--line)}
+.btn.g{color:var(--green);border-color:rgba(111,211,154,.6)}.btn.r{color:var(--red);border-color:rgba(240,84,74,.6)}
+</style></head><body>
+<div class="top"><div class="brand">MARGIN<b>GUARD</b></div><span style="color:var(--ink2)">When a supplier changes a price, see which open quotes it hurts.</span><div class="meta">Shop date Oct 15, 2026 · agents idle</div></div>
+<div class="kpis">
+<div class="k"><small>At risk on open quotes</small><strong>$27,902</strong><span>171 live cards</span></div>
+<div class="k"><small>Below floor</small><strong class="red">21</strong><span>need your decision</span></div>
+<div class="k"><small>Leaked on won jobs</small><strong>$6,151</strong><span>56 of 88 jobs, 2026</span></div>
+<div class="k"><small>Restated cards</small><strong>50</strong><span>earlier changes arrived later</span></div>
+</div>
+<div class="wrap">
+<aside class="inbox"><h6>Supplier inbox</h6>
+<div class="mail"><b>Midwest Polymer</b><span>E01 · EPDM 70 to $2.27/lb Nov 1 · 20 quotes checked</span></div>
+<div class="mail"><b>Great Lakes Elastomers</b><span>E02 · NBR 70 $5.20/kg Nov 15 · 40 quotes</span></div>
+<div class="mail"><b>Summit Silicones</b><span>E03 · VMQ 50 $310/25 kg bag · 43 quotes</span></div>
+<div class="mail"><b>Keystone Rubber</b><span>E07 · "Black 70" · needs a look</span></div>
+<div class="mail"><b>Ridgeline Carbon</b><span>E09 · N550 $118/cwt Nov 1 · 26 quotes</span></div>
+</aside>
+<main>
+<div class="tabs"><div class="on">Needs your decision · 21</div><div>Settled by rules · 150</div><div>Done</div><div>Data</div><div>Leakage</div></div>
+<div class="card"><div class="main"><h3>Harbor Point Foodservice</h3><p>Call before revising · Q-2026-0164 · $41,803</p>
+<div class="fig"><div><small>Margin</small><strong><span class="strike">30.7%</span><span class="red">27.0%</span></strong></div><div><small>Floor</small><strong>27.7%</strong></div><div><small>At risk</small><strong>$1,547</strong></div><div><small>VMQ 50 /lb</small><strong><span class="strike">$5.10</span><span class="red">$5.62</span></strong><span class="tri">B</span></div></div>
+<div class="btns"><span class="btn g">APPROVE</span><span class="btn">EDIT DRAFT</span><span class="btn r">REJECT</span></div></div>
+<div class="tb"><div><small>Quote</small>Q-2026-0164</div><div><small>Customer</small>Harbor Point · standard</div><div><small>Revision</small><span class="red">Rev B · N550 arrived later</span></div><div><small>Effective</small>Nov 1, 2026</div></div></div>
+<div class="card" style="border-color:var(--line)"><div class="main"><h3>Granite Industrial <span style="font:600 11px 'Barlow Condensed';color:var(--yellow);letter-spacing:.12em;margin-left:6px">KEY ACCOUNT</span></h3><p>Call before revising · Q-2026-0157 · $48,618</p>
+<div class="fig"><div><small>Margin</small><strong><span class="strike">33.9%</span><span class="red">31.8%</span></strong></div><div><small>Floor</small><strong>32.9%</strong></div><div><small>At risk</small><strong>$1,021</strong></div><div><small>EPDM 70 /lb</small><strong><span class="strike">$2.10</span><span class="red">$2.27</span></strong><span class="tri">A</span></div></div></div>
+<div class="tb" style="border-color:var(--line)"><div><small>Quote</small>Q-2026-0157</div><div><small>Customer</small>Granite · key</div><div><small>Revision</small>Rev A</div><div><small>Effective</small>Nov 1, 2026</div></div></div>
+</main></div>
+</body></html>

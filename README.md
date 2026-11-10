@@ -22,6 +22,7 @@ Built in four days as a working prototype on a synthetic rubber-molding shop: 15
 | Cards that were stale because an earlier-dated supplier change arrived later (the demo inbox is out of date order) | **50** restated and re-decided; live cards are identical across arrival, date, reverse and random orders |
 | 30 hand-built judgment calls x 3 runs (Claude Sonnet 5.5) | **87 / 90** right, same answer every run, every draft passes its checks |
 | ...of those, calls made with confidence ≥ 0.90 | **93% of calls, 100% right**. All 3 misses came in at ≤ 0.60 |
+| Margin leaked on the shop's 88 won jobs (Jan-Oct 2026, synthetic) because costs moved between quote and order | **$6,151** on 56 jobs ($5,568 net of decreases), 29.4% -> 28.9% margin, 1 job pushed below its floor |
 | Prompt injection hidden in a customer note (2 cases) | Refused both times, and **flagged the bad instruction** to the account manager |
 | Cost per judgment call | **$0.009** (Sonnet 5.5) |
 
@@ -166,6 +167,43 @@ Built for an estimator, not an engineer.
   5 need you"), linked to its cards. "Send test email" drops in a new one, and the activity feed
   streams the agents working on it live.
 
+## Margin leakage: what cost moves already cost you
+
+The console protects open quotes. The leakage report answers the owner's question first:
+how much margin did won jobs lose because costs moved after we quoted?
+
+```bash
+python -m margin_guard.leakage              # report on the demo shop
+```
+
+For each won quote it compares the material cost the price was built on with the cost on the
+day the customer ordered, at the costing supplier's price, and reports dollars leaked (and gained
+on decreases), the margin as quoted vs as ordered, jobs pushed below their floor, and the
+breakdown by material, customer and month. Every leaked dollar comes from a change that took
+effect inside the quote's window, the window in which a revised quote could still have recovered
+it. Same replacement-cost assumption as everywhere else, stated in the report; a job whose
+materials have no price history back to its quote date is listed and left out rather than costed
+at today's price. Also served at `/api/leakage`. Pure code, no LLM.
+
+## Bring your own data
+
+A shop is nine CSV files (suppliers, materials, which supplier each material is costed at, price
+history, parts, BOMs, customers, quotes, quote lines). [`data/shop_csv/`](data/shop_csv/) is the
+demo shop exported in that format, so it doubles as the template.
+
+```bash
+python -m margin_guard.importer check data/shop_csv            # validate only
+python -m margin_guard.importer import my_shop/ --db mine.db   # validate, then load a new database
+python -m margin_guard.importer export out/                    # any database back to CSV
+python -m margin_guard.leakage --db mine.db                    # the leakage report on your data
+```
+
+The import is all-or-nothing: every row is checked (dates, ranges, references between files,
+duplicates, exactly one costing supplier per material, a won quote needs an order date) and if
+anything is wrong nothing is written and each problem is listed by file, row and column. A blank
+`material_cost_basis` is computed from the BOM and price history at the quote date. Export then
+import reproduces the demo shop exactly.
+
 ## Evaluation
 
 | Eval | Command | What it checks |
@@ -208,6 +246,10 @@ undo, the API, and the eval machinery itself.
 - **A debatable policy edge.** On "key account + prefers email for routine changes, call over
   $10k" at $8k, Sonnet chose a call three times out of three, at 0.55 – 0.60 confidence.
   The written policy says the note wins. The console marks these cards as below the bar.
+- **Synthetic history.** The year of price history and the won jobs' order dates behind the
+  leakage report are generated (all changes dated on or before Jul 1, so the open quotes and
+  every decision on them are unchanged). The report's method is the point; its dollar figure is
+  only as real as the data.
 - **Synthetic data.** The shop, quotes and emails are generated, and the confidence bar comes
   from 90 runs. Real quotes and real reviews would re-set it, which is what `eval_approvals`
   is for.

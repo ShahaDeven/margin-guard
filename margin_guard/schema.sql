@@ -71,7 +71,8 @@ CREATE TABLE IF NOT EXISTS quotes (
     status       TEXT NOT NULL CHECK (status IN ('open', 'won', 'lost', 'expired')),
     issued_date  TEXT NOT NULL,
     valid_until  TEXT NOT NULL,
-    margin_floor REAL NOT NULL                   -- lowest gross margin we accept on this quote
+    margin_floor REAL NOT NULL,                  -- lowest gross margin we accept on this quote
+    ordered_date TEXT                            -- won quotes: when the customer placed the order
 );
 
 CREATE TABLE IF NOT EXISTS quote_lines (

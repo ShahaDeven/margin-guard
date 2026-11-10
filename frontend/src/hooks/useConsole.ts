@@ -10,8 +10,8 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 
 import { api, type Lane } from '../lib/api'
-import { materialLabel, usd } from '../lib/format'
-import type { DemoEmail, Email, FeedItem, Material, OutboxItem, Overview, Proposal } from '../lib/types'
+import { materialLabel, setFamilies, usd } from '../lib/format'
+import type { DemoEmail, Email, FeedItem, Leakage, Material, OutboxItem, Overview, Proposal } from '../lib/types'
 
 type Msg = Record<string, unknown>
 
@@ -56,8 +56,24 @@ function describe(kind: string, d: Msg): Omit<FeedItem, 'id' | 'at'> | null {
   }
 }
 
+const LANES: Lane[] = ['decide', 'rules', 'done', 'leakage', 'data']
+const laneFromHash = (): Lane | null => {
+  const h = window.location.hash.replace('#', '') as Lane
+  return LANES.includes(h) ? h : null
+}
+
 export function useConsole() {
-  const [lane, setLane] = useState<Lane>('decide')
+  // Each view has its own URL (#decide, #leakage, ...), so a view can be linked or reloaded.
+  const [lane, setLaneState] = useState<Lane>(() => laneFromHash() ?? 'decide')
+  const setLane = useCallback((l: Lane) => {
+    setLaneState(l)
+    if (window.location.hash !== `#${l}`) window.history.replaceState(null, '', `#${l}`)
+  }, [])
+  useEffect(() => {
+    const onHash = () => { const l = laneFromHash(); if (l) setLaneState(l) }
+    window.addEventListener('hashchange', onHash)
+    return () => window.removeEventListener('hashchange', onHash)
+  }, [])
   /** Show only the cards that came from one supplier email (null = all). */
   const [emailFilter, setEmailFilter] = useState<string | null>(null)
   /** Quote to open in the Data tab when jumping there from a card. */
@@ -74,6 +90,7 @@ export function useConsole() {
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [arrived, setArrived] = useState<Set<number>>(new Set())
+  const [leakage, setLeakage] = useState<Leakage | null>(null)
 
   const laneRef = useRef(lane)
   laneRef.current = lane
@@ -86,17 +103,20 @@ export function useConsole() {
   const refresh = useCallback(async () => {
     try {
       const current = laneRef.current
-      const [ov, queue, mail, out] = await Promise.all([
+      const queueLane = current === 'data' || current === 'leakage' ? null : current
+      const [ov, queue, mail, out, leak] = await Promise.all([
         api.overview(),
-        current === 'data' ? Promise.resolve([]) : api.queue(current, filterRef.current),
+        queueLane ? api.queue(queueLane, filterRef.current) : Promise.resolve([] as Proposal[]),
         api.inbox(),
         api.outbox(),
+        api.leakage().catch(() => null),
       ])
       setVersion((v) => v + 1)
       setOverview(ov)
       setBusy(ov.agents_busy)
       setInbox(mail)
       setOutbox(out)
+      setLeakage(leak)
       // Highlight cards that appeared since the last refresh of the (unfiltered) decision lane.
       if (current === 'decide' && !filterRef.current) {
         const ids = new Set(queue.map((p) => p.id))
@@ -117,7 +137,7 @@ export function useConsole() {
 
   useEffect(() => {
     refresh()
-    api.materials().then(setMaterials).catch(() => {})
+    api.materials().then((m) => { setFamilies(m); setMaterials(m) }).catch(() => {})
     api.demoEmails().then(setDemoEmails).catch(() => {})
   }, [refresh])
 
@@ -173,6 +193,6 @@ export function useConsole() {
 
   return {
     lane, setLane, emailFilter, setEmailFilter, focusEmail, focusedQuote, setFocusedQuote, focusQuote, version,
-    overview, cards, inbox, outbox, materials, demoEmails, feed, busy, error, arrived, run,
+    overview, cards, inbox, outbox, materials, demoEmails, feed, busy, error, arrived, run, leakage,
   }
 }

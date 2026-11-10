@@ -1,0 +1,58 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--ground:#0D1B3A;--panel:#12244A;--line:#23386A;--ink:#F4F1EA;--ink2:#B9C1D6;--scarlet:#E2412F;--cobalt:#2F6FE0;--amber:#F0A830;--green:#2FA66B}
+*{box-sizing:border-box;margin:0}
+body{width:1440px;height:900px;overflow:hidden;background:var(--ground);color:var(--ink);font:14px/1.45 'Fira Sans',system-ui,sans-serif;font-variant-numeric:tabular-nums}
+.top{height:56px;display:flex;align-items:center;gap:20px;padding:0 28px;border-bottom:1px solid var(--line)}
+.brand{font-weight:700;font-size:18px;letter-spacing:.04em}.brand b{color:var(--amber)}
+.meta{margin-left:auto;color:var(--ink2);font-size:13px}
+.map{height:300px;border-bottom:1px solid var(--line);position:relative}
+.map h6{position:absolute;left:28px;top:14px;font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink2)}
+.lbl{position:absolute;font-size:12px;font-weight:500}.lbl.s{color:var(--ink2);font-weight:400}
+.cols{display:grid;grid-template-columns:1fr 320px;gap:24px;padding:18px 28px}
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin-bottom:12px}
+.tabs div{padding:9px 16px;color:var(--ink2)}.tabs .on{color:var(--ink);box-shadow:inset 0 -3px var(--amber)}
+.row{display:grid;grid-template-columns:14px 1.4fr 1fr 1fr 120px;gap:14px;align-items:center;padding:11px 14px;background:var(--panel);margin-bottom:6px;border-radius:4px}
+.dot{width:12px;height:12px;border-radius:50%;border:3px solid}
+.row b{font-weight:600}.row span{color:var(--ink2);font-size:12px;display:block}
+.red{color:var(--scarlet)}.btn{font-weight:600;font-size:12px;padding:5px 10px;border-radius:14px;border:1px solid var(--amber);color:var(--amber);text-align:center}
+.side{background:var(--panel);border-radius:4px;padding:14px}
+.side h6{font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink2);margin-bottom:10px}
+.k{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--line)}.k strong{font-weight:600}
+</style></head><body>
+<div class="top"><div class="brand">MARGIN<b>GUARD</b></div><span style="color:var(--ink2)">Supplier changes, traced to every quote they reach</span><div class="meta">Shop date Oct 15, 2026 · agents idle</div></div>
+<div class="map"><h6>Nov 1 – Nov 20 cost lines</h6>
+<svg width="1440" height="300" style="position:absolute;inset:0">
+<g fill="none" stroke-width="7" stroke-linecap="round" stroke-linejoin="round">
+<path d="M60 90 H380 L440 150 H1380" stroke="#E2412F"/>
+<path d="M60 150 H1380" stroke="#2F6FE0" transform="translate(0,60)"/>
+<path d="M60 270 H520 L580 210 H900 L960 150 H1380" stroke="#F0A830" transform="translate(0,-10)"/>
+<path d="M60 60 H620 L680 120 V140 L720 150 H1380" stroke="#2FA66B" transform="translate(0,-2)"/>
+</g>
+<g fill="#F4F1EA" stroke="#0D1B3A" stroke-width="3">
+<circle cx="760" cy="150" r="11"/><circle cx="1040" cy="150" r="11"/><circle cx="1240" cy="150" r="11"/><circle cx="900" cy="210" r="8"/><circle cx="300" cy="90" r="6"/>
+</g></svg>
+<div class="lbl" style="left:60px;top:66px">VMQ 50 +10.3% · Summit</div>
+<div class="lbl" style="left:60px;top:186px">EPDM 70 +8.1% · Midwest</div>
+<div class="lbl" style="left:60px;top:236px">N550 +8.3% · Ridgeline</div>
+<div class="lbl" style="left:60px;top:36px">SBR 60 +4.9% · Midwest</div>
+<div class="lbl" style="left:730px;top:168px">Q-0164 Harbor Point</div><div class="lbl s" style="left:730px;top:186px">2 lines · $1,547</div>
+<div class="lbl" style="left:1010px;top:168px">Q-0101 Bluewater</div><div class="lbl s" style="left:1010px;top:186px">$1,782</div>
+<div class="lbl" style="left:1210px;top:168px">Q-0157 Granite</div><div class="lbl s" style="left:1210px;top:186px">$1,021</div>
+</div>
+<div class="cols"><div>
+<div class="tabs"><div class="on">Needs your decision · 21</div><div>Settled by rules · 150</div><div>Done</div><div>Data</div></div>
+<div class="row"><i class="dot" style="border-color:#E2412F"></i><div><b>Bluewater Filtration</b><span>Q-2026-0101 · $68,527</span></div><div class="red">25.2% → 22.6%<span>floor 23.7%</span></div><div>$1,782<span>at risk</span></div><div class="btn">Call first</div></div>
+<div class="row"><i class="dot" style="border-color:#F0A830"></i><div><b>Frontier Rail Car</b><span>Q-2026-0119 · $61,959</span></div><div class="red">24.6% → 22.2%<span>floor 22.6%</span></div><div>$1,487<span>at risk</span></div><div class="btn">Call first</div></div>
+<div class="row"><i class="dot" style="border-color:#2F6FE0"></i><div><b>Granite Industrial</b><span>Q-2026-0157 · key · $48,618</span></div><div class="red">33.9% → 31.8%<span>floor 32.9%</span></div><div>$1,021<span>at risk</span></div><div class="btn">Call first</div></div>
+<div class="row"><i class="dot" style="border-color:#E2412F"></i><div><b>Harbor Point Foodservice</b><span>Q-2026-0164 · interchange: 2 changes</span></div><div class="red">30.7% → 27.0%<span>floor 27.7%</span></div><div>$1,547<span>at risk</span></div><div class="btn">Call first</div></div>
+</div>
+<aside class="side"><h6>Network today</h6>
+<div class="k"><span>At risk on open quotes</span><strong>$27,902</strong></div>
+<div class="k"><span>Below floor</span><strong class="red">21</strong></div>
+<div class="k"><span>Leaked on won jobs</span><strong>$6,151</strong></div>
+<div class="k"><span>Settled by rules</span><strong>150</strong></div>
+</aside></div>
+</body></html>

@@ -1,0 +1,25 @@
+id,name,tier,price_lock_until,contract_note,buyer_name,buyer_phone,buyer_email,account_manager,account_manager_phone
+C-01,Lakeshore HVAC,key,,,Maria Chen,(312) 555-0101,maria.chen@lakeshorehvac.example,Chris Patel,(216) 555-0141
+C-02,Prairie Ag Equipment,key,,Purchasing asks that revised pricing always arrive by email as a revised quote. Please do not call.,Tom Okafor,(515) 555-0102,tom.okafor@prairieag.example,Leah Brennan,(216) 555-0143
+C-03,Tri-County Plumbing Supply,standard,,,Linda Park,(614) 555-0103,linda.park@tricountyplumbing.example,Morgan Reyes,(216) 555-0142
+C-04,Ironbridge Trucks,key,2026-12-31,Annual supply agreement: quoted prices fixed through 2026-12-31.,Ray Delgado,(419) 555-0104,ray.delgado@ironbridgetrucks.example,Chris Patel,(216) 555-0141
+C-05,Cobalt Marine,standard,,,Priya Nair,(231) 555-0105,priya.nair@cobaltmarine.example,Morgan Reyes,(216) 555-0142
+C-06,Redwood Medical Devices,key,2027-03-31,Validated-part agreement: price changes need 90 days notice; locked through 2027-03-31.,Ellen Shaw,(612) 555-0106,ellen.shaw@redwoodmedical.example,Leah Brennan,(216) 555-0143
+C-07,Summit Pumps,standard,,Any price revision must be agreed by phone with purchasing (J. Ortiz) before a revised quote is sent.,Jamie Ortiz,(918) 555-0107,jamie.ortiz@summitpumps.example,Victor Osei,(216) 555-0144
+C-08,Granite Industrial,key,,,Mark Feldman,(412) 555-0108,mark.feldman@graniteindustrial.example,Morgan Reyes,(216) 555-0142
+C-09,Bluewater Filtration,standard,,,Sofia Russo,(262) 555-0109,sofia.russo@bluewaterfiltration.example,Morgan Reyes,(216) 555-0142
+C-10,Northfield Appliance,standard,,,Kevin Walsh,(269) 555-0110,kevin.walsh@northfieldappliance.example,Victor Osei,(216) 555-0144
+C-11,Harbor Point Foodservice,standard,,"Ship-to address changed to Dock 4, north entrance, for all 2026 releases.",Hannah Lee,(216) 555-0111,hannah.lee@harborpointfood.example,Chris Patel,(216) 555-0141
+C-12,Meridian Rail Systems,key,,"All communication goes through their distributor, Allied Supply. Send revised quotes by email only.",Grace Kim (Allied Supply),(317) 555-0112,grace.kim@alliedsupply.example,Leah Brennan,(216) 555-0143
+C-13,Pioneer Irrigation,standard,,Their buyer requires a call from the account manager before any change to quoted pricing.,Luis Romero,(308) 555-0113,luis.romero@pioneerirrigation.example,Morgan Reyes,(216) 555-0142
+C-14,Atlas Compressor Co.,standard,2026-11-10,Spot-buy price hold through 2026-11-10.,Beth Novak,(330) 555-0114,beth.novak@atlascompressor.example,Victor Osei,(216) 555-0144
+C-15,Evergreen Solar Mounts,standard,,,Omar Haddad,(480) 555-0115,omar.haddad@evergreensolar.example,Chris Patel,(216) 555-0141
+C-16,Copperline Brewing Equipment,standard,,,Nina Petrov,(414) 555-0116,nina.petrov@copperlinebrewing.example,Victor Osei,(216) 555-0144
+C-17,Ridgeway Lab Instruments,key,,,Arjun Mehta,(617) 555-0117,arjun.mehta@ridgewaylab.example,Leah Brennan,(216) 555-0143
+C-18,Delta Hydraulics,standard,,,Carla Jensen,(309) 555-0118,carla.jensen@deltahydraulics.example,Victor Osei,(216) 555-0144
+C-19,Orchard Food Processing,standard,,,Paul Murphy,(509) 555-0119,paul.murphy@orchardfood.example,Morgan Reyes,(216) 555-0142
+C-20,Vantage Semiconductor Tools,key,,,Yuki Tanaka,(512) 555-0120,yuki.tanaka@vantagesemi.example,Victor Osei,(216) 555-0144
+C-21,Sterling Fire Apparatus,standard,,Net 45 payment terms; a PO is required for every release.,Sam Turner,(920) 555-0121,sam.turner@sterlingfire.example,Chris Patel,(216) 555-0141
+C-22,Crescent Pool Products,standard,,,Rosa Alvarez,(813) 555-0122,rosa.alvarez@crescentpool.example,Leah Brennan,(216) 555-0143
+C-23,Frontier Rail Car,standard,,,Greg Holt,(618) 555-0123,greg.holt@frontierrailcar.example,Chris Patel,(216) 555-0141
+C-24,Willow Creek Medical,standard,2027-01-15,Price hold through 2027-01-15 under the 2026 bid award.,Anita Desai,(608) 555-0124,anita.desai@willowcreekmedical.example,Leah Brennan,(216) 555-0143

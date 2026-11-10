@@ -1,0 +1,525 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-10T00:00:00Z",
+  "title": "Design System: Margin Guard",
+  "extensions": {
+    "colorMeta": {
+      "graphite-stock": {
+        "role": "neutral",
+        "displayName": "Graphite Stock",
+        "tonalRamp": [
+          "oklch(15% 0.002 264)",
+          "oklch(26% 0.003 264)",
+          "oklch(37% 0.003 264)",
+          "oklch(48% 0.004 264)",
+          "oklch(59% 0.004 264)",
+          "oklch(70% 0.004 264)",
+          "oklch(82% 0.003 264)",
+          "oklch(95% 0.003 264)"
+        ]
+      },
+      "sheet": {
+        "role": "neutral",
+        "displayName": "Sheet",
+        "tonalRamp": [
+          "oklch(15% 0.003 258)",
+          "oklch(26% 0.004 258)",
+          "oklch(37% 0.005 258)",
+          "oklch(48% 0.006 258)",
+          "oklch(59% 0.006 258)",
+          "oklch(70% 0.006 258)",
+          "oklch(82% 0.005 258)",
+          "oklch(95% 0.004 258)"
+        ]
+      },
+      "sheet-raised": {
+        "role": "neutral",
+        "displayName": "Sheet Raised",
+        "tonalRamp": [
+          "oklch(15% 0.004 264)",
+          "oklch(26% 0.005 264)",
+          "oklch(37% 0.006 264)",
+          "oklch(48% 0.007 264)",
+          "oklch(59% 0.008 264)",
+          "oklch(70% 0.007 264)",
+          "oklch(82% 0.006 264)",
+          "oklch(95% 0.005 264)"
+        ]
+      },
+      "hairline": {
+        "role": "neutral",
+        "displayName": "Hairline",
+        "tonalRamp": [
+          "oklch(15% 0.004 256)",
+          "oklch(26% 0.005 256)",
+          "oklch(37% 0.006 256)",
+          "oklch(48% 0.007 256)",
+          "oklch(59% 0.008 256)",
+          "oklch(70% 0.007 256)",
+          "oklch(82% 0.006 256)",
+          "oklch(95% 0.005 256)"
+        ]
+      },
+      "hairline-bright": {
+        "role": "neutral",
+        "displayName": "Hairline Bright",
+        "tonalRamp": [
+          "oklch(15% 0.005 264)",
+          "oklch(26% 0.006 264)",
+          "oklch(37% 0.008 264)",
+          "oklch(48% 0.009 264)",
+          "oklch(59% 0.011 264)",
+          "oklch(70% 0.010 264)",
+          "oklch(82% 0.008 264)",
+          "oklch(95% 0.006 264)"
+        ]
+      },
+      "paper-ink-bright": {
+        "role": "neutral",
+        "displayName": "Paper Ink Bright",
+        "tonalRamp": [
+          "oklch(15% 0.010 89)",
+          "oklch(26% 0.013 89)",
+          "oklch(37% 0.015 89)",
+          "oklch(48% 0.018 89)",
+          "oklch(59% 0.021 89)",
+          "oklch(70% 0.019 89)",
+          "oklch(82% 0.016 89)",
+          "oklch(95% 0.012 89)"
+        ]
+      },
+      "paper-ink": {
+        "role": "neutral",
+        "displayName": "Paper Ink",
+        "tonalRamp": [
+          "oklch(15% 0.012 89)",
+          "oklch(26% 0.015 89)",
+          "oklch(37% 0.019 89)",
+          "oklch(48% 0.022 89)",
+          "oklch(59% 0.025 89)",
+          "oklch(70% 0.023 89)",
+          "oklch(82% 0.019 89)",
+          "oklch(95% 0.015 89)"
+        ]
+      },
+      "paper-ink-dim": {
+        "role": "neutral",
+        "displayName": "Paper Ink Dim",
+        "tonalRamp": [
+          "oklch(15% 0.012 91)",
+          "oklch(26% 0.015 91)",
+          "oklch(37% 0.018 91)",
+          "oklch(48% 0.022 91)",
+          "oklch(59% 0.025 91)",
+          "oklch(70% 0.022 91)",
+          "oklch(82% 0.019 91)",
+          "oklch(95% 0.015 91)"
+        ]
+      },
+      "catalogue-green": {
+        "role": "primary",
+        "displayName": "Catalogue Green",
+        "tonalRamp": [
+          "oklch(15% 0.024 162)",
+          "oklch(26% 0.031 162)",
+          "oklch(37% 0.037 162)",
+          "oklch(48% 0.044 162)",
+          "oklch(59% 0.050 162)",
+          "oklch(70% 0.045 162)",
+          "oklch(82% 0.038 162)",
+          "oklch(95% 0.030 162)"
+        ]
+      },
+      "catalogue-green-raised": {
+        "role": "primary",
+        "displayName": "Catalogue Green Raised",
+        "tonalRamp": [
+          "oklch(15% 0.028 163)",
+          "oklch(26% 0.035 163)",
+          "oklch(37% 0.043 163)",
+          "oklch(48% 0.050 163)",
+          "oklch(59% 0.058 163)",
+          "oklch(70% 0.052 163)",
+          "oklch(82% 0.044 163)",
+          "oklch(95% 0.035 163)"
+        ]
+      },
+      "band-ink": {
+        "role": "primary",
+        "displayName": "Band Ink",
+        "tonalRamp": [
+          "oklch(15% 0.008 148)",
+          "oklch(26% 0.011 148)",
+          "oklch(37% 0.013 148)",
+          "oklch(48% 0.015 148)",
+          "oklch(59% 0.017 148)",
+          "oklch(70% 0.016 148)",
+          "oklch(82% 0.013 148)",
+          "oklch(95% 0.010 148)"
+        ]
+      },
+      "band-ink-dim": {
+        "role": "primary",
+        "displayName": "Band Ink Dim",
+        "tonalRamp": [
+          "oklch(15% 0.020 154)",
+          "oklch(26% 0.025 154)",
+          "oklch(37% 0.030 154)",
+          "oklch(48% 0.035 154)",
+          "oklch(59% 0.041 154)",
+          "oklch(70% 0.036 154)",
+          "oklch(82% 0.031 154)",
+          "oklch(95% 0.024 154)"
+        ]
+      },
+      "go-green": {
+        "role": "tertiary",
+        "displayName": "Go Green",
+        "tonalRamp": [
+          "oklch(15% 0.061 157)",
+          "oklch(26% 0.078 157)",
+          "oklch(37% 0.095 157)",
+          "oklch(48% 0.111 157)",
+          "oklch(59% 0.128 157)",
+          "oklch(70% 0.114 157)",
+          "oklch(82% 0.096 157)",
+          "oklch(95% 0.077 157)"
+        ]
+      },
+      "go-green-hover": {
+        "role": "tertiary",
+        "displayName": "Go Green Hover",
+        "tonalRamp": [
+          "oklch(15% 0.061 157)",
+          "oklch(26% 0.078 157)",
+          "oklch(37% 0.095 157)",
+          "oklch(48% 0.111 157)",
+          "oklch(59% 0.128 157)",
+          "oklch(70% 0.114 157)",
+          "oklch(82% 0.096 157)",
+          "oklch(95% 0.077 157)"
+        ]
+      },
+      "index-ochre": {
+        "role": "secondary",
+        "displayName": "Index Ochre",
+        "tonalRamp": [
+          "oklch(15% 0.065 77)",
+          "oklch(26% 0.083 77)",
+          "oklch(37% 0.101 77)",
+          "oklch(48% 0.118 77)",
+          "oklch(59% 0.136 77)",
+          "oklch(70% 0.122 77)",
+          "oklch(82% 0.102 77)",
+          "oklch(95% 0.082 77)"
+        ]
+      },
+      "spec-red": {
+        "role": "tertiary",
+        "displayName": "Spec Red",
+        "tonalRamp": [
+          "oklch(15% 0.085 32)",
+          "oklch(26% 0.108 32)",
+          "oklch(37% 0.131 32)",
+          "oklch(48% 0.154 32)",
+          "oklch(59% 0.177 32)",
+          "oklch(70% 0.158 32)",
+          "oklch(82% 0.133 32)",
+          "oklch(95% 0.106 32)"
+        ]
+      },
+      "claude-violet": {
+        "role": "tertiary",
+        "displayName": "Claude Violet",
+        "tonalRamp": [
+          "oklch(15% 0.054 295)",
+          "oklch(26% 0.068 295)",
+          "oklch(37% 0.083 295)",
+          "oklch(48% 0.097 295)",
+          "oklch(59% 0.112 295)",
+          "oklch(70% 0.100 295)",
+          "oklch(82% 0.084 295)",
+          "oklch(95% 0.067 295)"
+        ]
+      },
+      "elastomer-copper": {
+        "role": "tertiary",
+        "displayName": "Elastomer Copper",
+        "tonalRamp": [
+          "oklch(15% 0.055 45)",
+          "oklch(26% 0.070 45)",
+          "oklch(37% 0.085 45)",
+          "oklch(48% 0.100 45)",
+          "oklch(59% 0.115 45)",
+          "oklch(70% 0.103 45)",
+          "oklch(82% 0.086 45)",
+          "oklch(95% 0.069 45)"
+        ]
+      },
+      "filler-slate": {
+        "role": "tertiary",
+        "displayName": "Filler Slate",
+        "tonalRamp": [
+          "oklch(15% 0.006 256)",
+          "oklch(26% 0.008 256)",
+          "oklch(37% 0.010 256)",
+          "oklch(48% 0.012 256)",
+          "oklch(59% 0.013 256)",
+          "oklch(70% 0.012 256)",
+          "oklch(82% 0.010 256)",
+          "oklch(95% 0.008 256)"
+        ]
+      },
+      "metal-steel": {
+        "role": "tertiary",
+        "displayName": "Metal Steel",
+        "tonalRamp": [
+          "oklch(15% 0.039 255)",
+          "oklch(26% 0.049 255)",
+          "oklch(37% 0.060 255)",
+          "oklch(48% 0.070 255)",
+          "oklch(59% 0.081 255)",
+          "oklch(70% 0.072 255)",
+          "oklch(82% 0.061 255)",
+          "oklch(95% 0.048 255)"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "Stat-strip figures and view titles."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Section titles inside a view."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Customer names on rows; 15px captions and nav items."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Rationales, notes, drafts, banners."
+      },
+      "figure": {
+        "displayName": "Figure",
+        "purpose": "Costs, quote ids, margin sentences, what-if controls; tabular numerals."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Column heads, button text, chips, floor marker; uppercase tracked. 12px is the floor."
+      }
+    },
+    "shadows": [
+      {
+        "name": "band-sticky",
+        "value": "0 1px 0 #0e2a1e, 0 6px 18px rgba(0,0,0,0.35)",
+        "purpose": "The sticky navigation band only; everything else is flat and ruled."
+      }
+    ],
+    "motion": [
+      {
+        "name": "mg-arrive",
+        "value": "0.4s cubic-bezier(0.16, 1, 0.3, 1); opacity 0.4 to 1, translateY(-3px) to none",
+        "purpose": "A queue row or feed item that just arrived from a new supplier email."
+      },
+      {
+        "name": "mg-breathe",
+        "value": "1.6s ease-in-out infinite; opacity 0.55 to 1",
+        "purpose": "The Claude Violet 'Agents working' dot."
+      },
+      {
+        "name": "colors",
+        "value": "150ms",
+        "purpose": "Hover and selection colour transitions on buttons, chips, rows."
+      },
+      {
+        "name": "reduced-motion",
+        "value": "animation: none",
+        "purpose": "prefers-reduced-motion disables arrive and breathe."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "sm",
+        "value": "640px"
+      },
+      {
+        "name": "md",
+        "value": "768px"
+      },
+      {
+        "name": "lg",
+        "value": "1024px"
+      },
+      {
+        "name": "xl",
+        "value": "1280px"
+      },
+      {
+        "name": "container",
+        "value": "96rem"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Approve Button",
+      "kind": "button",
+      "refersTo": "button-approve",
+      "description": "The one solid-filled button on a row; approves the recommendation.",
+      "html": "<button class=\"ds-btn-approve\" type=\"button\">APPROVE</button>",
+      "css": ".ds-btn-approve { font-family: var(--font-label, 'Archivo Narrow', 'Archivo', sans-serif); font-weight: 600; font-size: 13px; letter-spacing: 0.06em; text-transform: uppercase; padding: 8px 16px; border-radius: 4px; border: 1px solid var(--color-go); background: var(--color-go); color: var(--color-ground); cursor: pointer; transition: background-color 150ms, border-color 150ms; } .ds-btn-approve:hover { background: #74d39d; border-color: #74d39d; } .ds-btn-approve:focus-visible { outline: 2px solid var(--color-attn); outline-offset: 2px; } .ds-btn-approve:disabled { opacity: 0.4; cursor: not-allowed; }"
+    },
+    {
+      "name": "Outline Buttons",
+      "kind": "button",
+      "refersTo": "button-outline",
+      "description": "Ruled outlines in the colour of their job: Reject (red), answer-it (ochre), neutral.",
+      "html": "<div class=\"ds-btn-row\"><button class=\"ds-btn-outline ds-btn-stop\" type=\"button\">REJECT</button><button class=\"ds-btn-outline ds-btn-attn\" type=\"button\">IT&#39;S EPDM 70 SHORE A COMPOUND</button><button class=\"ds-btn-outline\" type=\"button\">NEITHER, DISMISS</button></div>",
+      "css": ".ds-btn-row { display: flex; flex-wrap: wrap; gap: 8px; } .ds-btn-outline { font-family: var(--font-label, 'Archivo Narrow', 'Archivo', sans-serif); font-weight: 600; font-size: 13px; letter-spacing: 0.06em; text-transform: uppercase; padding: 8px 16px; border-radius: 4px; background: transparent; border: 1px solid var(--color-rule-bright); color: var(--color-ink); cursor: pointer; transition: background-color 150ms, border-color 150ms, color 150ms; } .ds-btn-outline:hover { border-color: var(--color-ink-dim); color: var(--color-ink-bright); } .ds-btn-outline:focus-visible { outline: 2px solid var(--color-attn); outline-offset: 2px; } .ds-btn-stop, .ds-btn-stop:hover { border-color: color-mix(in oklab, var(--color-stop) 60%, transparent); color: var(--color-stop); } .ds-btn-stop:hover { background: color-mix(in oklab, var(--color-stop) 10%, transparent); } .ds-btn-attn, .ds-btn-attn:hover { border-color: color-mix(in oklab, var(--color-attn) 70%, transparent); color: var(--color-attn); } .ds-btn-attn:hover { background: color-mix(in oklab, var(--color-attn) 10%, transparent); }"
+    },
+    {
+      "name": "Action Chips",
+      "kind": "chip",
+      "refersTo": "chip-action",
+      "description": "Choose honor, absorb, reprice or contact; the only fully round control. Selection is neutral, never violet.",
+      "html": "<div class=\"ds-chips\"><span class=\"ds-chips-label\">ACTION</span><button class=\"ds-chip\" type=\"button\">Honor</button><button class=\"ds-chip\" type=\"button\">Absorb</button><button class=\"ds-chip ds-chip-on\" type=\"button\">Reprice</button><button class=\"ds-chip\" type=\"button\">Contact customer</button></div>",
+      "css": ".ds-chips { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; } .ds-chips-label { font-family: var(--font-label, 'Archivo Narrow', 'Archivo', sans-serif); font-size: 12px; letter-spacing: 0.05em; color: var(--color-ink-dim); } .ds-chip { font-family: var(--font-sans, 'Archivo', sans-serif); font-size: 12px; padding: 4px 12px; border-radius: 9999px; border: 1px solid var(--color-rule); background: transparent; color: var(--color-ink-dim); cursor: pointer; transition: border-color 150ms, color 150ms; } .ds-chip:hover { border-color: var(--color-rule-bright); } .ds-chip:focus-visible { outline: 2px solid var(--color-attn); outline-offset: 2px; } .ds-chip-on, .ds-chip-on:hover { border-color: var(--color-ink); background: color-mix(in oklab, var(--color-ink) 10%, transparent); color: var(--color-ink-bright); }"
+    },
+    {
+      "name": "Status Chips",
+      "kind": "chip",
+      "refersTo": "chip-status",
+      "description": "Squared condensed-caps flags on a row: key account is neutral, contract note is ochre.",
+      "html": "<div class=\"ds-tags\"><span class=\"ds-tag\">KEY ACCOUNT</span><span class=\"ds-tag ds-tag-attn\">CONTRACT NOTE</span></div>",
+      "css": ".ds-tags { display: flex; gap: 8px; } .ds-tag { font-family: var(--font-label, 'Archivo Narrow', 'Archivo', sans-serif); font-size: 12px; letter-spacing: 0.05em; padding: 1px 6px; border-radius: 4px; border: 1px solid var(--color-rule-bright); color: var(--color-ink); } .ds-tag-attn { border-color: color-mix(in oklab, var(--color-attn) 40%, transparent); color: var(--color-attn); }"
+    },
+    {
+      "name": "Text Field",
+      "kind": "input",
+      "refersTo": "input-field",
+      "description": "Draft subject, body and notes: Sheet Raised fill, hairline border, ochre focus and caret.",
+      "html": "<input class=\"ds-input\" placeholder=\"Note for the record (optional, but it teaches the system)\" />",
+      "css": ".ds-input { font-family: var(--font-sans, 'Archivo', sans-serif); width: 100%; font-size: 14px; padding: 8px 12px; border-radius: 4px; border: 1px solid var(--color-rule); background: var(--color-sheet-2); color: var(--color-ink-bright); caret-color: var(--color-attn); outline: none; transition: border-color 150ms; } .ds-input::placeholder { color: var(--color-ink-dim); } .ds-input:focus { border-color: color-mix(in oklab, var(--color-attn) 70%, transparent); }"
+    },
+    {
+      "name": "Navigation Band",
+      "kind": "nav",
+      "refersTo": "nav-band",
+      "description": "The committed Catalogue Green band atop every view: wordmark, views with counts, agent status.",
+      "html": "<header class=\"ds-band\"><div class=\"ds-band-mark\">MARGIN<span>GUARD</span></div><nav class=\"ds-band-nav\"><a class=\"ds-band-item ds-band-on\" href=\"#\">Decide <span class=\"ds-band-count\">23</span></a><a class=\"ds-band-item\" href=\"#\">Settled by rules <span class=\"ds-band-count\">145</span></a><a class=\"ds-band-item\" href=\"#\">Leakage <span class=\"ds-band-count\">56</span></a><a class=\"ds-band-item\" href=\"#\">Data</a></nav><div class=\"ds-band-status\"><span class=\"ds-band-dot\"></span>Agents idle</div></header>",
+      "css": ".ds-band { display: flex; align-items: stretch; gap: 32px; height: 56px; padding: 0 24px; background: var(--color-shell); box-shadow: 0 1px 0 #0e2a1e, 0 6px 18px rgba(0,0,0,0.35); } .ds-band-mark { display: flex; align-items: center; font-family: var(--font-label, 'Archivo Narrow', 'Archivo', sans-serif); font-weight: 700; font-size: 19px; letter-spacing: 0.12em; color: var(--color-shell-ink); } .ds-band-mark span { color: var(--color-attn); } .ds-band-nav { display: flex; align-items: stretch; } .ds-band-item { position: relative; display: flex; align-items: center; gap: 8px; padding: 0 16px; font-family: var(--font-sans, 'Archivo', sans-serif); font-size: 15px; font-weight: 500; color: var(--color-shell-dim); text-decoration: none; transition: background-color 150ms, color 150ms; } .ds-band-item:hover { background: color-mix(in oklab, var(--color-shell-2) 60%, transparent); color: var(--color-shell-ink); } .ds-band-item:focus-visible { outline: 2px solid var(--color-attn); outline-offset: -2px; } .ds-band-on, .ds-band-on:hover { background: var(--color-shell-2); color: var(--color-shell-ink); } .ds-band-on::after { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 3px; background: var(--color-attn); } .ds-band-count { font-family: var(--font-label, 'Archivo Narrow', 'Archivo', sans-serif); font-size: 12px; font-weight: 600; padding: 0 6px; border-radius: 4px; background: color-mix(in oklab, var(--color-ground) 30%, transparent); color: var(--color-shell-ink); } .ds-band-on .ds-band-count { background: var(--color-attn); color: var(--color-ground); } .ds-band-status { margin-left: auto; align-self: center; display: inline-flex; align-items: center; gap: 8px; padding: 4px 10px; border-radius: 4px; background: color-mix(in oklab, var(--color-ground) 30%, transparent); font-family: var(--font-label, 'Archivo Narrow', 'Archivo', sans-serif); font-size: 13px; color: var(--color-shell-ink); } .ds-band-dot { width: 6px; height: 6px; border-radius: 9999px; background: var(--color-go); }"
+    },
+    {
+      "name": "Margin Bar",
+      "kind": "custom",
+      "refersTo": "margin-bar",
+      "description": "Quoted, now and floor on the screen's shared scale; the sentence below carries the meaning.",
+      "html": "<div class=\"ds-mbar\"><p class=\"ds-mbar-top\">Quoted <span class=\"ds-mbar-ink\">25.2%</span> &#8594; now <span class=\"ds-mbar-stop\">22.6%</span></p><div class=\"ds-mbar-track\" role=\"img\" aria-label=\"Margin 25.2% as quoted, 22.6% now, floor 23.7%\"><span class=\"ds-mbar-floorlabel\" style=\"left:40%\">FLOOR</span><div class=\"ds-mbar-below\" style=\"width:40%\"></div><div class=\"ds-mbar-above\" style=\"left:40%\"></div><div class=\"ds-mbar-tick\" style=\"left:calc(40% - 1px)\"></div><div class=\"ds-mbar-move\" style=\"left:30%;width:22%\"></div><div class=\"ds-mbar-quoted\" style=\"left:52%\"></div><div class=\"ds-mbar-now\" style=\"left:calc(30% - 3px)\"></div></div><p class=\"ds-mbar-gap\">1.1 pts below the 23.7% floor<span> &#183; was 1.5 pts above</span></p></div>",
+      "css": ".ds-mbar { width: 260px; font-family: var(--font-label, 'Archivo Narrow', 'Archivo', sans-serif); font-variant-numeric: tabular-nums; } .ds-mbar-top { margin: 0; font-size: 13px; color: var(--color-ink-dim); } .ds-mbar-ink { color: var(--color-ink); } .ds-mbar-stop { color: var(--color-stop); font-weight: 600; } .ds-mbar-track { position: relative; height: 10px; margin-top: 16px; } .ds-mbar-floorlabel { position: absolute; top: -16px; transform: translateX(-50%); font-size: 12px; font-weight: 600; letter-spacing: 0.08em; color: var(--color-attn); } .ds-mbar-below { position: absolute; top: 0; bottom: 0; left: 0; background: color-mix(in oklab, var(--color-stop) 20%, transparent); } .ds-mbar-above { position: absolute; top: 0; bottom: 0; right: 0; background: var(--color-sheet-2); } .ds-mbar-tick { position: absolute; top: -4px; bottom: -4px; width: 2px; background: var(--color-attn); } .ds-mbar-move { position: absolute; top: 50%; height: 2px; transform: translateY(-50%); background: var(--color-stop); } .ds-mbar-quoted { position: absolute; top: 50%; width: 10px; height: 10px; box-sizing: border-box; transform: translate(-50%, -50%); border-radius: 9999px; border: 2px solid var(--color-ink); background: var(--color-ground); } .ds-mbar-now { position: absolute; top: 50%; width: 0; height: 0; transform: translateY(-50%); border-top: 6px solid transparent; border-bottom: 6px solid transparent; border-right: 8px solid var(--color-stop); } .ds-mbar-gap { margin: 8px 0 0; font-size: 13px; font-weight: 600; color: var(--color-stop); } .ds-mbar-gap span { font-weight: 400; color: var(--color-ink-dim); }"
+    },
+    {
+      "name": "Queue Row",
+      "kind": "card",
+      "refersTo": "spec-table",
+      "description": "Rows of the Decide spec table: family thumb-index tab, shared columns, expand in place. Never boxed cards.",
+      "html": "<div class=\"ds-queue\"><div class=\"ds-queue-head\"><span>CUSTOMER &#183; RECOMMENDED ACTION</span><span>COST THAT MOVED &#183; $/LB</span><span class=\"ds-r\">AT RISK</span></div><button class=\"ds-row\" type=\"button\" aria-expanded=\"false\"><span class=\"ds-row-tab\" aria-hidden=\"true\"></span><span class=\"ds-row-who\"><span class=\"ds-row-name\">Bluewater Filtration</span><span class=\"ds-row-act\">Call the customer first</span><span class=\"ds-row-id\">Q-2026-0101 &#183; $68,527</span></span><span class=\"ds-row-cost\"><span class=\"ds-sw\"></span>FKM 75 <span class=\"ds-dim\">$14.80 &#8594;</span> <b>$15.76</b><span class=\"ds-dim\">/lb</span> <b>+6.5%</b> <span class=\"ds-dim\">from Dec 1</span></span><span class=\"ds-row-risk\"><span class=\"ds-row-usd\">$1,813</span><span class=\"ds-row-cap\">AT RISK</span></span></button><button class=\"ds-row\" type=\"button\" aria-expanded=\"false\"><span class=\"ds-row-tab ds-tab-metal\" aria-hidden=\"true\"></span><span class=\"ds-row-who\"><span class=\"ds-row-name\">Frontier Rail Car</span><span class=\"ds-row-act\">Send a revised quote</span><span class=\"ds-row-id\">Q-2026-0103 &#183; $6,589</span></span><span class=\"ds-row-cost\"><span class=\"ds-sw ds-tab-metal\"></span>1018 steel <span class=\"ds-dim\">$0.84 &#8594;</span> <b>$0.90</b><span class=\"ds-dim\">/lb</span> <b>+6.9%</b> <span class=\"ds-dim\">from Nov 1</span></span><span class=\"ds-row-risk\"><span class=\"ds-row-usd\">$149</span><span class=\"ds-row-cap\">AT RISK</span></span></button></div>",
+      "css": ".ds-queue { border: 1px solid var(--color-rule); border-radius: 4px; background: var(--color-sheet); font-family: var(--font-sans, 'Archivo', sans-serif); } .ds-queue-head, .ds-row { display: grid; grid-template-columns: minmax(0,1.15fr) minmax(0,1.25fr) 7rem; column-gap: 24px; padding-left: 24px; padding-right: 20px; } .ds-queue-head { padding-top: 8px; padding-bottom: 8px; border-bottom: 1px solid var(--color-rule-bright); font-family: var(--font-label, 'Archivo Narrow', 'Archivo', sans-serif); font-size: 12px; font-weight: 600; letter-spacing: 0.08em; color: var(--color-ink-dim); } .ds-r { text-align: right; } .ds-row { position: relative; width: 100%; align-items: center; padding-top: 14px; padding-bottom: 14px; border: 0; border-top: 1px solid var(--color-rule); background: transparent; text-align: left; color: inherit; font: inherit; cursor: pointer; transition: background-color 150ms; } .ds-queue-head + .ds-row { border-top: 0; } .ds-row:hover { background: color-mix(in oklab, var(--color-sheet-2) 40%, transparent); } .ds-row:focus-visible { outline: 2px solid var(--color-attn); outline-offset: -2px; } .ds-row-tab { position: absolute; top: 0; bottom: 0; left: 0; width: 6px; background: var(--color-elastomer); } .ds-tab-metal { background: var(--color-metal); } .ds-row-who { display: flex; flex-direction: column; min-width: 0; } .ds-row-name { font-size: 15px; font-weight: 600; color: var(--color-ink-bright); } .ds-row-act { margin-top: 4px; font-size: 14px; color: var(--color-ink-bright); } .ds-row-id { margin-top: 2px; font-family: var(--font-label, 'Archivo Narrow', 'Archivo', sans-serif); font-size: 13px; color: var(--color-ink-dim); } .ds-row-cost { font-family: var(--font-label, 'Archivo Narrow', 'Archivo', sans-serif); font-size: 13px; color: var(--color-ink-bright); font-variant-numeric: tabular-nums; } .ds-row-cost b { font-weight: 600; } .ds-dim { color: var(--color-ink-dim); } .ds-sw { display: inline-block; width: 10px; height: 10px; margin-right: 6px; border-radius: 1px; background: var(--color-elastomer); } .ds-row-risk { display: flex; flex-direction: column; text-align: right; } .ds-row-usd { font-family: var(--font-label, 'Archivo Narrow', 'Archivo', sans-serif); font-size: 20px; font-weight: 600; color: var(--color-ink-bright); font-variant-numeric: tabular-nums; } .ds-row-cap { font-family: var(--font-label, 'Archivo Narrow', 'Archivo', sans-serif); font-size: 12px; letter-spacing: 0.08em; color: var(--color-ink-dim); }"
+    },
+    {
+      "name": "Stat Strip Figure",
+      "kind": "custom",
+      "refersTo": "stat-figure",
+      "description": "A headline figure with its source caption; every figure names where it comes from.",
+      "html": "<button class=\"ds-stat\" type=\"button\"><span class=\"ds-stat-line\"><span class=\"ds-stat-val\">$27,902</span><span class=\"ds-stat-label\">at risk on open quotes</span></span><span class=\"ds-stat-src\">sum of every live card &#183; impact on quote lines</span></button>",
+      "css": ".ds-stat { display: flex; flex-direction: column; gap: 6px; padding: 12px 16px; border: 0; border-top: 1px solid var(--color-rule); border-bottom: 1px solid var(--color-rule); background: transparent; text-align: left; cursor: pointer; transition: background-color 150ms; } .ds-stat:hover { background: var(--color-sheet); } .ds-stat:focus-visible { outline: 2px solid var(--color-attn); outline-offset: 2px; } .ds-stat-line { display: flex; align-items: baseline; gap: 8px; } .ds-stat-val { font-family: var(--font-label, 'Archivo Narrow', 'Archivo', sans-serif); font-size: 26px; font-weight: 600; line-height: 1; color: var(--color-ink-bright); font-variant-numeric: tabular-nums; } .ds-stat-label { font-family: var(--font-sans, 'Archivo', sans-serif); font-size: 15px; color: var(--color-ink); } .ds-stat-src { font-family: var(--font-label, 'Archivo Narrow', 'Archivo', sans-serif); font-size: 12px; color: var(--color-ink-dim); }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Estimator's Desk",
+    "overview": "The console is the page an estimator keeps open beside the phone: an industrial supply catalogue printed on graphite stock. Paper-white ink, hairline rules, figures set tight in a condensed face with tabular numerals, and every moved cost tabbed in the colour of its material family. A committed deep catalogue-green band owns the top of every view; below it, the work is ruled spec tables, never a wall of floating cards.\n\nThe density is deliberate. A row carries who, what we recommend, which costs moved and by how much, the margin against the floor on one shared scale, and dollars at risk, all readable at a glance down the column. Colour carries a job, never decoration: ochre needs a person, red is below floor or a fault, green is approve or healthy, violet is Claude speaking. Everything else is ink on stock.\n\nThe system is dark only; there is no light theme and none should be added. It refuses the category default of grey rounded cards with a single blue accent.",
+    "keyCharacteristics": [
+      "Dark only: graphite stock ground, paper-white ink, hairline rules.",
+      "One committed colour band: catalogue green across the top of every view.",
+      "Role colours with exactly one meaning each; material-family tabs as catalogue thumb-index.",
+      "Archivo for reading, Archivo Narrow for labels and figures; tabular numerals everywhere.",
+      "Squared corners, ruled tables, rows that expand in place.",
+      "Figures name their source; margins share one scale per screen."
+    ],
+    "rules": [
+      {
+        "name": "The One Job Per Colour Rule",
+        "body": "Ochre needs a person, red is below floor or a fault, green is approve or healthy, violet is Claude. No role colour is used for decoration or for a second meaning.",
+        "section": "colors"
+      },
+      {
+        "name": "The Claude Speaks in Violet Rule",
+        "body": "Violet is reserved for Claude's own words and status. A person's edit, a rule decision, key-account chips, selected controls and filter states are neutral ink on hairline.",
+        "section": "colors"
+      },
+      {
+        "name": "The Copper Is Not Ochre Rule",
+        "body": "Elastomer copper is deliberately browner and darker than Index Ochre so a family tab never reads as \"needs a person\". Family colours never take a role; role colours never mark a family. Where copper tabs sit beside red leak bars (Leakage view) and the two read alike, lighten the bars rather than move copper.",
+        "section": "colors"
+      },
+      {
+        "name": "The Single Band Rule",
+        "body": "Catalogue Green appears in the navigation band and nowhere else as a surface colour.",
+        "section": "colors"
+      },
+      {
+        "name": "The 12px Floor Rule",
+        "body": "No text is set below 12px. Small print is 12px Archivo Narrow; 11px and smaller do not exist in this system.",
+        "section": "typography"
+      },
+      {
+        "name": "The Narrow Counts Rule",
+        "body": "If it is counted, priced, identified or labelled, it is Archivo Narrow with tabular numerals. If it is a sentence a person reads, it is Archivo.",
+        "section": "typography"
+      },
+      {
+        "name": "The Figures Name Their Source Rule",
+        "body": "Every headline figure carries a 12px Paper Ink Dim caption saying where it comes from (\"sum of every live card\", \"56 of 88 jobs since Jan 20\").",
+        "section": "typography"
+      },
+      {
+        "name": "The One Scale Rule",
+        "body": "Every margin bar on a screen shares one scale, stated in the column header (\"scale 20%–35%\"), so bars compare straight down the column.",
+        "section": "layout"
+      },
+      {
+        "name": "The Ruled, Not Lifted Rule",
+        "body": "Sections separate by hairline and tone. Cards, tables and panels carry no shadow; only the sticky band does.",
+        "section": "elevation"
+      },
+      {
+        "name": "The Squared Corner Rule",
+        "body": "Corners are 4px everywhere except action chips and status dots (fully round) and family swatches (1px). Nothing in between.",
+        "section": "shapes"
+      }
+    ],
+    "dos": [
+      "**Do** keep the system dark only; Graphite Stock (#131416) ground, Paper Ink text, `color-scheme: dark`.",
+      "**Do** give each role colour exactly one meaning: ochre needs a person, red below floor or fault, green approve or healthy, violet Claude.",
+      "**Do** tab every material reference with its family colour (copper elastomer, slate filler, steel metal) and keep copper browner and darker than ochre.",
+      "**Do** set every figure, id, price and label in Archivo Narrow with tabular numerals, and give every headline figure a source caption.",
+      "**Do** put all margin bars on a screen on one shared scale, with Quoted, Now and Floor labelled and the gap stated in points.",
+      "**Do** build lists of decisions as one ruled spec table with shared columns and rows that expand in place.",
+      "**Do** use the 2px Index Ochre focus outline with 2px offset; theme selection (ochre 35%), caret (ochre), scrollbar (Hairline Bright thumb) and details markers.",
+      "**Do** make Approve the only solid-filled button on a row; every other action is a ruled outline in its job's colour.",
+      "**Do** lighten red leak bars, not copper tabs, if the two read alike on the Leakage view."
+    ],
+    "donts": [
+      "**Don't** add a light theme.",
+      "**Don't** use violet for anything Claude did not say or do: not for a person's edit, a rule decision, key-account chips, selected controls or filter states.",
+      "**Don't** box queue rows as separate cards or lift sections with shadows; only the sticky band casts one.",
+      "**Don't** round corners beyond 4px, except action chips and status dots (fully round).",
+      "**Don't** put a \"→\" glyph on buttons or CTAs; the arrow appears only as data notation (a → b).",
+      "**Don't** place eyebrow or kicker labels above headings.",
+      "**Don't** set text below 12px.",
+      "**Don't** use Catalogue Green as a surface anywhere but the navigation band, or fall back to grey cards with a single blue accent."
+    ]
+  }
+}

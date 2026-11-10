@@ -1,0 +1,48 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0F1115;--card:#1A1D23;--line:#2A2E36;--ink:#E6E8EB;--ink2:#A9B0BA;--blue:#3B82F6;--red:#EF4444;--green:#22C55E;--amber:#F59E0B}
+*{box-sizing:border-box;margin:0}
+body{width:1440px;height:900px;overflow:hidden;background:var(--bg);color:var(--ink);font:14px/1.5 Inter,system-ui,sans-serif;font-variant-numeric:tabular-nums}
+.top{height:56px;display:flex;align-items:center;gap:16px;padding:0 28px;border-bottom:1px solid var(--line)}
+.brand{font-weight:700;font-size:16px}.brand b{color:var(--blue)}
+.meta{margin-left:auto;color:var(--ink2);font-size:13px}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;padding:20px 28px}
+.k{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px}
+.k small{color:var(--ink2);font-size:12px}.k strong{display:block;font-size:26px;font-weight:600;margin-top:4px}
+.wrap{display:grid;grid-template-columns:300px 1fr;gap:20px;padding:0 28px}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:10px}
+.panel h6{font-size:13px;font-weight:600;padding:14px 16px;border-bottom:1px solid var(--line)}
+.mail{padding:10px 16px;border-bottom:1px solid var(--line)}.mail span{display:block;color:var(--ink2);font-size:12px}
+.tabs{display:flex;gap:6px;margin-bottom:12px}.tabs div{padding:7px 14px;border-radius:8px;color:var(--ink2)}.tabs .on{background:var(--card);color:var(--ink)}
+table{width:100%;border-collapse:collapse}
+th{font-size:12px;font-weight:500;color:var(--ink2);text-align:left;padding:10px 16px;border-bottom:1px solid var(--line)}
+td{padding:12px 16px;border-bottom:1px solid var(--line)}td span{display:block;color:var(--ink2);font-size:12px}
+.pill{display:inline-block;font-size:12px;font-weight:500;padding:3px 10px;border-radius:999px;background:rgba(245,158,11,.12);color:var(--amber)}
+.pill.b{background:rgba(59,130,246,.12);color:var(--blue)}.red{color:var(--red)}
+</style></head><body>
+<div class="top"><div class="brand">Margin<b>Guard</b></div><div class="meta">Shop date Oct 15, 2026 · Agents idle</div></div>
+<div class="kpis">
+<div class="k"><small>At risk on open quotes</small><strong>$27,902</strong></div>
+<div class="k"><small>Below margin floor</small><strong class="red">21</strong></div>
+<div class="k"><small>Leaked on won jobs (2026)</small><strong>$6,151</strong></div>
+<div class="k"><small>Settled by rules</small><strong>150</strong></div>
+</div>
+<div class="wrap">
+<div class="panel"><h6>Supplier inbox</h6>
+<div class="mail">Midwest Polymer<span>EPDM 70 to $2.27/lb · Nov 1</span></div>
+<div class="mail">Summit Silicones<span>VMQ 50 $310 per 25 kg bag</span></div>
+<div class="mail">Keystone Rubber<span>"Black 70" · needs a look</span></div>
+<div class="mail">Ridgeline Carbon<span>N550 $118/cwt · Nov 1</span></div>
+</div>
+<div><div class="tabs"><div class="on">Needs your decision 21</div><div>Settled by rules 150</div><div>Done</div><div>Data</div></div>
+<div class="panel"><table>
+<tr><th>Customer</th><th>Quote</th><th>Margin</th><th>At risk</th><th>Recommended</th></tr>
+<tr><td>Bluewater Filtration<span>standard</span></td><td>Q-2026-0101<span>$68,527</span></td><td class="red">25.2% → 22.6%<span>floor 23.7%</span></td><td>$1,782</td><td><span class="pill">Call first</span></td></tr>
+<tr><td>Frontier Rail Car<span>standard</span></td><td>Q-2026-0119<span>$61,959</span></td><td class="red">24.6% → 22.2%<span>floor 22.6%</span></td><td>$1,487</td><td><span class="pill">Call first</span></td></tr>
+<tr><td>Harbor Point Foodservice<span>standard</span></td><td>Q-2026-0164<span>$41,803</span></td><td class="red">30.7% → 27.0%<span>floor 27.7%</span></td><td>$1,547</td><td><span class="pill">Call first</span></td></tr>
+<tr><td>Granite Industrial<span>key account</span></td><td>Q-2026-0157<span>$48,618</span></td><td class="red">33.9% → 31.8%<span>floor 32.9%</span></td><td>$1,021</td><td><span class="pill">Call first</span></td></tr>
+<tr><td>Frontier Rail Car<span>standard</span></td><td>Q-2026-0103<span>$6,589</span></td><td class="red">29.1% → 26.8%<span>floor 27.6%</span></td><td>$152</td><td><span class="pill b">Revise quote</span></td></tr>
+</table></div></div></div>
+</body></html>

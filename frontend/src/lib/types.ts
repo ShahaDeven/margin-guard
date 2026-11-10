@@ -129,7 +129,44 @@ export interface Email {
 export interface Material {
   id: string
   name: string
+  /** Catalogue family: elastomer, filler, metal, ... */
+  category: string
   cost_per_lb: number
+}
+
+export interface LeakageJob {
+  quote_id: string
+  customer_id: string
+  customer_name: string
+  issued_date: string
+  ordered_date: string
+  revenue_usd: number
+  margin_floor: number
+  margin_quoted: number
+  margin_realized: number
+  leak_usd: number
+  below_floor: boolean
+  by_material: Record<string, number>
+}
+
+export interface Leakage {
+  assumption: string
+  period: { from: string; to: string } | null
+  won_jobs: number
+  skipped_jobs: { quote_id: string; materials: string[] }[]
+  jobs_with_cost_moves: number
+  jobs_leaked: number
+  revenue_usd: number
+  leaked_usd: number
+  gained_usd: number
+  net_leaked_usd: number
+  margin_quoted: number
+  margin_realized: number
+  below_floor_jobs: number
+  by_material: { material_id: string; material_name: string; leak_usd: number; jobs: number }[]
+  by_customer: { customer_id: string; customer_name: string; leak_usd: number; jobs: number }[]
+  by_month: { month: string; leak_usd: number; jobs: number; revenue_usd: number }[]
+  top_jobs: LeakageJob[]
 }
 
 export interface OutboxItem {
