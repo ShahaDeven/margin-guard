@@ -1,0 +1,128 @@
+{
+  "F01": {
+    "email_kind": "price_change",
+    "changes": [
+      {
+        "material_text": "carbon black N550",
+        "new_price": 121.0,
+        "price_unit": "lb",
+        "price_in_cents": true,
+        "currency": "USD",
+        "pack_qty": null,
+        "old_price": null,
+        "pct_change": null,
+        "effective_date": "2027-01-15"
+      }
+    ],
+    "confidence": 0.97,
+    "rationale": "Supplier announces a firm new price of 121 cents per pound for carbon black N550 effective January 15, 2027."
+  },
+  "F02": {
+    "email_kind": "price_change",
+    "changes": [
+      {
+        "material_text": "1018 cold rolled bar",
+        "new_price": 88.5,
+        "price_unit": "lb",
+        "price_in_cents": true,
+        "currency": "USD",
+        "pack_qty": null,
+        "old_price": null,
+        "pct_change": null,
+        "effective_date": "2026-12-01"
+      }
+    ],
+    "confidence": 0.97,
+    "rationale": "Supplier states a specific new price of 88.5 cents per pound for 1018 cold rolled bar effective December 1, 2026."
+  },
+  "F03": {
+    "email_kind": "price_change",
+    "changes": [
+      {
+        "material_text": "NBR 90",
+        "new_price": 2.61,
+        "price_unit": "lb",
+        "price_in_cents": false,
+        "currency": "USD",
+        "pack_qty": null,
+        "old_price": 248.0,
+        "pct_change": null,
+        "effective_date": "2026-12-01"
+      }
+    ],
+    "confidence": 0.8,
+    "rationale": "Supplier announces NBR 90 at $2.61/lb effective 2026-12-01; the old price is stated as 248 cents, which is reported as written, though it differs from the dollar format of the new price."
+  },
+  "F04": {
+    "email_kind": "price_change",
+    "changes": [
+      {
+        "material_text": "FKM 75",
+        "new_price": 21.4,
+        "price_unit": "lb",
+        "price_in_cents": false,
+        "currency": "CAD",
+        "pack_qty": null,
+        "old_price": null,
+        "pct_change": null,
+        "effective_date": "2026-12-01"
+      }
+    ],
+    "confidence": 0.95,
+    "rationale": "Supplier states a firm new price of CAD 21.40/lb for FKM 75 effective December 1, 2026."
+  },
+  "F05": {
+    "email_kind": "price_change",
+    "changes": [
+      {
+        "material_text": "SBR 60",
+        "new_price": 172.0,
+        "price_unit": "cwt",
+        "price_in_cents": false,
+        "currency": "USD",
+        "pack_qty": null,
+        "old_price": null,
+        "pct_change": null,
+        "effective_date": "2026-12-01"
+      }
+    ],
+    "confidence": 0.9,
+    "rationale": "The supplier states a firm new price of $172.00 per cwt for SBR 60 compound effective 2026-12-01, with no old price or percent change given."
+  },
+  "F06": {
+    "email_kind": "price_change",
+    "changes": [
+      {
+        "material_text": "N550",
+        "new_price": 57.25,
+        "price_unit": "lb",
+        "price_in_cents": false,
+        "currency": "USD",
+        "pack_qty": 50.0,
+        "old_price": null,
+        "pct_change": null,
+        "effective_date": "2026-12-01"
+      }
+    ],
+    "confidence": 0.9,
+    "rationale": "Supplier announces a new price of $57.25 per 50 lb bag of N550 effective 2026-12-01, so it is reported as a pack price in lb with pack_qty 50."
+  },
+  "F07": {
+    "email_kind": "price_change",
+    "changes": [
+      {
+        "material_text": "Silicone VMQ 50",
+        "new_price": 10.2,
+        "price_unit": "kg",
+        "price_in_cents": false,
+        "currency": "EUR",
+        "pack_qty": null,
+        "old_price": null,
+        "pct_change": null,
+        "effective_date": "2026-12-01"
+      }
+    ],
+    "confidence": 0.95,
+    "rationale": "Supplier states a firm new price of \u20ac10.20/kg for Silicone VMQ 50 effective December 1, 2026."
+  }
+}

@@ -242,9 +242,9 @@ def _cost_on(material_id: str, current: float, on: date) -> float:
     return cost
 
 
-def _price_change_key(material_id: str, cost_per_lb: float, effective: str) -> str:
+def _price_change_key(vendor_id: str, material_id: str, cost_per_lb: float, effective: str) -> str:
     # Must match margin_guard.parser.price_change_key.
-    return f"price_change:{material_id}:{cost_per_lb:.4f}:{effective}"
+    return f"price_change:{vendor_id}:{material_id}:{cost_per_lb:.4f}:{effective}"
 
 
 def _insert_quote(conn, rng, quote_id, customer_id, status, issued, valid_days, costs):
@@ -299,7 +299,7 @@ def build(conn, emails_path: Path = EMAILS_PATH, rng_seed: int = RNG_SEED) -> No
                     "INSERT INTO events (event_type, idempotency_key, source_ref, payload, status, created_at)"
                     " VALUES ('price_change.detected', ?, 'seed', ?, 'processed', ?)",
                     (
-                        _price_change_key(mat_id, value, eff),
+                        _price_change_key(primary_vendor, mat_id, value, eff),
                         json.dumps({"material_id": mat_id, "vendor_id": primary_vendor,
                                     "new_cost_per_lb": value, "effective_date": eff}),
                         f"{eff} 08:00:00",

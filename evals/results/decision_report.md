@@ -8,11 +8,11 @@
 | E05 | MAT-CR-60 -4.1% | 0 | cost decrease or no change; margins improve, no action | $0.00 |
 | E07 | (needs review) | - | - | - |
 | E08 | MAT-FKM-75 +6.5% | 27 | absorb 4, contact_customer 3, honor 20 | $6,409.87 |
-| E09 | MAT-CB-N550 +8.3% | 26 | absorb 12, contact_customer 5, honor 9 | $3,516.98 |
+| E09 | MAT-CB-N550 +8.3% | 26 | absorb 12, contact_customer 5, honor 9 | $3,516.99 |
 | E10 | MAT-STL-1018 +6.9% | 30 | absorb 17, honor 13 | $2,917.43 |
 | E11 | MAT-NR-40 +5.0% | 11 | honor 11 | $0.00 |
 | E12 | MAT-EPDM-50 +4.6% | 10 | absorb 8, honor 2 | $979.32 |
-| E12 | MAT-SBR-60 +4.9% | 25 | absorb 9, contact_customer 7, honor 8, reprice 1 | $9,353.79 |
+| E12 | MAT-SBR-60 +4.9% | 25 | absorb 9, contact_customer 7, honor 8, reprice 1 | $9,353.80 |
 | E15 | (needs review) | - | - | - |
 
 ### Judgment calls (Claude)
@@ -23,13 +23,17 @@
 | Q-2026-0169 (superseded) | Lakeshore HVAC | key | $1,124 | 30.1% -> 27.5% (floor 28.6%) | contact_customer | PASS contact_customer | 0.96 | ok |
 | Q-2026-0185 (superseded) | Lakeshore HVAC | key | $38,407 | 31.2% -> 28.3% (floor 29.7%) | contact_customer | PASS contact_customer | 0.97 | ok |
 | Q-2026-0204 (superseded) | Lakeshore HVAC | key | $16,442 | 29.2% -> 26.2% (floor 28.2%) | contact_customer | PASS contact_customer | 0.95 | ok |
+| Q-2026-0132 | Orchard Food Processing | standard | $4,819 | 29.3% -> 27.2% (floor 27.3%) | reprice | PASS reprice | 0.93 | ok |
+| Q-2026-0162 (superseded) | Orchard Food Processing | standard | $24,470 | 34.3% -> 33.0% (floor 33.3%) | contact_customer | PASS contact_customer | 0.95 | ok |
+| Q-2026-0162 (superseded) | Orchard Food Processing | standard | $24,470 | 34.3% -> 32.9% (floor 33.3%) | contact_customer | PASS contact_customer | 0.96 | ok |
 | Q-2026-0202 | Copperline Brewing Equipment | standard | $2,269 | 30.1% -> 29.1% (floor 29.1%) | reprice | PASS reprice | 0.93 | ok |
 | Q-2026-0112 | Ridgeway Lab Instruments | key | $2,640 | 28.4% -> 26.7% (floor 27.4%) | contact_customer | PASS contact_customer | 0.96 | ok |
 | Q-2026-0116 | Ridgeway Lab Instruments | key | $28,810 | 29.9% -> 28.3% (floor 28.4%) | contact_customer | PASS contact_customer | 0.97 | ok |
 | Q-2026-0117 | Northfield Appliance | standard | $27,355 | 25.1% -> 21.9% (floor 23.6%) | contact_customer | PASS contact_customer | 0.95 | ok |
 | Q-2026-0129 | Northfield Appliance | standard | $2,588 | 24.8% -> 22.1% (floor 23.8%) | reprice | PASS reprice | 0.95 | ok |
 | Q-2026-0162 (superseded) | Orchard Food Processing | standard | $24,470 | 34.3% -> 33.1% (floor 33.3%) | contact_customer | PASS contact_customer | 0.95 | ok |
-| Q-2026-0164 | Harbor Point Foodservice | standard | $41,803 | 30.7% -> 27.0% (floor 27.7%) | contact_customer | PASS contact_customer | 0.95 | ok |
+| Q-2026-0164 (superseded) | Harbor Point Foodservice | standard | $41,803 | 30.7% -> 27.0% (floor 27.7%) | contact_customer | PASS contact_customer | 0.95 | ok |
+| Q-2026-0164 | Harbor Point Foodservice | standard | $41,803 | 30.7% -> 27.0% (floor 27.7%) | contact_customer | PASS contact_customer | 0.93 | ok |
 | Q-2026-0193 | Evergreen Solar Mounts | standard | $2,724 | 22.9% -> 20.5% (floor 21.4%) | reprice | PASS reprice | 0.93 | ok |
 | Q-2026-0225 | Harbor Point Foodservice | standard | $16,117 | 31.7% -> 28.2% (floor 30.2%) | contact_customer | PASS contact_customer | 0.95 | ok |
 | Q-2026-0231 | Northfield Appliance | standard | $1,285 | 30.4% -> 26.5% (floor 29.4%) | reprice | PASS reprice | 0.95 | ok |
@@ -52,8 +56,8 @@
 | Q-2026-0239 | Granite Industrial | key | $34,632 | 26.3% -> 24.3% (floor 24.8%) | contact_customer | PASS contact_customer | 0.97 | ok |
 | Q-2026-0242 | Granite Industrial | key | $8,889 | 34.3% -> 33.0% (floor 33.3%) | contact_customer | PASS contact_customer | 0.93 | ok |
 
-- Quote decisions: **232** (rules 200, Claude 32, escalated 0); review items: 2
+- Quote decisions: **282** (rules 246, Claude 36, escalated 0); review items: 2
 - Accuracy vs policy: overall **100%**, rules **100%**, Claude **100%**
 - Drafts quoting the proposed prices correctly: **100%**
-- Superseded by a newer card for the same quote: **50**; live cards for a person: **182**
-- Actions: {'absorb': 99, 'honor': 101, 'contact_customer': 26, 'reprice': 6}; exposure on live cards **$28,030.26**
+- Superseded by a newer card for the same quote: **111**; live cards for a person: **171**
+- Actions: {'absorb': 115, 'honor': 131, 'contact_customer': 29, 'reprice': 7}; exposure on live cards **$27,902.31**

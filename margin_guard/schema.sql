@@ -1,5 +1,9 @@
 -- Margin Guard: a synthetic custom rubber-molding job shop.
 -- All material costs are stored per lb; vendors quote in whatever unit they like.
+-- Money columns are REAL holding values already rounded to their precision
+-- (cost/lb 6 dp, unit prices 4 dp, dollar totals 2 dp). Every calculation is done
+-- in Decimal (margin_guard/money.py), and a rounded value survives a round trip
+-- through a double exactly, so REAL adds no error. Amounts are USD.
 
 CREATE TABLE IF NOT EXISTS vendors (
     id            TEXT PRIMARY KEY,
@@ -22,6 +26,9 @@ CREATE TABLE IF NOT EXISTS material_vendors (
     PRIMARY KEY (material_id, vendor_id)
 );
 
+-- Every supplier's prices. Quotes are costed at the costing supplier's
+-- (material_vendors.is_primary); other suppliers' rows are alternatives on file.
+-- vendor_id NULL = a cost the shop entered itself, which always counts.
 CREATE TABLE IF NOT EXISTS material_price_history (
     id              INTEGER PRIMARY KEY AUTOINCREMENT,
     material_id     TEXT NOT NULL REFERENCES materials(id),
@@ -125,6 +132,7 @@ CREATE TABLE IF NOT EXISTS proposals (
     status           TEXT NOT NULL DEFAULT 'pending'
                      CHECK (status IN ('pending', 'approved', 'edited', 'rejected', 'superseded')),
     superseded_by    INTEGER REFERENCES proposals(id),   -- newer card that already covers this change
+    supersede_reason TEXT,                       -- covered by a later-dated card, or restated
     -- What the person actually signed off on. Compared with action/draft_* this is
     -- the label the eval loop learns from (Day 4).
     final_action     TEXT,
@@ -161,3 +169,4 @@ CREATE TABLE IF NOT EXISTS quote_revisions (
 
 CREATE INDEX IF NOT EXISTS idx_events_status ON events(status, event_type);
 CREATE INDEX IF NOT EXISTS idx_quote_lines_quote ON quote_lines(quote_id);
+CREATE INDEX IF NOT EXISTS idx_price_history_lookup ON material_price_history(material_id, vendor_id, effective_date);

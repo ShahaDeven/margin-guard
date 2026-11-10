@@ -16,7 +16,8 @@ the original proposal; that pair is the training signal for the eval loop.
 import json
 import sqlite3
 
-from . import events
+from . import events, money
+from .money import D, out
 from .parser import EventDraft, price_change_key
 
 QUOTE_ACTIONS = {"honor", "absorb", "reprice", "contact_customer"}
@@ -116,7 +117,7 @@ def reopen(conn: sqlite3.Connection, proposal_id: int) -> dict:
         "SELECT * FROM quote_revisions WHERE proposal_id = ? ORDER BY id DESC", (proposal_id,)).fetchall()
     for rev in revisions:
         current = conn.execute("SELECT unit_price FROM quote_lines WHERE id = ?", (rev["line_id"],)).fetchone()
-        if abs(current["unit_price"] - rev["new_price"]) > 1e-9:
+        if D(current["unit_price"]) != D(rev["new_price"]):
             raise ActionError(f"quote {p['quote_id']} has been revised again since; undo that decision first")
     for rev in revisions:
         conn.execute("UPDATE quote_lines SET unit_price = ? WHERE id = ?", (rev["old_price"], rev["line_id"]))
@@ -163,11 +164,13 @@ def resolve_review(conn: sqlite3.Connection, proposal_id: int, material_id: str,
         "material_id": material_id,
         "match_method": "person",
         "old_cost_per_lb": mat["cost_per_lb"],
-        "pct_change": round((new_cost - mat["cost_per_lb"]) / mat["cost_per_lb"], 6),
+        "pct_change": out(money.pct((D(new_cost) - D(mat["cost_per_lb"])) / D(mat["cost_per_lb"]))),
     }
     event_id = events.append(
         conn,
-        EventDraft("price_change.detected", price_change_key(material_id, new_cost, payload["effective_date"]), resolved),
+        EventDraft("price_change.detected",
+                   price_change_key(payload.get("vendor_id"), material_id, new_cost, payload["effective_date"]),
+                   resolved),
         source_ref=f"review:{proposal_id}",
     )
     if event_id is None:

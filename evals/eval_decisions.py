@@ -2,6 +2,7 @@
 
     python -m evals.eval_decisions            # calls Claude for the below-floor quotes
     python -m evals.eval_decisions --replay   # rescore cached decisions, no API calls
+    python -m evals.eval_decisions --fill     # cached decisions + Claude only for new cards
 
 Extraction is replayed from evals/results/extractions.json (run
 evals.eval_extraction once first), so this eval measures decisions only.
@@ -17,17 +18,13 @@ from pathlib import Path
 from evals.reference_policy import expected_action
 from margin_guard import coordinator, db, ingest, seed
 from margin_guard.config import MODEL
-from margin_guard.decide import QuoteDecision
+from margin_guard.decide import QuoteDecision, decision_key
 from margin_guard.parser import EmailExtraction
 
 RESULTS_DIR = Path(__file__).resolve().parent / "results"
 EXTRACTIONS = RESULTS_DIR / "extractions.json"
 DECISIONS_CACHE = RESULTS_DIR / "decisions.json"
 _NUMBER = re.compile(r"\d[\d,]*\.\d+|\d[\d,]*")
-
-
-def decision_key(facts: dict) -> str:
-    return f"{facts['quote_id']}:{facts['material_id']}:{facts['effective_date']}"
 
 
 def draft_uses_proposed_prices(facts: dict, body: str | None) -> bool:
@@ -42,21 +39,29 @@ def draft_uses_proposed_prices(facts: dict, body: str | None) -> bool:
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--replay", action="store_true", help="reuse cached decisions instead of calling Claude")
+    ap.add_argument("--fill", action="store_true",
+                    help="reuse cached decisions and call Claude only for cards not in the cache")
     args = ap.parse_args()
 
     if not EXTRACTIONS.exists():
         raise SystemExit("Run `python -m evals.eval_extraction` first to cache extractions.")
     extractions = json.loads(EXTRACTIONS.read_text(encoding="utf-8"))
 
-    cache: dict = json.loads(DECISIONS_CACHE.read_text(encoding="utf-8")) if args.replay else {}
+    reuse = args.replay or args.fill
+    cache: dict = json.loads(DECISIONS_CACHE.read_text(encoding="utf-8")) if reuse else {}
+    calls = []
     if args.replay:
         decider = lambda facts: QuoteDecision.model_validate(cache[decision_key(facts)])  # noqa: E731
     else:
         from margin_guard.decide import llm_decide
 
         def decider(facts):
+            key = decision_key(facts)
+            if args.fill and key in cache:
+                return QuoteDecision.model_validate(cache[key])
             d = llm_decide(facts)
-            cache[decision_key(facts)] = d.model_dump()
+            calls.append(key)
+            cache[key] = d.model_dump()
             return d
 
     with tempfile.TemporaryDirectory() as tmp:
@@ -67,6 +72,7 @@ def main() -> None:
         coordinator.run(conn, decider)
         if not args.replay:
             DECISIONS_CACHE.write_text(json.dumps(cache, indent=2), encoding="utf-8")
+            print(f"  Claude calls this run: {len(calls)}")
 
         rows = conn.execute(
             """SELECT p.*, e.payload AS event_payload FROM proposals p JOIN events e ON e.id = p.event_id

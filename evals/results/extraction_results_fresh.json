@@ -1,0 +1,123 @@
+{
+  "summary": {
+    "set": "fresh",
+    "model": "claude-sonnet-5-5",
+    "emails": 7,
+    "outcome_accuracy": 1.0,
+    "gold_changes": 5,
+    "change_recall": 1.0,
+    "price_accuracy": 1.0,
+    "date_accuracy": 1.0,
+    "unexpected_changes": 0
+  },
+  "emails": [
+    {
+      "id": "F01",
+      "trap": "cent sign",
+      "gold_outcome": "detected",
+      "outcome": "detected",
+      "outcome_ok": true,
+      "changes": [
+        {
+          "material_id": "MAT-CB-N550",
+          "found": true,
+          "price_ok": true,
+          "date_ok": true,
+          "predicted_cost": 1.21,
+          "gold_cost": 1.21
+        }
+      ],
+      "unexpected_changes": []
+    },
+    {
+      "id": "F02",
+      "trap": "fractional cents",
+      "gold_outcome": "detected",
+      "outcome": "detected",
+      "outcome_ok": true,
+      "changes": [
+        {
+          "material_id": "MAT-STL-1018",
+          "found": true,
+          "price_ok": true,
+          "date_ok": true,
+          "predicted_cost": 0.885,
+          "gold_cost": 0.885
+        }
+      ],
+      "unexpected_changes": []
+    },
+    {
+      "id": "F03",
+      "trap": "new price in dollars, old price in cents",
+      "gold_outcome": "detected",
+      "outcome": "detected",
+      "outcome_ok": true,
+      "changes": [
+        {
+          "material_id": "MAT-NBR-90",
+          "found": true,
+          "price_ok": true,
+          "date_ok": true,
+          "predicted_cost": 2.61,
+          "gold_cost": 2.61
+        }
+      ],
+      "unexpected_changes": []
+    },
+    {
+      "id": "F04",
+      "trap": "price in Canadian dollars",
+      "gold_outcome": "needs_review",
+      "outcome": "needs_review",
+      "outcome_ok": true,
+      "changes": [],
+      "unexpected_changes": []
+    },
+    {
+      "id": "F05",
+      "trap": "control: dollars per hundredweight",
+      "gold_outcome": "detected",
+      "outcome": "detected",
+      "outcome_ok": true,
+      "changes": [
+        {
+          "material_id": "MAT-SBR-60",
+          "found": true,
+          "price_ok": true,
+          "date_ok": true,
+          "predicted_cost": 1.72,
+          "gold_cost": 1.72
+        }
+      ],
+      "unexpected_changes": []
+    },
+    {
+      "id": "F06",
+      "trap": "pack priced in lb",
+      "gold_outcome": "detected",
+      "outcome": "detected",
+      "outcome_ok": true,
+      "changes": [
+        {
+          "material_id": "MAT-CB-N550",
+          "found": true,
+          "price_ok": true,
+          "date_ok": true,
+          "predicted_cost": 1.145,
+          "gold_cost": 1.145
+        }
+      ],
+      "unexpected_changes": []
+    },
+    {
+      "id": "F07",
+      "trap": "price in euros per kg",
+      "gold_outcome": "needs_review",
+      "outcome": "needs_review",
+      "outcome_ok": true,
+      "changes": [],
+      "unexpected_changes": []
+    }
+  ]
+}

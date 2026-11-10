@@ -48,6 +48,20 @@ def vendor_materials(conn: sqlite3.Connection, vendor_id: str) -> set[str]:
     return {r["material_id"] for r in rows}
 
 
+def costing_vendor(conn: sqlite3.Connection, material_id: str) -> str | None:
+    """The supplier whose price a material is costed at (material_vendors.is_primary).
+
+    A shop can buy one material from several suppliers, but quotes are costed at
+    one price. Only this supplier's changes move margins; another supplier's
+    price is recorded as an alternative. None if no supplier is marked primary.
+    """
+    row = conn.execute(
+        "SELECT vendor_id FROM material_vendors WHERE material_id = ? AND is_primary = 1 ORDER BY vendor_id LIMIT 1",
+        (material_id,),
+    ).fetchone()
+    return row["vendor_id"] if row else None
+
+
 def resolve_material(conn: sqlite3.Connection, text: str, vendor_id: str | None = None) -> MatchResult:
     query = normalize_name(text)
     if not query:

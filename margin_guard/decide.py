@@ -6,6 +6,7 @@ right move depends on deal size, account tier and free-text contract notes.
 It also drafts the email. Prices always come from impact.py, never from the model.
 """
 
+import hashlib
 import json
 from typing import Callable, Iterable, Literal
 
@@ -47,6 +48,20 @@ def llm_decide(facts: dict, model: str | None = None, log: list | None = None, *
     system = SYSTEM_PROMPT if policy is None else system_prompt(policy)
     schema = QuoteDecisionWithAbsorb if allow_absorb else QuoteDecision
     return llm.parse(system, json.dumps(facts, indent=2), schema, effort="low", model=model, log=log)
+
+
+def decision_key(facts: dict) -> str:
+    """Cache key for one decision: the quote, the triggering change and its date.
+
+    A restated card (same quote and change, numbers redone because an
+    earlier-dated change arrived later) adds a fingerprint of its costs, so it
+    never reuses a draft written for the old numbers.
+    """
+    key = f"{facts['quote_id']}:{facts['material_id']}:{facts['effective_date']}"
+    if facts.get("restated"):
+        costs = sorted((c["material_id"], c["cost_after"]) for c in facts["cost_changes"])
+        key += ":r" + hashlib.sha1(json.dumps(costs).encode()).hexdigest()[:8]
+    return key
 
 
 Decider = Callable[[dict], QuoteDecision]

@@ -2,6 +2,7 @@
 
     python -m evals.eval_extraction                 # the 15 inbox emails (the set the pipeline was built on)
     python -m evals.eval_extraction --set holdout   # 10 harder emails nothing was tuned against
+    python -m evals.eval_extraction --set fresh     # 7 cents / currency / pack emails (regression set)
     python -m evals.eval_extraction --replay        # rescore cached extractions, no API calls
 
 Builds a throwaway database each run so results never depend on local state.
@@ -21,6 +22,9 @@ SETS = {
     # name: (emails, cache of raw extractions, report suffix)
     "tuned": (EMAILS_PATH, RESULTS_DIR / "extractions.json", ""),
     "holdout": (ROOT / "data" / "vendor_emails_holdout.json", RESULTS_DIR / "extractions_holdout.json", "_holdout"),
+    # Cents, currency and packs, written with the cents/currency schema fix (Nov 2026).
+    # A regression set for that fix, not a blind holdout.
+    "fresh": (ROOT / "data" / "vendor_emails_fresh.json", RESULTS_DIR / "extractions_fresh.json", "_fresh"),
 }
 PRICE_TOLERANCE = 0.005   # 0.5%
 

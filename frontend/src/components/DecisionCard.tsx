@@ -82,6 +82,12 @@ export function DecisionCard({ p, fresh, bar, onReview, onViewQuote }: {
             </p>
           ) : null}
 
+          {f.restated ? (
+            <p className="rounded border border-line-bright bg-panel-2 px-3 py-2 text-sm text-silver">
+              <span className="font-mono text-[10px] uppercase tracking-wider text-silver-dim">Restated · </span>
+              {f.restated.reason.replace(/^restated: the/, 'The')}. The numbers here include it.
+            </p>
+          ) : null}
           {f.contract_note ? (
             <p className="rounded border border-hiviz/30 bg-hiviz/[0.04] px-3 py-2 text-sm text-silver">
               <span className="font-mono text-[10px] uppercase tracking-wider text-hiviz">Contract note · </span>

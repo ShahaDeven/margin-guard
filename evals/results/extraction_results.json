@@ -1,5 +1,6 @@
 {
   "summary": {
+    "set": "tuned",
     "model": "claude-sonnet-5-5",
     "emails": 15,
     "outcome_accuracy": 1.0,

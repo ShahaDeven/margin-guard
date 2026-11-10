@@ -6,6 +6,9 @@ import { Button } from './Button'
 
 /** One line on what the email led to, e.g. "17 quotes checked · 5 need you". */
 function Impact({ m }: { m: Email }) {
+  if (!m.quotes_checked && m.alt_supplier_notes.length) {
+    return <p className="mt-0.5 font-mono text-[10px] text-silver-dim">→ alternate supplier · on file, margins unchanged</p>
+  }
   if (!m.quotes_checked) return null
   return (
     <p className="mt-0.5 font-mono text-[10px] text-silver-dim">
@@ -63,6 +66,7 @@ function statusOf(m: Email): { label: string; tone: string } {
   if (m.status === 'error') return OUTCOME.error
   if (m.outcome === 'needs_review' && m.review_status === 'approved') return { label: 'resolved', tone: 'text-cyan' }
   if (m.outcome === 'needs_review' && m.review_status === 'rejected') return { label: 'dismissed', tone: 'text-silver-dim' }
+  if (m.outcome === 'detected' && !m.quotes_checked && m.alt_supplier_notes.length) return { label: 'alt supplier', tone: 'text-silver' }
   return OUTCOME[m.outcome ?? ''] ?? { label: m.status === 'new' ? 'reading…' : m.status, tone: 'text-purple' }
 }
 
@@ -130,6 +134,7 @@ export function Sidebar({
                   <pre className="whitespace-pre-wrap border-t border-line/60 bg-panel-2 px-4 py-3 font-sans text-xs leading-relaxed text-silver">
                     {m.body}
                     {m.note ? `\n\n— ${m.note}` : ''}
+                    {m.alt_supplier_notes.map((n) => `\n\n— ${n}`).join('')}
                     {m.review_note ? `\n\n— Your review: ${m.review_note}` : ''}
                   </pre>
                 ) : null}

@@ -5,7 +5,8 @@ Two stages, kept separate on purpose:
 1. extract()   - Claude reads the email and reports what it literally says
                  (material name, price, unit, pack size, % change, date).
 2. normalize() - deterministic code turns that into catalog facts: resolves the
-                 material, converts to $/lb, applies % changes to our own cost,
+                 material, converts to $/lb, applies % changes to the sending
+                 supplier's own price,
                  and runs sanity checks. Anything it can't stand behind is
                  routed to a person instead of guessed.
 """
@@ -17,8 +18,9 @@ from typing import Literal
 
 from pydantic import BaseModel, Field
 
-from . import catalog, llm
-from .config import MIN_EXTRACTION_CONFIDENCE, SANITY_MAX_CHANGE
+from . import catalog, impact, llm, money
+from .config import AS_OF, MIN_EXTRACTION_CONFIDENCE, SANITY_MAX_CHANGE
+from .money import D
 from .units import to_cost_per_lb
 
 PriceUnit = Literal["lb", "kg", "cwt", "short_ton", "metric_ton"]
@@ -28,6 +30,13 @@ class ExtractedChange(BaseModel):
     material_text: str = Field(description="The material name exactly as the vendor wrote it.")
     new_price: float | None = Field(description="New price as written, before any unit conversion. Null if only a % change is given.")
     price_unit: PriceUnit | None = Field(description="Unit the new price is quoted in. 'cwt' = per hundredweight (100 lb).")
+    # Defaults keep extractions cached before these fields existed valid.
+    price_in_cents: bool = Field(default=False, description=(
+        "True when the price is written in cents, e.g. '118 cents per pound' or '118¢/lb'. "
+        "new_price and old_price are then the number of cents as written."))
+    currency: str = Field(default="USD", description=(
+        "ISO 4217 code of the currency the price is written in, e.g. USD, CAD, EUR. "
+        "USD when the email gives no other currency."))
     pack_qty: float | None = Field(description="Pack size in price_unit when priced per pack, e.g. 25 for 'per 25 kg bag'. Null otherwise.")
     old_price: float | None = Field(description="Previous price if the email states it, in the same unit. Null otherwise.")
     pct_change: float | None = Field(description="Percent change if stated, e.g. 6.5 for +6.5%, -4 for a 4% decrease. Null otherwise.")
@@ -53,7 +62,7 @@ class EmailExtraction(BaseModel):
 
 SYSTEM_PROMPT = """You read emails sent to the purchasing inbox of a custom rubber-molding manufacturer and extract supplier price changes.
 
-Report only what the email states. Do not convert units, do not compute new prices from percentages, and do not guess a value that is not written; use null instead. Re-sent or forwarded notices are still price changes; extract them as written. A notice describing a change that has already taken effect is still a price_change."""
+Report only what the email states. Do not convert units or currencies, do not compute new prices from percentages, and do not guess a value that is not written; use null instead. A price written in cents is reported as the number of cents with price_in_cents set. Re-sent or forwarded notices are still price changes; extract them as written. A notice describing a change that has already taken effect is still a price_change."""
 
 
 def extract(email: sqlite3.Row | dict) -> EmailExtraction:
@@ -83,8 +92,9 @@ class Normalized:
     drafts: list[EventDraft] = field(default_factory=list)
 
 
-def price_change_key(material_id: str, cost_per_lb: float, effective: str) -> str:
-    return f"price_change:{material_id}:{cost_per_lb:.4f}:{effective}"
+def price_change_key(vendor_id: str | None, material_id: str, cost_per_lb: float, effective: str) -> str:
+    """Two suppliers announcing the same price on the same date are two changes."""
+    return f"price_change:{vendor_id or '-'}:{material_id}:{cost_per_lb:.4f}:{effective}"
 
 
 def vendor_for_sender(conn: sqlite3.Connection, from_addr: str) -> str | None:
@@ -130,17 +140,29 @@ def normalize(conn: sqlite3.Connection, email: sqlite3.Row | dict, extraction: E
             detail = f" (candidates: {', '.join(match.candidates)})" if match.candidates else ""
             reasons.append(f"material '{ch.material_text}' is {match.method}{detail}")
 
+        # `current` is what the new price is compared against: this supplier's own
+        # price today. For the costing supplier that is our catalog cost. An
+        # alternate supplier's price is on file only if they've quoted before;
+        # otherwise we compare against our catalog cost but can't apply a % to it.
         current = None
+        own_price_known = False
         if match.material_id:
-            current = conn.execute(
+            catalog_cost = conn.execute(
                 "SELECT cost_per_lb FROM materials WHERE id = ?", (match.material_id,)
             ).fetchone()["cost_per_lb"]
+            if impact.moves_costing(conn, {"material_id": match.material_id, "vendor_id": vendor_id}):
+                current, own_price_known = catalog_cost, True
+            else:
+                own = impact.supplier_cost(conn, match.material_id, vendor_id, AS_OF.isoformat())
+                current, own_price_known = (own, True) if own is not None else (catalog_cost, False)
 
         new_cost = None
         if ch.new_price is not None and ch.price_unit is not None:
-            new_cost = to_cost_per_lb(ch.new_price, ch.price_unit, ch.pack_qty)
+            new_cost = to_cost_per_lb(ch.new_price, ch.price_unit, ch.pack_qty, in_cents=ch.price_in_cents)
+        elif ch.pct_change is not None and current is not None and own_price_known:
+            new_cost = money.cost(D(current) * (1 + D(ch.pct_change) / 100))
         elif ch.pct_change is not None and current is not None:
-            new_cost = current * (1 + ch.pct_change / 100)
+            reasons.append("% change from an alternate supplier with no price of theirs on file")
         else:
             reasons.append("no usable price (needs a price with a unit, or a % change)")
 
@@ -148,10 +170,14 @@ def normalize(conn: sqlite3.Connection, email: sqlite3.Row | dict, extraction: E
         if effective is None:
             reasons.append("no effective date")
 
+        currency = (ch.currency or "USD").strip().upper()
+        if currency != "USD" and ch.new_price is not None:
+            reasons.append(f"priced in {currency}; costs are kept in USD, so it needs a converted price")
+
         pct = None
         if new_cost is not None and current:
-            pct = (new_cost - current) / current
-            if abs(pct) > SANITY_MAX_CHANGE:
+            pct = money.pct((new_cost - D(current)) / D(current))
+            if abs(pct) > D(SANITY_MAX_CHANGE):
                 reasons.append(f"{pct:+.1%} vs our cost exceeds the {SANITY_MAX_CHANGE:.0%} sanity bound; check units")
 
         if extraction.confidence < MIN_EXTRACTION_CONFIDENCE:
@@ -165,10 +191,11 @@ def normalize(conn: sqlite3.Connection, email: sqlite3.Row | dict, extraction: E
             "match_method": match.method,
             "match_candidates": match.candidates,
             "old_cost_per_lb": current,
-            "new_cost_per_lb": round(new_cost, 6) if new_cost is not None else None,
-            "pct_change": round(pct, 6) if pct is not None else None,
+            "new_cost_per_lb": money.out(new_cost) if new_cost is not None else None,
+            "pct_change": money.out(pct) if pct is not None else None,
             "effective_date": effective,
             "quoted": {"price": ch.new_price, "unit": ch.price_unit, "pack_qty": ch.pack_qty,
+                       "in_cents": ch.price_in_cents, "currency": currency,
                        "pct_change": ch.pct_change, "old_price": ch.old_price},
             "extraction_confidence": extraction.confidence,
         }
@@ -176,6 +203,6 @@ def normalize(conn: sqlite3.Connection, email: sqlite3.Row | dict, extraction: E
             payload["review_reasons"] = reasons
             result.drafts.append(EventDraft("price_change.needs_review", f"review:{email['id']}:{i}", payload))
         else:
-            key = price_change_key(match.material_id, new_cost, effective)
+            key = price_change_key(vendor_id, match.material_id, new_cost, effective)
             result.drafts.append(EventDraft("price_change.detected", key, payload))
     return result

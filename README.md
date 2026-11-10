@@ -17,7 +17,9 @@ Built in four days as a working prototype on a synthetic rubber-molding shop: 15
 |---|---|
 | Supplier emails read correctly: the 15 the pipeline was built on | **15 / 15** (outcome, material, $/lb, date) |
 | Supplier emails read correctly: 10 harder ones nothing was tuned against | **9 / 10**; the miss was sent to a person, no wrong price got through |
-| Quote decisions on the full shop, vs. an independent copy of the policy | **232 / 232**: 200 settled by rules, 32 judgment calls by Claude |
+| Cents, currency and pack emails, after the cents/currency fix (regression set, written with the fix) | **7 / 7**: 121¢/lb, 88.5 cents, $ with old price in cents, $/cwt, 50 lb bag; CAD and EUR sent to a person |
+| Quote decisions on the full shop, vs. an independent copy of the policy | **282 / 282**: 246 settled by rules, 36 judgment calls by Claude, every draft quoting the computed prices |
+| Cards that were stale because an earlier-dated supplier change arrived later (the demo inbox is out of date order) | **50** restated and re-decided; live cards are identical across arrival, date, reverse and random orders |
 | 30 hand-built judgment calls x 3 runs (Claude Sonnet 5.5) | **87 / 90** right, same answer every run, every draft passes its checks |
 | ...of those, calls made with confidence ≥ 0.90 | **93% of calls, 100% right**. All 3 misses came in at ≤ 0.60 |
 | Prompt injection hidden in a customer note (2 cases) | Refused both times, and **flagged the bad instruction** to the account manager |
@@ -51,7 +53,7 @@ automatically.
 
 A correction suggests a change: a new rule, a policy edit, a cheaper model. But Claude doesn't
 answer the same way every time, so one before/after run can't tell a regression from noise. The
-promotion gate replays each candidate change against 62 cases (the 30 scenarios + the shop's 32
+promotion gate replays each candidate change against 62 cases (the 30 scenarios + a frozen snapshot of the shop's 32
 judgment calls), 8 times each, and decides **promote / hold / reject** per case, with a noise
 floor measured by replaying the unchanged system against itself.
 
@@ -118,6 +120,16 @@ supplier email ──► extract ─────────► normalize ──
 - **Refuse to guess.** An ambiguous material ("Black 70" from a distributor selling two),
   a move over 30% (usually a unit slip), a missing date or low extraction confidence goes to a
   person as a one-click question.
+- **One costing supplier per material.** A shop can buy EPDM 70 from two suppliers, but quotes
+  are costed at one price. Every supplier's prices are recorded; only the costing supplier's
+  move margins. A distributor's pass-through increase is shown as "alternate supplier, on file"
+  instead of repricing every EPDM 70 quote. A % change applies to the sender's own last price.
+  Exposure is replacement-cost exposure; stock already on hand isn't modelled.
+- **Arrival order doesn't matter.** Supplier emails don't arrive in date order: the demo inbox
+  itself has a Nov 15 nitrile change arriving before a Nov 1 carbon-black one. When an
+  earlier-dated change lands, every pending card dated after it is recomputed with it, re-decided,
+  and replaces the stale card, which records why. Tested by processing the shop's inbox in
+  arrival order, date order, reverse date order and random orders: the live cards are identical.
 - **Costs stack.** A quote hit by EPDM +9.5% and carbon black +8.3% gets one card priced on both,
   and the card lists every change behind its numbers.
 - **A person approves everything.** Approving a revised quote writes the new prices and queues
@@ -177,12 +189,22 @@ undo, the API, and the eval machinery itself.
 
 ## Known limitations
 
-- **"Cents" can't be expressed.** On "118 cents per pound" Claude reported 118 per lb and noted
-  the problem; the 30% guardrail sent it to a person. The fix is a schema field. It was left
-  unpatched so the held-out score stays honest; it needs fresh emails to re-measure.
-- **Late-arriving earlier changes.** A card for a Nov 20 change that was decided before a Nov 1
-  change arrived doesn't include the Nov 1 increase. The Nov 1 card still flags it, but the
-  right fix is to re-decide affected cards when an earlier-dated change lands.
+- **Cents were added after the holdout was scored.** On "118 cents per pound" (H07) Claude reported
+  118 per lb and noted the problem; the 30% guardrail sent it to a person. The extraction schema
+  now has `price_in_cents` and `currency` fields (a non-USD price goes to a person). The 9 / 10
+  holdout score above is the pre-fix, blind result and is kept as is; the fix is measured on a
+  separate 7-email regression set (`--set fresh`: cent signs, fractional cents, CAD, EUR, packs),
+  which was written alongside the fix and so is not a blind holdout.
+- **Money is exact.** All money maths is Decimal with half-up rounding (`margin_guard/money.py`);
+  values are rounded to their precision before they're stored, so the REAL columns hold them
+  exactly. Amounts are USD only; there is no FX conversion.
+- **Late-arriving changes on decided cards.** Pending cards are restated when an earlier-dated
+  change lands (see design decisions). A card a person has already *approved* is left alone; the
+  new change's card names it and says to check that decision, but nothing re-opens it
+  automatically.
+- **The promotion gate's shop cases predate restatement.** `data/replay_cases_shop.json` is a
+  frozen snapshot of the shop's judgment calls taken before restatement existed, so the gate
+  results stay comparable with the committed replays. Rebuilding it would change the case set.
 - **A debatable policy edge.** On "key account + prefers email for routine changes, call over
   $10k" at $8k, Sonnet chose a call three times out of three, at 0.55 – 0.60 confidence.
   The written policy says the note wins. The console marks these cards as below the bar.

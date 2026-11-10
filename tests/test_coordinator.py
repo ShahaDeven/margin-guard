@@ -75,8 +75,14 @@ def test_overlapping_changes_supersede_older_cards(processed):
         new = rows[old["superseded_by"]]
         assert new["quote_id"] == old["quote_id"]
         assert new["status"] in ("pending", "superseded")   # a third change can replace it again
-        assert new["event_id"] > old["event_id"]
-        # The replacement covers the old change: it is priced on the stacked cost.
+        assert new["id"] > old["id"] and old["supersede_reason"]
+        restated = new["facts"].get("restated")
+        if restated and restated["replaces_card"] == old["id"]:
+            # Redone because an earlier-dated change arrived later: same change, new numbers.
+            assert new["event_id"] == old["event_id"]
+            assert new["facts"]["effective_date"] == old["facts"]["effective_date"]
+            continue
+        # Otherwise the replacement covers the old change: it is priced on the stacked cost.
         assert new["facts"]["can_accept_after_change"]
         assert old["facts"]["effective_date"] <= new["facts"]["effective_date"]
 

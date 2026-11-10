@@ -1,7 +1,12 @@
 """The coordination layer: route each pending event through the agents that act on it.
 
-    price_change.detected      load -> impact -> decide -> persist
-    price_change.needs_review  load -> review -----------> persist
+    price_change.detected      load -> impact -> restate -> decide -> persist
+    price_change.needs_review  load -> review ----------------------> persist
+
+restate handles changes that arrive out of date order: pending cards dated after
+this change were computed without it, so they are recomputed, re-decided and
+replace the stale card. The result is the same live cards whatever order the
+supplier emails arrive in.
 
 Routing is deterministic code; the LLM is only used inside `decide` for judgment
 calls. impact and decide only read; every write (the price history row, the
@@ -20,7 +25,7 @@ from typing import Callable, TypedDict
 
 from langgraph.graph import END, START, StateGraph
 
-from . import db, decide, events, impact
+from . import catalog, db, decide, events, impact, money
 from .config import AS_OF, DB_PATH
 
 
@@ -29,7 +34,9 @@ class EventState(TypedDict, total=False):
     event_type: str
     payload: dict
     impacts: list[dict]
+    restated: list[dict]              # {"proposal_id", "event_id", "facts"} per stale card
     proposals: list[dict]
+    restated_proposals: list[dict]
     result: dict
 
 
@@ -58,17 +65,60 @@ def build_graph(conn: sqlite3.Connection, decider: decide.Decider = decide.llm_d
             " VALUES (?, ?, ?, ?, ?)",
             (p["material_id"], p["vendor_id"], p["new_cost_per_lb"], p["effective_date"], event_id),
         )
-        if p["effective_date"] <= AS_OF.isoformat():
+        # The catalog cost is the costing supplier's price today; an alternate
+        # supplier's price is history only.
+        if p["effective_date"] <= AS_OF.isoformat() and impact.moves_costing(conn, p):
             conn.execute("UPDATE materials SET cost_per_lb = ? WHERE id = ?", (p["new_cost_per_lb"], p["material_id"]))
+
+    def alt_supplier_result(p: dict) -> dict:
+        """A price from a supplier we don't cost this material at: on file, no cards."""
+        costing = catalog.costing_vendor(conn, p["material_id"])
+        names = dict(conn.execute("SELECT id, name FROM vendors").fetchall())
+        material = conn.execute("SELECT name FROM materials WHERE id = ?", (p["material_id"],)).fetchone()["name"]
+        ours = impact.cost_on(conn, p["material_id"], p["effective_date"])
+        new = p["new_cost_per_lb"]
+        return {
+            "alt_supplier": True,
+            "vendor_id": p.get("vendor_id"),
+            "costing_vendor_id": costing,
+            "costing_cost_per_lb": ours,
+            "note": (f"Alternate supplier: {names.get(p.get('vendor_id'), p.get('vendor_id'))} quotes {material} at "
+                     f"${new:.2f}/lb from {p['effective_date']}, vs ${ours:.2f}/lb from "
+                     f"{names.get(costing, costing)}, the supplier it's costed at. Recorded; margins unchanged."),
+        }
 
     def impact_node(state: EventState) -> EventState:
         p = state["payload"]
+        if not impact.moves_costing(conn, p):
+            return {"impacts": [], "result": alt_supplier_result(p)}
         if p.get("pct_change") is not None and p["pct_change"] <= 0:
             return {"impacts": [], "result": {"note": "cost decrease or no change; margins improve, no action"}}
         return {"impacts": impact.affected_quotes(conn, p)}
 
+    def restate_node(state: EventState) -> EventState:
+        """Redo pending later-dated cards this change makes stale (see restatements)."""
+        p = state["payload"]
+        if state["event_type"] != "price_change.detected" or p.get("new_cost_per_lb") is None:
+            return {"restated": []}
+        return {"restated": restatements(conn, state["event_id"], p)}
+
     def decide_node(state: EventState) -> EventState:
-        return {"proposals": [decide.decide(f, decider) for f in state.get("impacts", [])]}
+        restated = [{**decide.decide(r["facts"], decider), "restates": r["proposal_id"], "event_id": r["event_id"]}
+                    for r in state.get("restated", [])]
+        return {"proposals": [decide.decide(f, decider) for f in state.get("impacts", [])],
+                "restated_proposals": restated}
+
+    def insert(event_id: int, key: str, pr: dict) -> int | None:
+        cur = conn.execute(
+            """INSERT OR IGNORE INTO proposals
+               (idempotency_key, event_id, quote_id, kind, action, decided_by, rule_id, confidence,
+                rationale, draft_subject, draft_body, facts, exposure_usd)
+               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
+            (key, event_id, pr["quote_id"], pr["kind"], pr["action"], pr["decided_by"],
+             pr["rule_id"], pr["confidence"], pr["rationale"], pr["draft_subject"], pr["draft_body"],
+             json.dumps(pr["facts"]), pr["exposure_usd"]),
+        )
+        return cur.lastrowid if cur.rowcount else None
 
     def persist(state: EventState) -> EventState:
         if state["event_type"] == "price_change.detected":
@@ -76,23 +126,31 @@ def build_graph(conn: sqlite3.Connection, decider: decide.Decider = decide.llm_d
         proposals = state.get("proposals", [])
         superseded = 0
         for pr in proposals:
-            key = f"{state['event_id']}:{pr['quote_id'] or 'event'}"
-            cur = conn.execute(
-                """INSERT OR IGNORE INTO proposals
-                   (idempotency_key, event_id, quote_id, kind, action, decided_by, rule_id, confidence,
-                    rationale, draft_subject, draft_body, facts, exposure_usd)
-                   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
-                (key, state["event_id"], pr["quote_id"], pr["kind"], pr["action"], pr["decided_by"],
-                 pr["rule_id"], pr["confidence"], pr["rationale"], pr["draft_subject"], pr["draft_body"],
-                 json.dumps(pr["facts"]), pr["exposure_usd"]),
-            )
-            if cur.rowcount and pr["kind"] == "quote_action":
-                superseded += supersede_older(conn, cur.lastrowid, pr["facts"])
+            if pr["kind"] == "quote_action":
+                pr = {**pr, "rationale": pr["rationale"] + decided_later_note(conn, pr["facts"])}
+            new_id = insert(state["event_id"], f"{state['event_id']}:{pr['quote_id'] or 'event'}", pr)
+            if new_id and pr["kind"] == "quote_action":
+                superseded += supersede_older(conn, new_id, pr["facts"])
+        # Restated cards replace the stale card they redo, then cover older-dated
+        # cards as usual (including the one this change just created).
+        restated = state.get("restated_proposals", [])
+        for pr in restated:
+            still = conn.execute("SELECT status FROM proposals WHERE id = ?", (pr["restates"],)).fetchone()
+            if still["status"] != "pending":
+                continue
+            new_id = insert(pr["event_id"], f"{pr['event_id']}:{pr['quote_id']}:r{state['event_id']}", pr)
+            if not new_id:
+                continue
+            conn.execute("UPDATE proposals SET status = 'superseded', superseded_by = ?, supersede_reason = ?"
+                         " WHERE id = ? AND status = 'pending'",
+                         (new_id, pr["facts"]["restated"]["reason"], pr["restates"]))
+            superseded += 1 + supersede_older(conn, new_id, pr["facts"])
         result = {
             **state.get("result", {}),
             "affected_quotes": sum(1 for p in proposals if p["kind"] == "quote_action"),
+            "restated": len(restated),
             "superseded": superseded,
-            "exposure_usd": round(sum(p["exposure_usd"] for p in proposals), 2),
+            "exposure_usd": money.out(money.cents(sum((money.D(p["exposure_usd"]) for p in proposals), money.ZERO))),
             "actions": {a: sum(1 for p in proposals if p["action"] == a)
                         for a in sorted({p["action"] for p in proposals})},
         }
@@ -104,11 +162,13 @@ def build_graph(conn: sqlite3.Connection, decider: decide.Decider = decide.llm_d
     g.add_node("load", load)
     g.add_node("review", review)
     g.add_node("impact", impact_node)
+    g.add_node("restate", restate_node)
     g.add_node("decide", decide_node)
     g.add_node("persist", persist)
     g.add_edge(START, "load")
     g.add_conditional_edges("load", route, {"review": "review", "impact": "impact"})
-    g.add_edge("impact", "decide")
+    g.add_edge("impact", "restate")
+    g.add_edge("restate", "decide")
     g.add_edge("decide", "persist")
     g.add_edge("review", "persist")
     g.add_edge("persist", END)
@@ -132,9 +192,77 @@ def supersede_older(conn: sqlite3.Connection, new_id: int, facts: dict) -> int:
         (facts["quote_id"], new_id),
     ).fetchall()
     covered = [r["id"] for r in rows if json.loads(r["facts"])["effective_date"] <= facts["effective_date"]]
+    reason = f"covered by a card dated {facts['effective_date']} that includes this change"
     for old_id in covered:
-        conn.execute("UPDATE proposals SET status = 'superseded', superseded_by = ? WHERE id = ?", (new_id, old_id))
+        conn.execute("UPDATE proposals SET status = 'superseded', superseded_by = ?, supersede_reason = ? WHERE id = ?",
+                     (new_id, reason, old_id))
     return len(covered)
+
+
+def _numbers(facts: dict) -> tuple:
+    """What a card shows a person; if none of it moves, the card isn't stale."""
+    return (facts["exposure_usd"], facts["margin_after"],
+            tuple((ln["line_id"], ln["unit_cost_after"], ln["proposed_unit_price"]) for ln in facts["lines"]),
+            tuple(sorted((c["material_id"], c["cost_after"]) for c in facts["cost_changes"])))
+
+
+def restatements(conn: sqlite3.Connection, event_id: int, change: dict) -> list[dict]:
+    """Pending cards dated after `change` that it makes stale, recomputed.
+
+    Costs stack by effective date, so a card dated D includes every change on or
+    before D that was known when it was made. A change dated on or before D that
+    arrives later (supplier emails don't come in date order) is missing from it.
+    Each such card is recomputed with the change included; if its numbers move,
+    it is returned with its new facts, to be re-decided and to replace the old
+    card. Decided cards are left alone: a person has acted on them, and the new
+    change's own card says so (decided_later_note).
+    """
+    if not impact.moves_costing(conn, change):
+        return []
+    quotes = set(impact.affected_quote_ids(conn, change["material_id"]))
+    rows = conn.execute(
+        """SELECT p.id, p.event_id, p.quote_id, p.facts, e.payload FROM proposals p
+           JOIN events e ON e.id = p.event_id
+           WHERE p.kind = 'quote_action' AND p.status = 'pending' AND p.event_id <> ?
+             AND json_extract(p.facts, '$.effective_date') >= ?
+           ORDER BY p.id""",
+        (event_id, change["effective_date"]),
+    ).fetchall()
+    # A same-date card is normally retired by this change's own card, which
+    # includes everything up to that date (supersede_older). Only when the quote
+    # expires first is it kept, so then it needs restating too.
+    rows = [r for r in rows if json.loads(r["facts"])["effective_date"] > change["effective_date"]
+            or not json.loads(r["facts"])["can_accept_after_change"]]
+    material = conn.execute("SELECT name FROM materials WHERE id = ?", (change["material_id"],)).fetchone()["name"]
+    out = []
+    for r in rows:
+        if r["quote_id"] not in quotes:
+            continue
+        old = json.loads(r["facts"])
+        new = impact.quote_facts(conn, r["quote_id"], json.loads(r["payload"]), also=(change,))
+        if _numbers(new) == _numbers(old):
+            continue
+        reason = (f"restated: the {material} change effective {change['effective_date']} arrived after this "
+                  f"card was made, and its cost was missing from it")
+        new["restated"] = {"replaces_card": r["id"], "reason": reason}
+        out.append({"proposal_id": r["id"], "event_id": r["event_id"], "facts": new})
+    return out
+
+
+def decided_later_note(conn: sqlite3.Connection, facts: dict) -> str:
+    """For a new card: was this quote already decided on a later-dated card that
+    couldn't have included this change? Then that decision needs a second look."""
+    rows = conn.execute(
+        """SELECT id, final_action, facts FROM proposals
+           WHERE quote_id = ? AND kind = 'quote_action' AND status IN ('approved', 'edited')""",
+        (facts["quote_id"],),
+    ).fetchall()
+    later = [r for r in rows if json.loads(r["facts"])["effective_date"] > facts["effective_date"]]
+    if not later:
+        return ""
+    cards = ", ".join(f"#{r['id']} ({r['final_action']})" for r in later)
+    return (f" Note: this quote was already decided on a later-dated card ({cards}) whose numbers"
+            f" don't include this change; check that decision.")
 
 
 Notify = Callable[[str, dict], None]
@@ -188,7 +316,7 @@ def main() -> None:
         cache = json.loads(args.replay.read_text(encoding="utf-8"))
 
         def decider(facts: dict) -> decide.QuoteDecision:
-            key = f"{facts['quote_id']}:{facts['material_id']}:{facts['effective_date']}"
+            key = decide.decision_key(facts)
             if key in cache:
                 return decide.QuoteDecision.model_validate(cache[key])
             return decide.llm_decide(facts)

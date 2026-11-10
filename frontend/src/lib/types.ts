@@ -37,6 +37,8 @@ export interface QuoteFacts {
   /** Every cost that moved since the quote went out, trigger first. */
   cost_changes?: CostChange[]
   lines: Line[]
+  /** Set when an earlier-dated change arrived later and this card was recomputed. */
+  restated?: { replaces_card: number; reason: string }
 }
 
 export interface CostChange {
@@ -120,6 +122,8 @@ export interface Email {
   quotes_checked: number
   needs_you: number
   rule_pending: number
+  /** Prices from a supplier the material isn't costed at: recorded, no cards. */
+  alt_supplier_notes: string[]
 }
 
 export interface Material {

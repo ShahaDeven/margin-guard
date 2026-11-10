@@ -210,6 +210,13 @@ def inbox() -> list[dict]:
                FROM proposals p JOIN events e ON e.id = p.event_id"""
         ):
             cards.setdefault(p["email_id"], []).append(p)
+        # Prices from a supplier the material isn't costed at: on file, no cards.
+        alt: dict[str, list[str]] = {}
+        for e in c.execute(
+            """SELECT json_extract(payload, '$.email_id') AS email_id, json_extract(result, '$.note') AS note
+               FROM events WHERE json_extract(result, '$.alt_supplier') = 1 ORDER BY id"""
+        ):
+            alt.setdefault(e["email_id"], []).append(e["note"])
 
         out = []
         for r in rows:
@@ -223,6 +230,7 @@ def inbox() -> list[dict]:
                 "quotes_checked": len({p["quote_id"] for p in quotes}),
                 "needs_you": sum(1 for p in quotes if p["status"] == "pending" and p["decided_by"] != "rule"),
                 "rule_pending": sum(1 for p in quotes if p["status"] == "pending" and p["decided_by"] == "rule"),
+                "alt_supplier_notes": alt.get(r["id"], []),
             })
         return out
 

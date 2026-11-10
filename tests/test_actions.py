@@ -193,7 +193,13 @@ def test_resolving_black_70_creates_the_price_change(processed):
     assert ev["event_type"] == "price_change.detected" and ev["status"] == "pending"
     assert payload["material_id"] == "MAT-EPDM-70" and payload["new_cost_per_lb"] == pytest.approx(2.30)
     coordinator.run(processed, POLICY_DECIDER)
-    assert processed.execute("SELECT COUNT(*) FROM proposals WHERE event_id = ?", (event_id,)).fetchone()[0] > 0
+    # Keystone is an alternate EPDM 70 supplier; quotes are costed at Midwest's
+    # price. The price is on file, but it doesn't touch any quote's margin.
+    assert processed.execute("SELECT COUNT(*) FROM proposals WHERE event_id = ?", (event_id,)).fetchone()[0] == 0
+    result = json.loads(processed.execute("SELECT result FROM events WHERE id = ?", (event_id,)).fetchone()[0])
+    assert result["alt_supplier"] and result["costing_vendor_id"] == "V-MWP"
+    assert processed.execute("SELECT vendor_id FROM material_price_history WHERE source_event_id = ?",
+                             (event_id,)).fetchone()[0] == "V-KRD"
 
 
 def test_advisory_cannot_be_resolved_only_dismissed(processed):

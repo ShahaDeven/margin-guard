@@ -1,0 +1,86 @@
+[
+  {
+    "id": "F01",
+    "from": "customerservice@ridgelinecarbon.com",
+    "subject": "N550 - January pricing",
+    "received_at": "2026-10-16T09:10:00",
+    "body": "Good morning,\n\nEffective January 15, 2027, carbon black N550 moves to 121¢/lb.\n\nRegards,\nRidgeline Carbon",
+    "gold": {
+      "outcome": "detected",
+      "changes": [{"material_id": "MAT-CB-N550", "new_cost_per_lb": 1.21, "effective_date": "2027-01-15"}],
+      "trap": "cent sign"
+    }
+  },
+  {
+    "id": "F02",
+    "from": "quotes@buckeyesteel.com",
+    "subject": "1018 bar update",
+    "received_at": "2026-10-16T09:40:00",
+    "body": "Hi,\n\nOur 1018 cold rolled bar goes to 88.5 cents per pound on December 1, 2026.\n\nBuckeye Steel Service",
+    "gold": {
+      "outcome": "detected",
+      "changes": [{"material_id": "MAT-STL-1018", "new_cost_per_lb": 0.885, "effective_date": "2026-12-01"}],
+      "trap": "fractional cents"
+    }
+  },
+  {
+    "id": "F03",
+    "from": "sales@glelastomers.com",
+    "subject": "NBR 90 - December",
+    "received_at": "2026-10-16T10:05:00",
+    "body": "Hello,\n\nNBR 90 will be $2.61/lb effective December 1, 2026 (currently 248 cents).\n\nGreat Lakes Elastomers",
+    "gold": {
+      "outcome": "detected",
+      "changes": [{"material_id": "MAT-NBR-90", "new_cost_per_lb": 2.61, "effective_date": "2026-12-01"}],
+      "trap": "new price in dollars, old price in cents"
+    }
+  },
+  {
+    "id": "F04",
+    "from": "commercial@fluorotechmaterials.com",
+    "subject": "FKM 75 - December price (CAD)",
+    "received_at": "2026-10-16T10:30:00",
+    "body": "Hello,\n\nFrom December 1, 2026, FKM 75 is CAD 21.40/lb, invoiced from our Ontario plant.\n\nFluoroTech Materials",
+    "gold": {
+      "outcome": "needs_review",
+      "changes": [],
+      "trap": "price in Canadian dollars"
+    }
+  },
+  {
+    "id": "F05",
+    "from": "pricing@midwestpolymer.com",
+    "subject": "SBR 60 - December",
+    "received_at": "2026-10-16T11:00:00",
+    "body": "Hi,\n\nSBR 60 compound will be $172.00 per cwt effective 2026-12-01.\n\nMidwest Polymer",
+    "gold": {
+      "outcome": "detected",
+      "changes": [{"material_id": "MAT-SBR-60", "new_cost_per_lb": 1.72, "effective_date": "2026-12-01"}],
+      "trap": "control: dollars per hundredweight"
+    }
+  },
+  {
+    "id": "F06",
+    "from": "customerservice@ridgelinecarbon.com",
+    "subject": "N550 bag pricing",
+    "received_at": "2026-10-16T11:30:00",
+    "body": "Hello,\n\nThe 50 lb bag of N550 moves to $57.25 from December 1, 2026.\n\nRidgeline Carbon",
+    "gold": {
+      "outcome": "detected",
+      "changes": [{"material_id": "MAT-CB-N550", "new_cost_per_lb": 1.145, "effective_date": "2026-12-01"}],
+      "trap": "pack priced in lb"
+    }
+  },
+  {
+    "id": "F07",
+    "from": "orders@summitsilicones.com",
+    "subject": "VMQ 50 - EU supply",
+    "received_at": "2026-10-16T12:00:00",
+    "body": "Hello,\n\nSilicone VMQ 50 from our EU line will be €10.20/kg from December 1, 2026.\n\nSummit Silicones",
+    "gold": {
+      "outcome": "needs_review",
+      "changes": [],
+      "trap": "price in euros per kg"
+    }
+  }
+]

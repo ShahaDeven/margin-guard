@@ -1,9 +1,14 @@
 import sqlite3
+from decimal import Decimal
 from pathlib import Path
 
 from .config import DB_PATH
 
 SCHEMA_PATH = Path(__file__).with_name("schema.sql")
+
+# Money is rounded (money.py) before it is written, so storing it as REAL is
+# exact; this lets a Decimal be passed straight to a query.
+sqlite3.register_adapter(Decimal, float)
 
 
 def connect(path: Path | str | None = None) -> sqlite3.Connection:
