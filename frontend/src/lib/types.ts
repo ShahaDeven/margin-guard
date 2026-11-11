@@ -39,6 +39,8 @@ export interface QuoteFacts {
   lines: Line[]
   /** Set when an earlier-dated change arrived later and this card was recomputed. */
   restated?: { replaces_card: number; reason: string }
+  /** Set when this card re-decides a quote a person had already approved. */
+  corrects?: { proposal_id: number; original_action: string }
 }
 
 export interface CostChange {
@@ -51,8 +53,15 @@ export interface CostChange {
 
 /** Payload of a vendor email that needs a person (ambiguous material, advisory, ...). */
 export interface ReviewFacts {
-  /** 'invoice_drift' when the question comes from an invoice, not an email. */
-  kind?: 'invoice_drift'
+  /** 'invoice_drift': from an invoice. 'correction': an approved decision a later change affects.
+   *  'incomplete_attachment': a supplier file that wasn't read in full. */
+  kind?: 'invoice_drift' | 'correction' | 'incomplete_attachment'
+  quote_id?: string
+  customer_name?: string
+  corrects?: number
+  margin_floor?: number
+  original?: CorrectionSide & { action: string; final_action: string; status: string; reviewed_at: string | null }
+  revised?: CorrectionSide
   email_id: string | null
   vendor_name?: string
   material_id?: string | null
@@ -68,6 +77,13 @@ export interface ReviewFacts {
   effective_date?: string | null
   review_reasons?: string[]
   summary?: string
+}
+
+export interface CorrectionSide {
+  margin_after: number
+  exposure_usd: number
+  effective_date: string
+  lines: { line_id: number; part_name: string; qty: number; unit_price: number; unit_cost_after: number; proposed_unit_price: number }[]
 }
 
 export interface Proposal {
@@ -111,6 +127,8 @@ export interface Overview {
   outbox: number
   /** Report only: judgment calls that clear the confidence bar the scenario eval found error-free. */
   autonomy: { threshold: number | null; model: string; would_clear: number; eval_runs?: number } | null
+  /** Materials without exactly one costing supplier: their costing fails closed. */
+  data_problems?: string[]
 }
 
 export interface Email {
@@ -356,15 +374,22 @@ export interface QuoteCheck {
   margin_floor: number
   value_usd: number
   margin_now: number
+  margin_at_issue: number
+  /** The customer can order on any day the quote is valid: the lowest margin in the window. */
+  worst_margin_during_validity: number
+  worst_date: string
   margin_at_expiry: number
+  maximum_exposure_usd: number
   below_floor_now: boolean
+  below_floor_during_validity: boolean
   below_floor_at_expiry: boolean
   at_risk_usd: number
   changes: QuoteChange[]
   timeline: { date: string; cost_usd: number; margin: number; below_floor: boolean; changes: QuoteChange[] }[]
   lines: {
     part_id: string; part_name: string; qty: number; unit_price: number; unit_cost_now: number
-    unit_cost_at_expiry: number; margin_now: number; margin_at_expiry: number; price_to_hold_margin: number
+    unit_cost_at_expiry: number; unit_cost_worst: number; margin_now: number; margin_at_expiry: number
+    margin_worst: number; price_to_hold_margin: number
     materials: string[]; affected: boolean
   }[]
   price_locked: boolean

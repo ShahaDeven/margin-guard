@@ -37,6 +37,22 @@ def _usd(x: Decimal) -> float:
     return out(money.cents(x))
 
 
+def supplier_history_row(conn: sqlite3.Connection, material_id: str, vendor_id: str, on: str) -> dict | None:
+    """The price-history row behind one supplier's own price on `on` (impact.supplier_cost),
+    so a price and the evidence shown for it always come from the same supplier."""
+    r = conn.execute(
+        """SELECT h.id, h.cost_per_lb, h.effective_date, h.vendor_id, v.name AS vendor_name,
+                  json_extract(e.payload, '$.email_id') AS email_id
+           FROM material_price_history h
+           LEFT JOIN vendors v ON v.id = h.vendor_id
+           LEFT JOIN events e ON e.id = h.source_event_id
+           WHERE h.material_id = ? AND h.vendor_id = ? AND h.effective_date <= ?
+           ORDER BY h.effective_date DESC, h.id DESC LIMIT 1""",
+        (material_id, vendor_id, on),
+    ).fetchone()
+    return dict(r) if r else None
+
+
 def history_row(conn: sqlite3.Connection, material_id: str, on: str) -> dict | None:
     """The price-history row a cost on `on` came from: the same row impact.cost_entry
     picks (costing supplier, or a shop entry), with its supplier and source email."""
@@ -48,9 +64,9 @@ def history_row(conn: sqlite3.Connection, material_id: str, on: str) -> dict | N
            LEFT JOIN vendors v ON v.id = h.vendor_id
            LEFT JOIN events e ON e.id = h.source_event_id
            WHERE h.material_id = ? AND h.effective_date <= ?
-             AND (h.vendor_id IS NULL OR ? IS NULL OR h.vendor_id = ?)
+             AND (h.vendor_id IS NULL OR h.vendor_id = ?)
            ORDER BY h.effective_date DESC, h.id DESC LIMIT 1""",
-        (material_id, on, costing, costing),
+        (material_id, on, costing),
     ).fetchone()
     return dict(r) if r else None
 

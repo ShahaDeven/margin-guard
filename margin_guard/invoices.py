@@ -26,13 +26,14 @@ Like the shop import, a file with any bad row loads nothing.
 
 import argparse
 import csv
+import json
 import sqlite3
 import sys
 from pathlib import Path
 
 from . import catalog, db, events, impact, money
-from .importer import ImportFailed, iso_date, positive_float, price, text
-from .leakage import history_row
+from .importer import ImportFailed, iso_date, positive_float, positive_int, price, text
+from .leakage import supplier_history_row
 from .money import D, out
 from .parser import EventDraft
 from .units import LB_PER_UNIT, to_cost_per_lb
@@ -40,7 +41,7 @@ from .units import LB_PER_UNIT, to_cost_per_lb
 DRIFT_TOLERANCE = D("0.005")     # within 0.5% of the price on file counts as billed at price
 
 COLUMNS = {
-    "invoice_no": text, "line_no": lambda v: int(positive_float(v)), "invoice_date": iso_date, "vendor_id": text,
+    "invoice_no": text, "line_no": positive_int, "invoice_date": iso_date, "vendor_id": text,
     "item": text, "qty": positive_float, "unit": text, "unit_price": price,
     "pack_qty": lambda v: positive_float(v) if v.strip() else None,
 }
@@ -135,7 +136,7 @@ def check(conn: sqlite3.Connection, path: Path) -> dict:
         key = (r["vendor_id"], m, out(billed))
         d = drifts.setdefault(key, {
             "vendor_id": r["vendor_id"], "material_id": m, "item": r["item"], "billed": billed, "expected": expected,
-            "pct": pct, "first_date": r["invoice_date"], "row": history_row(conn, m, r["invoice_date"]),
+            "pct": pct, "first_date": r["invoice_date"], "row": supplier_history_row(conn, m, r["vendor_id"], r["invoice_date"]),
             "invoices": [], "overpaid": money.ZERO,
         })
         d["invoices"].append({"invoice_no": r["invoice_no"], "line_no": r["line_no"], "date": r["invoice_date"],
@@ -145,41 +146,89 @@ def check(conn: sqlite3.Connection, path: Path) -> dict:
 
     names = dict(conn.execute("SELECT id, name FROM vendors").fetchall())
     for d in drifts.values():
-        row = d["row"]
-        on_file = (f"${d['expected']:.4f}/lb is on file from {row['effective_date']}" if row
-                   else f"${d['expected']:.4f}/lb is on file")
-        invs = ", ".join(f"{i['invoice_no']} ({i['date']})" for i in d["invoices"])
-        payload = {
-            "kind": "invoice_drift",
-            "email_id": None,
-            "vendor_id": d["vendor_id"],
-            "vendor_name": names.get(d["vendor_id"], d["vendor_id"]),
-            "material_text": d["item"],
-            "material_id": d["material_id"],
-            "match_method": "invoice",
-            "match_candidates": [d["material_id"]],
-            "old_cost_per_lb": d["expected"],
-            "new_cost_per_lb": out(d["billed"]),
-            "pct_change": out(d["pct"]),
-            "effective_date": d["first_date"],
-            "invoices": d["invoices"],
-            "overpaid_usd": out(money.cents(d["overpaid"])),
-            "expected_row": row,
-            "review_reasons": [
-                f"{names.get(d['vendor_id'], d['vendor_id'])} billed {d['item']} at ${d['billed']:.4f}/lb on {invs}; "
-                f"{on_file}, so that is {d['pct']:+.1%} with no price notice on file.",
-                f"Overpaid on these lines: ${d['overpaid']:,.2f}.",
-            ],
-        }
         key = f"drift:{d['vendor_id']}:{d['material_id']}:{out(d['billed']):.4f}"
-        event_id = events.append(conn, EventDraft("price_change.needs_review", key, payload), source_ref=f"invoices:{Path(path).name}")
-        report["drifts"].append({k: payload[k] for k in ("vendor_name", "material_id", "material_text", "old_cost_per_lb",
-                                                         "new_cost_per_lb", "pct_change", "effective_date", "overpaid_usd")}
-                                | {"invoices": len(d["invoices"]), "new": event_id is not None})
+        status = _raise_or_merge(conn, key, d, names, source_ref=f"invoices:{Path(path).name}")
+        report["drifts"].append({
+            "vendor_name": names.get(d["vendor_id"], d["vendor_id"]), "material_id": d["material_id"],
+            "material_text": d["item"], "old_cost_per_lb": d["expected"], "new_cost_per_lb": out(d["billed"]),
+            "pct_change": out(d["pct"]), "effective_date": d["first_date"],
+            "overpaid_usd": out(money.cents(d["overpaid"])), "invoices": len(d["invoices"]),
+            "new": status == "new", "status": status})
     conn.commit()
     report["above"] = sum(len(d["invoices"]) for d in drifts.values())
     report["overpaid_usd"] = out(money.cents(overpaid))
     return report
+
+
+def _payload(d: dict, invoices: list[dict], names: dict) -> dict:
+    """The drift card's facts: the billed price, the billing supplier's own price on file
+    and the row it came from, every invoice at that price, and the total overpaid."""
+    vendor = names.get(d["vendor_id"], d["vendor_id"])
+    row = d["row"]
+    on_file = (f"${d['expected']:.4f}/lb is on file from {row['effective_date']}" if row
+               else f"${d['expected']:.4f}/lb is on file")
+    overpaid = sum((D(i["overpaid_usd"]) for i in invoices), money.ZERO)
+    invs = ", ".join(f"{i['invoice_no']} ({i['date']})" for i in invoices)
+    return {
+        "kind": "invoice_drift",
+        "email_id": None,
+        "vendor_id": d["vendor_id"],
+        "vendor_name": vendor,
+        "material_text": d["item"],
+        "material_id": d["material_id"],
+        "match_method": "invoice",
+        "match_candidates": [d["material_id"]],
+        "old_cost_per_lb": d["expected"],
+        "new_cost_per_lb": out(D(d["billed"])),
+        "pct_change": out(D(d["pct"])),
+        "effective_date": min(i["date"] for i in invoices),
+        "invoices": invoices,
+        "overpaid_usd": out(money.cents(overpaid)),
+        "expected_row": row,
+        "review_reasons": [
+            f"{vendor} billed {d['item']} at ${D(d['billed']):.4f}/lb on {invs}; "
+            f"{on_file}, so that is {D(d['pct']):+.1%} with no price notice on file.",
+            f"Overpaid on these lines: ${money.cents(overpaid):,.2f}.",
+        ],
+    }
+
+
+def _raise_or_merge(conn: sqlite3.Connection, key: str, d: dict, names: dict, source_ref: str) -> str:
+    """Raise a drift card, or fold new invoices into the one already raised.
+
+    One card per supplier, material and billed price. While that card is open,
+    later invoices at the same price join it, so it always shows every invoice and
+    the full amount overpaid. Once a person has decided it, their decision stands
+    and later invoices raise a new card. Returns new | merged | unchanged | new_after_decision.
+    """
+    prior = conn.execute(
+        "SELECT id, payload FROM events WHERE idempotency_key = ? OR idempotency_key LIKE ? ORDER BY id DESC LIMIT 1",
+        (key, key + ":after:%"),
+    ).fetchone()
+    if prior is None:
+        events.append(conn, EventDraft("price_change.needs_review", key, _payload(d, d["invoices"], names)), source_ref)
+        return "new"
+
+    old = json.loads(prior["payload"])
+    seen = {(i["invoice_no"], i["line_no"]) for i in old["invoices"]}
+    fresh = [i for i in d["invoices"] if (i["invoice_no"], i["line_no"]) not in seen]
+    if not fresh:
+        return "unchanged"
+    card = conn.execute("SELECT id, status FROM proposals WHERE event_id = ? AND kind = 'event_review'",
+                        (prior["id"],)).fetchone()
+    if card is None or card["status"] == "pending":
+        # Keep the evidence the card was raised on (price on file, its row); add the invoices.
+        base = {**d, "expected": old["old_cost_per_lb"], "row": old.get("expected_row")}
+        merged = _payload(base, old["invoices"] + fresh, names)
+        conn.execute("UPDATE events SET payload = ? WHERE id = ?", (json.dumps(merged), prior["id"]))
+        if card is not None:
+            conn.execute("UPDATE proposals SET facts = ?, rationale = ? WHERE id = ?",
+                         (json.dumps(merged), "Invoice needs a person: " + "; ".join(merged["review_reasons"]),
+                          card["id"]))
+        return "merged"
+    events.append(conn, EventDraft("price_change.needs_review", f"{key}:after:{fresh[0]['invoice_no']}",
+                                   _payload(d, fresh, names)), source_ref)
+    return "new_after_decision"
 
 
 def _mark(conn, line_id, status, material_id, billed, expected, note) -> None:
@@ -200,7 +249,8 @@ def report_text(r: dict) -> str:
         lines.append(f"  DRIFT  {d['vendor_name']}: {d['material_text']} ${d['old_cost_per_lb']:.4f} -> "
                      f"${d['new_cost_per_lb']:.4f}/lb ({d['pct_change']:+.1%}) from {d['effective_date']}, "
                      f"{d['invoices']} invoice(s), ${d['overpaid_usd']:,.2f} overpaid"
-                     + ("" if d["new"] else "  [card already raised]"))
+                     + {"new": "", "merged": "  [added to the open card]", "unchanged": "  [already on the card]",
+                        "new_after_decision": "  [earlier card already decided; new card raised]"}[d["status"]])
     lines += [f"  not judged: {n}" for n in r["not_judged"]]
     return "\n".join(lines)
 

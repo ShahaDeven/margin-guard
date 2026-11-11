@@ -137,12 +137,16 @@ export function QuoteCheckLane({ onAnswer }: { onAnswer: () => void }) {
 }
 
 function Verdict({ r }: { r: QuoteCheck }) {
-  const first = r.timeline[1]
-  const gap = Math.abs(r.margin_at_expiry - r.margin_floor) * 100
+  const worst = r.worst_margin_during_validity
+  const gap = Math.abs(worst - r.margin_floor) * 100
+  const when = shortDate(r.worst_date)
+  // An increase later partly reversed: the quote recovers by expiry, but not while it lasts.
+  const recovers = r.margin_at_expiry > worst + 0.0005
+    ? ` It recovers to ${pct(r.margin_at_expiry)} by expiry, but an order in between gets the worse margin.` : ''
   const [tone, text] = {
-    clear: ['text-go', `No price change on file lands before this quote expires on ${shortDate(r.valid_until)}. Margin holds at ${pct(r.margin_now)}.`],
-    margin_erodes: ['text-attn', `${r.changes.length} increase${r.changes.length === 1 ? '' : 's'} on file land${r.changes.length === 1 ? 's' : ''} before this quote expires. If the order comes after ${shortDate(first?.date)}, margin falls to ${pct(r.margin_at_expiry)}, still above the ${pct(r.margin_floor)} floor (${usd(r.at_risk_usd)} less margin).`],
-    below_floor_after_change: ['text-stop', `If the customer orders after ${shortDate(first?.date)}, margin falls to ${pct(r.margin_at_expiry)}, ${gap.toFixed(1)} pts below the ${pct(r.margin_floor)} floor: ${usd(r.at_risk_usd)} at risk on this quote.`],
+    clear: ['text-go', `No increase on file lands before this quote expires on ${shortDate(r.valid_until)}. Margin holds at ${pct(r.margin_now)}${r.margin_at_expiry > r.margin_now + 0.0005 ? ` or better` : ''}.`],
+    margin_erodes: ['text-attn', `Increases on file land before this quote expires. An order on or after ${when} gets ${pct(worst)}, still above the ${pct(r.margin_floor)} floor (${usd(r.maximum_exposure_usd)} less margin).${recovers}`],
+    below_floor_after_change: ['text-stop', `If the customer orders on or after ${when}, margin falls to ${pct(worst)}, ${gap.toFixed(1)} pts below the ${pct(r.margin_floor)} floor: ${usd(r.maximum_exposure_usd)} at risk on this quote.${recovers}`],
     below_floor_now: ['text-stop', `This is priced below the floor already: ${pct(r.margin_now)} against ${pct(r.margin_floor)}, before any change on file.`],
   }[r.verdict]
   return <h2 className={`font-label text-[22px] font-semibold leading-snug ${tone}`}>{text}</h2>
@@ -152,13 +156,13 @@ function Result({ r, copied, held, onShorten, onReprice, onUndo, onCopy, onAnswe
   r: QuoteCheck; copied: boolean; held: { fromUsd: number; toUsd: number } | null
   onShorten: (days: number) => void; onReprice: () => void; onUndo: () => void; onCopy: (t: string) => void; onAnswer: () => void
 }) {
-  const scale = { lo: Math.min(r.margin_at_expiry, r.margin_floor) - 0.012, hi: Math.max(r.margin_now, r.margin_floor) + 0.012 }
+  const scale = { lo: Math.min(r.worst_margin_during_validity, r.margin_floor) - 0.012, hi: Math.max(r.margin_now, r.margin_floor) + 0.012 }
   return (
     <>
       <div className="rounded-sm border border-rule bg-sheet px-5 py-4">
         <Verdict r={r} />
         <p className="mt-1 text-sm text-ink-dim">{r.customer.name} · {usd(r.value_usd)} · issued {shortDate(r.issued)}, valid until {shortDate(r.valid_until)}</p>
-        <div className="mt-4 max-w-md"><MarginBar before={r.margin_now} after={r.margin_at_expiry} floor={r.margin_floor} scale={scale} /></div>
+        <div className="mt-4 max-w-md"><MarginBar before={r.margin_now} after={r.worst_margin_during_validity} floor={r.margin_floor} scale={scale} /></div>
         {r.price_locked ? (
           <p className="mt-3 rounded-sm border border-rule-bright px-3 py-2 text-sm text-ink">
             {r.customer.name} has a price lock to {shortDate(r.customer.price_lock_until)}. An escalation clause may not hold against it; price for the increases or shorten the validity instead.
@@ -224,7 +228,7 @@ function Result({ r, copied, held, onShorten, onReprice, onUndo, onCopy, onAnswe
         <table className="w-full min-w-[40rem] text-sm">
           <thead><tr className="text-left">
             <th className={head}>Part</th><th className={`${head} text-right`}>Qty</th><th className={`${head} text-right`}>Price</th>
-            <th className={`${head} text-right`}>Cost today → at expiry</th><th className={`${head} text-right`}>Margin</th><th className={`${head} text-right`}>Price to hold margin</th>
+            <th className={`${head} text-right`}>Cost today → at its highest</th><th className={`${head} text-right`}>Margin, worst point</th><th className={`${head} text-right`}>Price to hold margin</th>
           </tr></thead>
           <tbody>
             {r.lines.map((l, i) => (
@@ -232,8 +236,8 @@ function Result({ r, copied, held, onShorten, onReprice, onUndo, onCopy, onAnswe
                 <td className="py-2 pr-3 text-ink-bright">{l.part_name}</td>
                 <td className="py-2 text-right font-label text-ink">{l.qty.toLocaleString()}</td>
                 <td className="py-2 text-right font-label text-ink">${l.unit_price.toFixed(4)}</td>
-                <td className="py-2 text-right font-label text-ink-dim">${l.unit_cost_now.toFixed(4)} → <span className={l.affected ? 'text-ink-bright' : ''}>${l.unit_cost_at_expiry.toFixed(4)}</span></td>
-                <td className="py-2 text-right font-label text-ink">{pct(l.margin_now)} → <span className={l.margin_at_expiry < r.margin_floor ? 'text-stop' : ''}>{pct(l.margin_at_expiry)}</span></td>
+                <td className="py-2 text-right font-label text-ink-dim">${l.unit_cost_now.toFixed(4)} → <span className={l.affected ? 'text-ink-bright' : ''}>${l.unit_cost_worst.toFixed(4)}</span></td>
+                <td className="py-2 text-right font-label text-ink">{pct(l.margin_now)} → <span className={l.margin_worst < r.margin_floor ? 'text-stop' : ''}>{pct(l.margin_worst)}</span></td>
                 <td className={`py-2 text-right font-label ${l.affected ? 'font-semibold text-ink-bright' : 'text-ink-dim'}`}>${l.price_to_hold_margin.toFixed(4)}</td>
               </tr>
             ))}

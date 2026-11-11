@@ -46,5 +46,6 @@ export const api = {
   confirmRules: (eventId: number) => post<{ confirmed: number }>(`/api/events/${eventId}/confirm-rules`),
   resolve: (id: number, materialId: string) => post<{ event_id: number }>(`/api/proposals/${id}/resolve`, { material_id: materialId }),
   dismiss: (id: number, note?: string) => post<Proposal>(`/api/proposals/${id}/dismiss`, { note }),
+  redecide: (id: number) => post<{ event_id: number }>(`/api/proposals/${id}/redecide`),
   sendDemoEmail: (demoId: string) => post<{ email_id: string }>('/api/inbox', { demo_id: demoId }),
 }

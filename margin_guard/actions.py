@@ -184,6 +184,37 @@ def resolve_review(conn: sqlite3.Connection, proposal_id: int, material_id: str,
     return event_id
 
 
+def redecide_correction(conn: sqlite3.Connection, proposal_id: int, note: str | None = None) -> int:
+    """Answer a correction card by re-deciding the quote with the revised numbers.
+
+    The original approved card is untouched. A separate quote.redecide event carries
+    the revised facts; the coordinator decides it (rules, or Claude for a judgment
+    call) and a new card goes to the queue, linked to the original. Returns the event id.
+    """
+    p = _pending(conn, proposal_id)
+    facts = json.loads(p["facts"])
+    if facts.get("kind") != "correction":
+        raise ActionError("only correction cards can be re-decided")
+    revised = {**facts["revised"], "corrects": {"proposal_id": facts["corrects"],
+                                                 "original_action": facts["original"]["final_action"]}}
+    event_id = events.append(
+        conn,
+        EventDraft("quote.redecide", f"redecide:{proposal_id}",
+                   {"facts": revised, "material_id": revised["material_id"], "email_id": facts.get("email_id"),
+                    "corrects": facts["corrects"]}),
+        source_ref=f"correction:{proposal_id}",
+    )
+    if event_id is None:
+        raise ActionError("this correction was already re-decided")
+    conn.execute(
+        """UPDATE proposals SET status = 'approved', final_action = 'resolve_event', reviewer_note = ?,
+           reviewed_at = datetime('now') WHERE id = ?""",
+        (note or "Re-decided with the revised numbers", proposal_id),
+    )
+    conn.commit()
+    return event_id
+
+
 def dismiss_review(conn: sqlite3.Connection, proposal_id: int, note: str | None = None) -> dict:
     p = _pending(conn, proposal_id)
     if p["kind"] != "event_review":

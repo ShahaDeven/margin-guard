@@ -11,6 +11,7 @@ effect carries no exposure. Inventory already on hand is not modelled.
 
 Costs come from each material's costing supplier only (catalog.costing_vendor).
 History rows with no supplier are the shop's own cost entries and always count.
+With no costing supplier set, only those count: another supplier is never used.
 """
 
 import sqlite3
@@ -22,12 +23,14 @@ from .money import ZERO, D, out
 def moves_costing(conn: sqlite3.Connection, change: dict) -> bool:
     """Does this price change move the cost quotes are built on?
 
-    True for the material's costing supplier, for a change with no supplier
-    (entered by the shop), and for a material with no costing supplier marked.
+    True for the material's costing supplier and for a change with no supplier
+    (entered by the shop). Fails closed: if no costing supplier is set for the
+    material, no supplier's price moves margins (another supplier is never picked
+    silently); the shop must mark one (catalog.costing_problems lists them).
     """
     costing = catalog.costing_vendor(conn, change["material_id"])
     vendor = change.get("vendor_id")
-    return vendor is None or costing is None or vendor == costing
+    return vendor is None or (costing is not None and vendor == costing)
 
 
 def supplier_cost(conn: sqlite3.Connection, material_id: str, vendor_id: str, on: str) -> float | None:
@@ -65,9 +68,9 @@ def cost_entry(conn: sqlite3.Connection, material_id: str, on: str,
     row = conn.execute(
         """SELECT cost_per_lb, effective_date FROM material_price_history
            WHERE material_id = ? AND effective_date <= ?
-             AND (vendor_id IS NULL OR ? IS NULL OR vendor_id = ?)
+             AND (vendor_id IS NULL OR vendor_id = ?)
            ORDER BY effective_date DESC, id DESC LIMIT 1""",
-        (material_id, on, costing, costing),
+        (material_id, on, costing),
     ).fetchone()
     if (pending and pending.get("new_cost_per_lb") is not None and pending["material_id"] == material_id
             and moves_costing(conn, pending)

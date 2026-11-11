@@ -201,5 +201,6 @@ def test_unreadable_attachment_goes_to_a_person_even_if_the_model_says_other(sho
 
 
 def test_unreadable_attachment_from_a_stranger_is_still_ignored(conn):
-    email = {"id": "T3", "from_addr": "promo@unknown-vendor.example", "unreadable_attachments": [("x.pdf", "no text")]}
+    email = {"id": "T3", "from_addr": "promo@unknown-vendor.example",
+             "incomplete_attachments": [("x.pdf", "UNREADABLE", "no text")]}
     assert normalize(conn, email, _ex("other")).ignored_reason

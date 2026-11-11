@@ -123,11 +123,16 @@ The diagram's source is [`docs/architecture.mmd`](docs/architecture.mmd) (Mermai
   once, so every figure traces to a row.
 - **Doubt goes to a person, not into a margin.** An ambiguous material ("Black 70" from a
   distributor selling two), a move over 30% (usually a unit slip), a missing date, a price in a
-  foreign currency, a scanned PDF nobody can read, or low extraction confidence becomes a
-  question, never a guess.
-- **One costing supplier per material.** A shop can buy EPDM 70 from two suppliers, but quotes
-  are costed at one price. Every supplier's prices are recorded; only the costing supplier's move
-  margins. A distributor's pass-through increase shows as "alternate supplier, on file".
+  foreign currency, or low extraction confidence becomes a question, never a guess. Every
+  attachment is marked complete, truncated, unreadable or failed; anything but complete always
+  raises a review, even when the email body gave a valid change, so a partial read is never
+  presented as the whole file.
+- **Exactly one costing supplier per material, and it fails closed.** A shop can buy EPDM 70
+  from two suppliers, but quotes are costed at one price. Every supplier's prices are recorded; only
+  the costing supplier's move margins. A distributor's pass-through increase shows as "alternate
+  supplier, on file". The database refuses a second costing supplier, the import refuses a material
+  with none, and if one is ever missing no supplier's price moves that material's margins (the
+  console shows a red banner) rather than another supplier's being picked silently.
 - **Arrival order doesn't matter.** Supplier emails don't come in date order (the demo inbox has a
   Nov 15 change arriving before a Nov 1 one). When an earlier-dated change lands, every pending
   card dated after it is recomputed, re-decided and replaced, and the old card says why. The
@@ -160,8 +165,9 @@ the other sides.
 
 The cheapest leak to fix is the one in a quote you haven't sent. **Quote check** takes a draft
 quote (customer, parts, quantities, prices, validity) and reads the increases already on file:
-which ones take effect before the quote expires, and the margin if the customer orders after
-each. It offers three ways out: a validity that ends the day before the first increase, the
+which ones take effect before the quote expires, and the margin if the customer orders on or
+after each. It judges the quote by its worst point, not its last: an increase later partly
+reversed still exposes every order placed while it lasts. It offers three ways out: a validity that ends the day before the first increase, the
 prices that hold each line's margin through every increase, and an escalation clause naming each
 material's quoted and announced price. It flags a customer price lock that covers an increase
 (an escalation clause may not hold) and any supplier email about these materials still waiting
@@ -174,8 +180,10 @@ for a person. The 2,500-duct-boot example: 30% falls to 26.9% after Nov 1, $518 
 
 Not every supplier sends a notice; sometimes the first sign is the invoice. The invoice check
 reads an accounts-payable export and compares each line with that supplier's price on file for
-the invoice date. A line billed more than 0.5% above it becomes a card with the invoices, the
-price on file and the history row it came from, and the dollars overpaid. **Apply** records the
+the invoice date. A line billed more than 0.5% above it becomes a card with the invoices, that
+supplier's price on file and the history row it came from, and the dollars overpaid. Later
+invoices at the same price join the open card; once a person has decided it, new ones raise a
+new card and the decision stands. **Apply** records the
 billed price as a price change from the first invoice date, and the normal impact and decisions
 run; **Dismiss** changes nothing (a one-off, or an error to dispute). Items we don't stock,
 ambiguous items and suppliers with no price on file are listed, not guessed. The demo export:
@@ -356,9 +364,11 @@ import reproduces the demo shop exactly.
   not blind.
 - **Attachments: text only.** Scanned PDFs, images and legacy .xls files aren't read (no OCR);
   they're flagged and sent to a person. The 4-email attachment set was written with the feature.
-- **Decided cards aren't reopened.** Pending cards are restated when an earlier-dated change
-  lands. A card a person already approved is left alone; the new card names it and says to check
-  it, but nothing reopens it automatically.
+- **Approved decisions are corrected, not reversed.** Pending cards are restated when an
+  earlier-dated change lands. A card a person already approved is never changed (prices it wrote
+  and messages it queued stay on record). Instead a linked correction card shows the decision's
+  original and revised numbers side by side, and a person either keeps the decision or re-decides
+  the quote, which raises a new card. Corrections under $1 that don't cross the floor aren't raised.
 - **The promotion gate's shop cases predate restatement.** `data/replay_cases_shop.json` is a
   frozen snapshot taken before restatement existed, so the gate stays comparable with the
   committed replays.

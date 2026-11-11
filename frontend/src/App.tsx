@@ -51,6 +51,13 @@ function App() {
       <div className="mx-auto w-full max-w-[96rem] flex-1 px-4 pb-10 sm:px-6">
         {ov ? <Figures ov={ov} leak={c.leakage} setLane={c.setLane} /> : null}
 
+        {ov?.data_problems?.length ? (
+          <div className="mt-4 rounded-sm border border-stop/50 bg-stop/5 px-4 py-2 text-sm text-ink">
+            <span className="font-semibold text-stop">Costing data needs fixing.</span> Margins for these materials ignore every
+            supplier's price until each has exactly one costing supplier:
+            <ul className="mt-1 list-disc pl-5">{ov.data_problems.map((d) => <li key={d}>{d}</li>)}</ul>
+          </div>
+        ) : null}
         {c.error ? (
           <p className="mt-4 rounded-sm border border-stop/50 bg-stop/5 px-4 py-2 text-sm text-stop">{c.error}</p>
         ) : null}
@@ -118,7 +125,8 @@ function App() {
                       email={c.inbox.find((m) => m.id === (p.facts as { email_id: string }).email_id)}
                       materials={c.materials}
                       onResolve={(mat) => c.run(() => api.resolve(p.id, mat))}
-                      onDismiss={() => c.run(() => api.dismiss(p.id))}
+                      onDismiss={(note) => c.run(() => api.dismiss(p.id, note))}
+                      onRedecide={() => c.run(() => api.redecide(p.id))}
                     />
                   ))}
                   {quoteCards.length ? (

@@ -102,6 +102,13 @@ export function DecisionCard({ p, fresh, bar, scale, focused, k = 1, onReview, o
             </p>
           ) : null}
 
+          {f.corrects ? (
+            <p className="rounded-sm border border-attn/40 bg-attn/4 px-3 py-2 text-sm text-ink">
+              <span className="font-label text-[12px] uppercase tracking-wider text-attn">Correction · </span>
+              Re-decides card #{f.corrects.proposal_id} (approved as {f.corrects.original_action}) with a price change that arrived
+              later. That decision and anything it sent stay on record.
+            </p>
+          ) : null}
           {f.restated ? (
             <p className="rounded border border-rule-bright bg-sheet-2 px-3 py-2 text-sm text-ink">
               <span className="font-label text-[12px] uppercase tracking-wider text-ink-dim">Restated · </span>

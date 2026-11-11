@@ -19,7 +19,7 @@ from fastapi import FastAPI, HTTPException, Response
 from pydantic import BaseModel
 from sse_starlette.sse import EventSourceResponse
 
-from . import actions, attachments, coordinator, db, ingest, leakage, quotecheck
+from . import actions, attachments, catalog, coordinator, db, ingest, leakage, quotecheck
 from .config import AS_OF, DB_PATH, MODEL, ROOT
 
 DEMO_EMAILS_PATH = ROOT / "data" / "demo_emails.json"
@@ -145,6 +145,8 @@ def overview() -> dict:
             "done": one("SELECT COUNT(*) FROM proposals WHERE status IN ('approved', 'edited', 'rejected')"),
             "outbox": one("SELECT COUNT(*) FROM outbox"),
             "autonomy": _autonomy(c),
+            # Data problems that make costing fail closed (no costing supplier, or more than one).
+            "data_problems": catalog.costing_problems(c),
         }
 
 
@@ -479,6 +481,16 @@ def resolve(proposal_id: int, b: ResolveBody) -> dict:
     event_id = _act(actions.resolve_review, proposal_id, b.material_id, b.note)
     bus.publish("proposal.reviewed", {"id": proposal_id, "status": "approved"})
     _run_job("resolve", _coordinate)
+    return {"event_id": event_id}
+
+
+@app.post("/api/proposals/{proposal_id}/redecide")
+def redecide(proposal_id: int) -> dict:
+    """Re-decide an approved quote with corrected numbers (the original decision stands)."""
+    _require_idle()
+    event_id = _act(actions.redecide_correction, proposal_id)
+    bus.publish("proposal.reviewed", {"id": proposal_id, "status": "approved"})
+    _run_job("redecide", _coordinate)
     return {"event_id": event_id}
 
 

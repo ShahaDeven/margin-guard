@@ -25,6 +25,10 @@ CREATE TABLE IF NOT EXISTS material_vendors (
     is_primary   INTEGER NOT NULL DEFAULT 0,
     PRIMARY KEY (material_id, vendor_id)
 );
+-- At most one costing supplier per material, enforced by the database; "at least
+-- one" is checked by the importer and catalog.costing_problems(). With none,
+-- costing fails closed: no supplier's price moves that material's margins.
+CREATE UNIQUE INDEX IF NOT EXISTS idx_one_costing_supplier ON material_vendors(material_id) WHERE is_primary = 1;
 
 -- Every supplier's prices. Quotes are costed at the costing supplier's
 -- (material_vendors.is_primary); other suppliers' rows are alternatives on file.
@@ -108,7 +112,9 @@ CREATE TABLE IF NOT EXISTS email_attachments (
     content_type  TEXT NOT NULL,
     data          BLOB NOT NULL,
     text          TEXT,
-    note          TEXT
+    note          TEXT,
+    state         TEXT NOT NULL DEFAULT 'COMPLETE'
+                  CHECK (state IN ('COMPLETE', 'TRUNCATED', 'UNREADABLE', 'FAILED'))
 );
 CREATE INDEX IF NOT EXISTS idx_attachments_email ON email_attachments(email_id);
 

@@ -62,6 +62,17 @@ def costing_vendor(conn: sqlite3.Connection, material_id: str) -> str | None:
     return row["vendor_id"] if row else None
 
 
+def costing_problems(conn: sqlite3.Connection) -> list[str]:
+    """Materials without exactly one costing supplier. Costing fails closed for them
+    (no supplier's price moves their margins), so each one is a data problem to fix."""
+    rows = conn.execute(
+        """SELECT m.id, COUNT(mv.vendor_id) AS n FROM materials m
+           LEFT JOIN material_vendors mv ON mv.material_id = m.id AND mv.is_primary = 1
+           GROUP BY m.id HAVING n <> 1 ORDER BY m.id""").fetchall()
+    return [f"{r['id']} has {'no' if r['n'] == 0 else r['n']} costing supplier{'s' if r['n'] > 1 else ''}; mark exactly one"
+            for r in rows]
+
+
 def resolve_material(conn: sqlite3.Connection, text: str, vendor_id: str | None = None) -> MatchResult:
     query = normalize_name(text)
     if not query:

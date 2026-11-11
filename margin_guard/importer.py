@@ -249,6 +249,10 @@ def validate(folder: Path) -> tuple[dict[str, list[dict]], list[str]]:
     for r in data["material_vendors.csv"]:
         if r["is_costing"]:
             costing.setdefault(r["material_id"], []).append(r["vendor_id"])
+    for r in data["materials.csv"]:
+        if r["id"] not in costing:
+            problems.append(f"materials.csv row {r['_row']}: {r['id']} has no costing supplier; mark exactly one "
+                            "in material_vendors.csv (is_costing = 1)")
     for m, vendors in costing.items():
         if len(vendors) > 1:
             problems.append(f"material_vendors.csv: {m} has {len(vendors)} costing suppliers ({', '.join(vendors)});"

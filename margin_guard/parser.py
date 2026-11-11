@@ -128,22 +128,33 @@ def _parse_date(value: str | None) -> str | None:
         return None
 
 
+def _incomplete_reason(name: str, state: str, why: str | None) -> str:
+    if state == "TRUNCATED":
+        return f"attachment {name} was only partly read ({why}); the rest may hold more price changes"
+    if state == "FAILED":
+        return f"attachment {name} could not be opened: {why}"
+    return f"attachment {name} could not be read: {why}"
+
+
 def normalize(conn: sqlite3.Connection, email: sqlite3.Row | dict, extraction: EmailExtraction) -> Normalized:
     vendor_id = vendor_for_sender(conn, email["from_addr"])
     result = Normalized(vendor_id=vendor_id)
 
-    unreadable = _get(email, "unreadable_attachments") or []
-    # A supplier sent a file nobody could read. The model can't tell what's in a
-    # scan, so its "not a price change" verdict is a guess; a person looks instead.
-    if unreadable and vendor_id and not extraction.changes:
+    # A supplier file that wasn't read in full (cut, unreadable, failed) always reaches
+    # a person, even when other changes were extracted: a partial read is never
+    # presented as a complete one. The model's verdict on a file it couldn't see is a
+    # guess, so it doesn't decide this.
+    incomplete = _get(email, "incomplete_attachments") or []
+    if incomplete and vendor_id:
         result.drafts.append(EventDraft(
             "price_change.needs_review",
-            f"review:{email['id']}:0",
-            {"email_id": email["id"], "vendor_id": vendor_id,
-             "review_reasons": [f"attachment {name} could not be read: {why}" for name, why in unreadable],
+            f"review:{email['id']}:attachments",
+            {"email_id": email["id"], "vendor_id": vendor_id, "kind": "incomplete_attachment",
+             "review_reasons": [_incomplete_reason(name, state, why) for name, state, why in incomplete],
              "summary": extraction.rationale},
         ))
-        return result
+        if not extraction.changes or extraction.email_kind in ("other", "supplier_offer"):
+            return result
 
     if extraction.email_kind in ("other", "supplier_offer"):
         result.ignored_reason = f"not a price change ({extraction.email_kind})"
@@ -157,8 +168,7 @@ def normalize(conn: sqlite3.Connection, email: sqlite3.Row | dict, extraction: E
             "price_change.needs_review",
             f"review:{email['id']}:0",
             {"email_id": email["id"], "vendor_id": vendor_id,
-             "review_reasons": ([f"attachment {name} could not be read: {why}" for name, why in unreadable]
-                                or ["advisory without an exact price and effective date"]),
+             "review_reasons": ["advisory without an exact price and effective date"],
              "summary": extraction.rationale},
         ))
         return result

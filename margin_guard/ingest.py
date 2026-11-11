@@ -29,7 +29,9 @@ def with_attachments(conn: sqlite3.Connection, email: sqlite3.Row | dict) -> dic
     files = attachments.load(conn, email["id"])
     if files:
         email["attachments_text"] = attachments.for_prompt(files)
-        email["unreadable_attachments"] = [(name, r.note) for name, r in files if not r.text]
+        # Anything not read in full (cut, unreadable, failed) must reach a person.
+        email["incomplete_attachments"] = [(name, r.state, r.note) for name, r in files
+                                           if r.state != attachments.COMPLETE]
     return email
 
 

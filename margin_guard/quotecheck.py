@@ -47,9 +47,9 @@ def _changes(conn: sqlite3.Connection, material_ids: set[str], after: str, until
                LEFT JOIN vendors v ON v.id = h.vendor_id
                LEFT JOIN events e ON e.id = h.source_event_id
                WHERE h.material_id = ? AND h.effective_date > ? AND h.effective_date <= ?
-                 AND (h.vendor_id IS NULL OR ? IS NULL OR h.vendor_id = ?)
+                 AND (h.vendor_id IS NULL OR h.vendor_id = ?)
                ORDER BY h.effective_date, h.id""",
-            (m, after, until, costing, costing),
+            (m, after, until, costing),
         ):
             out_rows.append({"material_id": m, **dict(r)})
     return sorted(out_rows, key=lambda r: (r["effective_date"], r["material_id"]))
@@ -103,27 +103,35 @@ def check(conn: sqlite3.Connection, *, customer_id: str, lines: list[dict], vali
                          "margin": out(money.ratio(1 - cost / revenue)),
                          "below_floor": (1 - cost / revenue) < floor,
                          "changes": [c for c in changes if c["effective_date"] == d]})
-    now, worst = timeline[0], timeline[-1]
+    # The customer can order on any day the quote is valid, so the worst point in the
+    # window is what matters, not only the last one: an increase that is later partly
+    # reversed still leaves the quote exposed while it lasts.
+    now, expiry = timeline[0], timeline[-1]
+    worst = min(timeline, key=lambda t: (t["margin"], t["date"]))
+    rises = [t for t in timeline[1:] if D(t["cost_usd"]) > D(now["cost_usd"])]
 
     out_lines = []
     for ln in lines:
         p, bom = parts[ln["part_id"]]
         before, after = unit_cost(ln["part_id"], issued), unit_cost(ln["part_id"], valid_until)
+        peak = max(unit_cost(ln["part_id"], d) for d in dates)      # highest cost while the quote is valid
         price = D(ln["unit_price"])
         margin_now = 1 - before / price
-        # Price that keeps this line's margin once every increase in the window has landed
-        # (same form as impact.py: after * price / before).
-        hold = money.price(after * price / before) if after > before else price
+        # Price that keeps this line's margin at its costliest point in the window
+        # (same form as impact.py: cost * price / cost at issue).
+        hold = money.price(peak * price / before) if peak > before else price
         out_lines.append({
             "part_id": ln["part_id"], "part_name": p["name"], "qty": ln["qty"], "unit_price": out(money.price(price)),
             "unit_cost_now": out(money.price(before)), "unit_cost_at_expiry": out(money.price(after)),
+            "unit_cost_worst": out(money.price(peak)),
             "margin_now": out(money.ratio(margin_now)), "margin_at_expiry": out(money.ratio(1 - after / price)),
+            "margin_worst": out(money.ratio(1 - peak / price)),
             "price_to_hold_margin": out(hold),
             "materials": [m["material_id"] for m in bom],
             "affected": any(c["material_id"] in {m["material_id"] for m in bom} for c in changes),
         })
 
-    first = dates[1] if len(dates) > 1 else None
+    first = rises[0]["date"] if rises else None         # first day the quote costs more than today
     lock = cust["price_lock_until"]
     # A lock only matters if it still holds when an increase lands: then an escalation
     # clause can't move the price.
@@ -138,7 +146,7 @@ def check(conn: sqlite3.Connection, *, customer_id: str, lines: list[dict], vali
                             "materials": sorted(hit), "reasons": f.get("review_reasons", [])})
 
     suggestions = []
-    if changes:
+    if rises:
         safe_until = (date.fromisoformat(first) - timedelta(days=1)).isoformat()
         safe_days = (date.fromisoformat(safe_until) - date.fromisoformat(issued)).days
         if safe_days >= 1:
@@ -148,7 +156,8 @@ def check(conn: sqlite3.Connection, *, customer_id: str, lines: list[dict], vali
         held = sum((D(ln["qty"]) * D(o["price_to_hold_margin"]) for ln, o in zip(lines, out_lines)), ZERO)
         suggestions.append({"kind": "reprice", "value_usd": out(money.cents(held)),
                             "text": f"Price for the increases: ${money.cents(held):,.2f} total "
-                                    f"(+${money.cents(held - revenue):,.2f}) keeps each line's margin through {_day(valid_until)}."})
+                                    f"(+${money.cents(held - revenue):,.2f}) keeps each line's margin at its costliest point "
+                                    f"while the quote is valid ({_day(worst['date'])})."})
         clause_lines = "; ".join(
             f"{names.get(c['material_id'], c['material_id'])} quoted at "
             f"${impact.cost_on(conn, c['material_id'], issued):.2f}/lb (supplier price on file: "
@@ -162,9 +171,16 @@ def check(conn: sqlite3.Connection, *, customer_id: str, lines: list[dict], vali
         "customer": {"id": cust["id"], "name": cust["name"], "tier": cust["tier"], "price_lock_until": lock},
         "issued": issued, "valid_until": valid_until, "margin_floor": margin_floor,
         "value_usd": out(money.cents(revenue)),
-        "margin_now": now["margin"], "margin_at_expiry": worst["margin"],
-        "below_floor_now": now["below_floor"], "below_floor_at_expiry": worst["below_floor"],
-        "at_risk_usd": out(money.cents(D(worst["cost_usd"]) - D(now["cost_usd"]))),
+        "margin_at_issue": now["margin"],
+        "worst_margin_during_validity": worst["margin"],
+        "worst_date": worst["date"],
+        "margin_at_expiry": expiry["margin"],
+        "maximum_exposure_usd": out(money.cents(D(worst["cost_usd"]) - D(now["cost_usd"]))),
+        "margin_now": now["margin"],                                   # = margin_at_issue (kept for the console)
+        "below_floor_now": now["below_floor"],
+        "below_floor_during_validity": worst["below_floor"],
+        "below_floor_at_expiry": expiry["below_floor"],
+        "at_risk_usd": out(money.cents(D(worst["cost_usd"]) - D(now["cost_usd"]))),   # = maximum exposure
         "changes": [{**c, "material_name": names.get(c["material_id"], c["material_id"])} for c in changes],
         "timeline": timeline,
         "lines": out_lines,
@@ -173,7 +189,7 @@ def check(conn: sqlite3.Connection, *, customer_id: str, lines: list[dict], vali
         "suggestions": suggestions,
         "verdict": ("below_floor_now" if now["below_floor"] else
                     "below_floor_after_change" if worst["below_floor"] else
-                    "margin_erodes" if changes else "clear"),
+                    "margin_erodes" if rises else "clear"),
     }
 
 
