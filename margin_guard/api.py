@@ -19,7 +19,7 @@ from fastapi import FastAPI, HTTPException, Response
 from pydantic import BaseModel
 from sse_starlette.sse import EventSourceResponse
 
-from . import actions, attachments, coordinator, db, ingest, leakage
+from . import actions, attachments, coordinator, db, ingest, leakage, quotecheck
 from .config import AS_OF, DB_PATH, MODEL, ROOT
 
 DEMO_EMAILS_PATH = ROOT / "data" / "demo_emails.json"
@@ -245,6 +245,36 @@ def inbox() -> list[dict]:
 def materials() -> list[dict]:
     with _conn_lock:
         return [dict(r) for r in conn().execute("SELECT id, name, category, cost_per_lb FROM materials ORDER BY id")]
+
+
+class QuoteLine(BaseModel):
+    part_id: str
+    qty: float
+    unit_price: float
+
+
+class QuoteCheckBody(BaseModel):
+    customer_id: str
+    valid_days: int
+    margin_floor: float
+    lines: list[QuoteLine]
+
+
+@app.get("/api/parts")
+def parts() -> list[dict]:
+    with _conn_lock:
+        return quotecheck.parts_catalog(conn())
+
+
+@app.post("/api/quote-check")
+def quote_check(b: QuoteCheckBody) -> dict:
+    """Will a price change already on file land inside this quote? Reads only; saves nothing."""
+    with _conn_lock:
+        try:
+            return quotecheck.check(conn(), customer_id=b.customer_id, valid_days=b.valid_days,
+                                    margin_floor=b.margin_floor, lines=[ln.model_dump() for ln in b.lines])
+        except quotecheck.CheckError as exc:
+            raise HTTPException(400, str(exc)) from exc
 
 
 @app.get("/api/leakage")

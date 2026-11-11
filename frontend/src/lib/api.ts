@@ -1,5 +1,5 @@
 import type {
-  DataCustomer, DataMaterial, DataQuote, DemoEmail, Email, Leakage, Material, OutboxItem, Overview, Proposal, QuoteDetail,
+  DataCustomer, DataMaterial, DataQuote, DemoEmail, Email, Leakage, Material, Part, QuoteCheck, OutboxItem, Overview, Proposal, QuoteDetail,
 } from './types'
 
 async function call<T>(path: string, init?: RequestInit): Promise<T> {
@@ -21,7 +21,7 @@ async function call<T>(path: string, init?: RequestInit): Promise<T> {
 
 const post = <T>(path: string, body: unknown = {}) => call<T>(path, { method: 'POST', body: JSON.stringify(body) })
 
-export type Lane = 'decide' | 'rules' | 'done' | 'leakage' | 'data'
+export type Lane = 'decide' | 'rules' | 'done' | 'quote' | 'leakage' | 'data'
 
 export const api = {
   overview: () => call<Overview>('/api/overview'),
@@ -36,6 +36,9 @@ export const api = {
   dataCustomers: () => call<DataCustomer[]>('/api/data/customers'),
   dataMaterials: () => call<DataMaterial[]>('/api/data/materials'),
   leakage: () => call<Leakage>('/api/leakage'),
+  parts: () => call<Part[]>('/api/parts'),
+  quoteCheck: (body: { customer_id: string; valid_days: number; margin_floor: number; lines: { part_id: string; qty: number; unit_price: number }[] }) =>
+    post<QuoteCheck>('/api/quote-check', body),
 
   review: (id: number, body: { verdict: 'approve' | 'edit' | 'reject'; action?: string; subject?: string; body?: string; note?: string }) =>
     post<Proposal>(`/api/proposals/${id}/review`, body),

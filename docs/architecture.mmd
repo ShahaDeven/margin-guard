@@ -1,0 +1,55 @@
+%% Source for docs/architecture.png. Re-render: python -m evals.render_diagram
+%%{init: {"flowchart": {"wrappingWidth": 320, "nodeSpacing": 40, "rankSpacing": 45}}}%%
+flowchart TB
+    classDef llm fill:#2a2440,stroke:#b7a3f2,color:#f1ebdc
+    classDef code fill:#1b1d20,stroke:#474a50,color:#f1ebdc
+    classDef person fill:#3a2d14,stroke:#e3a53c,color:#f1ebdc
+    classDef record fill:#173b2b,stroke:#5cc48a,color:#e4efe5
+
+    email["Supplier email"]
+    files["Attached price list<br/>.xlsx · .csv · .pdf"]
+    inv["Invoice export<br/>accounts payable CSV"]
+    shop["Shop data<br/>9 CSVs or the demo seed"]
+
+    attach["attachments<br/>sheet rows and PDF text<br/>become plain text"]
+    extract["extract<br/>Claude reports only what<br/>the email and file say"]
+    normalize["normalize<br/>catalog match · units to $/lb<br/>cents · currency · sanity bound<br/>costing supplier only"]
+    drift["invoice check<br/>billed $/lb vs the<br/>price on file"]
+
+    log[("Event log + price history<br/>SQLite · append-only · idempotent")]
+
+    subgraph coord["Coordinator (LangGraph)"]
+        direction LR
+        impact["impact<br/>open quotes hit<br/>margin before and after · $ at risk<br/>price that restores margin"]
+        restate["restate<br/>redo later-dated cards when<br/>an earlier change arrives late"]
+        decide["decide<br/>rules settle 87%<br/>Claude: judgment calls + draft"]
+        impact --> restate --> decide
+    end
+
+    look["Needs a look<br/>ambiguous material · unit slip<br/>unreadable file · invoice drift"]
+    queue["Approval queue<br/>approve · edit · reject · undo"]
+    outbox["Outbox · call tasks<br/>revised quote prices"]
+
+    qc["Quote check<br/>before a quote goes out"]
+    leak["Leakage<br/>after the job shipped"]
+    evals["Eval loop<br/>reviews become regression cases<br/>promotion gate · correction ledger"]
+
+    email --> extract
+    files --> attach --> extract
+    extract --> normalize --> log
+    inv --> drift --> log
+    shop --> log
+    normalize -. doubtful .-> look
+    drift -. billed above .-> look
+    look -- a person answers --> log
+    log --> impact
+    decide --> queue --> outbox
+    log --> qc
+    log --> leak
+    queue -. every verdict .-> evals
+
+    class extract,decide llm
+    class attach,normalize,drift,impact,restate,qc,leak,email,files,inv,shop,outbox,evals code
+    class look,queue person
+    class log record
+    style coord fill:#131416,stroke:#474a50,color:#a29c8b

@@ -332,3 +332,43 @@ export interface Attachment {
   /** Why the file was cut or could not be read (e.g. a scan with no text layer). */
   note: string | null
 }
+
+export interface Part {
+  id: string
+  name: string
+  unit_cost_now: number
+  materials: string[]
+}
+
+export interface QuoteChange {
+  material_id: string
+  material_name: string
+  effective_date: string
+  cost_per_lb: number
+  vendor_name: string | null
+  email_id: string | null
+}
+
+export interface QuoteCheck {
+  customer: { id: string; name: string; tier: string; price_lock_until: string | null }
+  issued: string
+  valid_until: string
+  margin_floor: number
+  value_usd: number
+  margin_now: number
+  margin_at_expiry: number
+  below_floor_now: boolean
+  below_floor_at_expiry: boolean
+  at_risk_usd: number
+  changes: QuoteChange[]
+  timeline: { date: string; cost_usd: number; margin: number; below_floor: boolean; changes: QuoteChange[] }[]
+  lines: {
+    part_id: string; part_name: string; qty: number; unit_price: number; unit_cost_now: number
+    unit_cost_at_expiry: number; margin_now: number; margin_at_expiry: number; price_to_hold_margin: number
+    materials: string[]; affected: boolean
+  }[]
+  price_locked: boolean
+  pending_reviews: { proposal_id: number; email_id: string | null; kind: string | null; materials: string[]; reasons: string[] }[]
+  suggestions: { kind: 'shorten' | 'reprice' | 'clause'; text: string; valid_days?: number; valid_until?: string; value_usd?: number }[]
+  verdict: 'clear' | 'margin_erodes' | 'below_floor_after_change' | 'below_floor_now'
+}

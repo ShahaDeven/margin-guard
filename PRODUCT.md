@@ -37,7 +37,8 @@ The LLM reads; code does every number. Claude extracts what an email says and ma
 - Stack: FastAPI-style Python backend (`margin_guard/`), SQLite, LangGraph coordinator; React 19 + Vite + Tailwind 4 console (`frontend/`).
 - A person approves everything; nothing is approved automatically. Every decision can be undone.
 - Exposure is replacement-cost exposure (material bought when the order is placed); inventory-aware costing is out of scope.
-- Planned (2026-11): vendor-specific costing, Decimal money with cents support, effective-date timeline recompute, CSV import, a retroactive margin-leakage report, PDF/Excel price-sheet extraction, invoice price drift, a quote-time warning, an owner-facing exposure view.
+- Built (2026-11): supplier-specific costing, Decimal money with cents and currency, restatement when changes arrive out of date order, CSV import, the margin-leakage report with line-level traces and price-lock split, PDF/Excel/CSV price-list attachments, invoice price drift, the quote check, and the owner-facing Leakage view.
+- Still open: outcome tracking (what customers did after a reprice), won-but-unshipped orders in exposure, OCR for scanned files.
 - Out of scope for the proof: Gmail/Outlook OAuth, ERP connectors, multi-tenant/RBAC.
 - Terminology: quote, quote line, BOM, margin floor, exposure / dollars at risk, honor / absorb / reprice / contact customer, card, superseded, costing vendor.
 
@@ -48,7 +49,7 @@ The LLM reads; code does every number. Claude extracts what an email says and ma
 
 ## Evidence on Hand
 
-- Measured results in `README.md` and `evals/results/` (extraction 15/15 tuned, 9/10 holdout; 232/232 decisions; scenario suite; promotion gate report and correction ledger).
+- Measured results in `README.md` and `evals/results/` (extraction 15/15 tuned, 9/10 blind holdout, 7/7 cents and currency, 4/4 attachments after one rule fix; 282/282 decisions; scenario suite; promotion gate report and correction ledger).
 - All shop data is **synthetic** (150 open quotes, 24 customers, 12 materials). There are no real customers, testimonials, pilots or revenue; never imply otherwise.
 - Illustrative dashboard figures (e.g. "$42.8K at risk") are concepts, not repository data, unless computed from the seeded shop.
 

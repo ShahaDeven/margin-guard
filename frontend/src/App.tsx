@@ -4,6 +4,7 @@ import { DataLane } from './components/DataLane'
 import { DecisionCard, QUEUE_COLS } from './components/DecisionCard'
 import { DoneLane } from './components/DoneLane'
 import { LeakageLane } from './components/LeakageLane'
+import { QuoteCheckLane } from './components/QuoteCheckLane'
 import { sharedScale } from './components/MarginBar'
 import { ReviewCard } from './components/ReviewCard'
 import { Empty, RulesLane } from './components/RulesLane'
@@ -160,6 +161,7 @@ function App() {
               {c.lane === 'done' ? (
                 <DoneLane cards={c.cards} outbox={c.outbox} onReopen={(id) => c.run(() => api.reopen(id))} onViewQuote={c.focusQuote} />
               ) : null}
+              {c.lane === 'quote' ? <QuoteCheckLane onAnswer={() => c.setLane('decide')} /> : null}
               {c.lane === 'leakage' ? <LeakageLane r={c.leakage} onViewQuote={c.focusQuote} /> : null}
               {c.lane === 'data' && ov ? (
                 <DataLane
@@ -186,6 +188,7 @@ const VIEWS: { id: Lane; label: string; short?: string; count?: (ov: Overview, l
   { id: 'decide', label: 'Decide', count: (ov) => ov.needs_you },
   { id: 'rules', label: 'Settled by rules', short: 'Rules', count: (ov) => ov.rule_pending },
   { id: 'done', label: 'Done', count: (ov) => ov.done },
+  { id: 'quote', label: 'Quote check', short: 'Quote' },
   { id: 'leakage', label: 'Leakage', count: (_ov, leak) => leak?.jobs_leaked ?? null },
   { id: 'data', label: 'Data' },
 ]
@@ -278,6 +281,7 @@ function ViewHeading({ lane, ov }: { lane: Lane; ov: Overview | null }) {
     decide: ['Needs your decision', 'Judgment calls Claude made and supplier emails it would not guess on, largest dollars first.'],
     rules: ['Settled by rules', 'Honor and absorb decisions the policy settles by itself, grouped by price change.'],
     done: ['Done', 'What each person decided next to what was proposed, and the outbox. Every decision can be undone.'],
+    quote: ['Quote check', 'Before a quote goes out: will a price change already on file land while it is still valid?'],
     leakage: ['Leakage', 'Margin won jobs already lost because costs moved between quote and order.'],
     data: ['Data', `Quotes, customers and materials behind every number${ov ? `, as of ${shortDate(ov.as_of)}` : ''}.`],
   }

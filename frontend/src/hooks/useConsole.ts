@@ -56,7 +56,7 @@ function describe(kind: string, d: Msg): Omit<FeedItem, 'id' | 'at'> | null {
   }
 }
 
-const LANES: Lane[] = ['decide', 'rules', 'done', 'leakage', 'data']
+const LANES: Lane[] = ['decide', 'rules', 'done', 'quote', 'leakage', 'data']
 const laneFromHash = (): Lane | null => {
   const h = window.location.hash.replace('#', '') as Lane
   return LANES.includes(h) ? h : null
@@ -103,7 +103,7 @@ export function useConsole() {
   const refresh = useCallback(async () => {
     try {
       const current = laneRef.current
-      const queueLane = current === 'data' || current === 'leakage' ? null : current
+      const queueLane = current === 'data' || current === 'leakage' || current === 'quote' ? null : current
       const [ov, queue, mail, out, leak] = await Promise.all([
         api.overview(),
         queueLane ? api.queue(queueLane, filterRef.current) : Promise.resolve([] as Proposal[]),
