@@ -147,6 +147,38 @@ export interface LeakageJob {
   leak_usd: number
   below_floor: boolean
   by_material: Record<string, number>
+  /** Quoted basis vs price history at the quote date (rounding, or an estimator's own number). */
+  basis_difference_usd: number
+  /** The customer's price lock covers the order date: the leak was locked in, not recoverable. */
+  price_locked: boolean
+  price_lock_until: string | null
+  /** The calculation row by row: one entry per quote line x material. */
+  trace: LeakageTrace[]
+}
+
+export interface HistoryRow {
+  id: number
+  cost_per_lb: number
+  effective_date: string
+  vendor_id: string | null
+  vendor_name: string | null
+  /** Supplier email the price came from; null for seeded or imported history. */
+  email_id: string | null
+}
+
+export interface LeakageTrace {
+  line_id: number
+  part_id: string
+  part_name: string
+  qty: number
+  material_id: string
+  lb_per_unit: number
+  scrap_rate: number
+  cost_at_quote: number
+  cost_at_order: number
+  quote_row: HistoryRow | null
+  order_row: HistoryRow | null
+  leak_usd: number
 }
 
 export interface Leakage {
@@ -160,6 +192,10 @@ export interface Leakage {
   leaked_usd: number
   gained_usd: number
   net_leaked_usd: number
+  /** Leaked on jobs a revised quote could have saved; the rest was fixed by customer price locks. */
+  recoverable_usd: number
+  locked_usd: number
+  jobs_locked: number
   margin_quoted: number
   margin_realized: number
   below_floor_jobs: number
@@ -167,6 +203,7 @@ export interface Leakage {
   by_customer: { customer_id: string; customer_name: string; leak_usd: number; jobs: number }[]
   by_month: { month: string; leak_usd: number; jobs: number; revenue_usd: number }[]
   top_jobs: LeakageJob[]
+  jobs: LeakageJob[]
 }
 
 export interface OutboxItem {

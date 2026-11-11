@@ -125,3 +125,64 @@ def test_api_serves_the_report(conn, tmp_path, monkeypatch):
     with TestClient(api.app) as c:
         body = c.get("/api/leakage").json()
     assert body["won_jobs"] > 0 and "assumption" in body
+
+
+# ------------------------------------------------------------------ trace
+
+
+def test_trace_adds_up_to_each_jobs_leak(report):
+    for j in report["jobs"]:
+        lines = sum((D(t["leak_usd"]) for t in j["trace"]), D(0))
+        # Each line is rounded to the cent, so allow a cent per line.
+        assert abs(lines + D(j["basis_difference_usd"]) - D(j["leak_usd"])) <= D("0.01") * len(j["trace"]), j["quote_id"]
+
+
+def test_trace_names_the_history_rows_it_used(conn, report):
+    for j in report["jobs"][:20]:
+        for t in j["trace"]:
+            for key, cost, on in (("quote_row", "cost_at_quote", j["issued_date"]), ("order_row", "cost_at_order", j["ordered_date"])):
+                row = t[key]
+                assert row is not None and row["effective_date"] <= on
+                stored = conn.execute("SELECT cost_per_lb, material_id FROM material_price_history WHERE id = ?",
+                                      (row["id"],)).fetchone()
+                assert stored["material_id"] == t["material_id"] and stored["cost_per_lb"] == pytest.approx(t[cost])
+
+
+def test_trace_points_at_the_supplier_email(conn):
+    # A price change that arrived by email is traced back to that email.
+    qid = _won_job_with(conn, "MAT-FKM-75")
+    issued = conn.execute("SELECT issued_date FROM quotes WHERE id = ?", (qid,)).fetchone()[0]
+    conn.execute("UPDATE quotes SET ordered_date = date(issued_date, '+10 days') WHERE id = ?", (qid,))
+    ev = conn.execute("INSERT INTO events (event_type, idempotency_key, payload, status)"
+                      " VALUES ('price_change.detected', 'k-trace', '{\"email_id\": \"E99\"}', 'processed')").lastrowid
+    conn.execute("INSERT INTO material_price_history (material_id, vendor_id, cost_per_lb, effective_date, source_event_id)"
+                 " VALUES ('MAT-FKM-75', 'V-FLT', 16.00, date(?, '+5 days'), ?)", (issued, ev))
+    j = next(j for j in leakage.analyze(conn)["jobs"] if j["quote_id"] == qid)
+    fkm = [t for t in j["trace"] if t["material_id"] == "MAT-FKM-75"]
+    assert fkm and all(t["order_row"]["email_id"] == "E99" for t in fkm)
+
+
+# ------------------------------------------------------------------ price locks
+
+
+def test_leak_splits_into_recoverable_and_locked(report):
+    assert D(report["recoverable_usd"]) + D(report["locked_usd"]) == D(report["leaked_usd"])
+    locked = [j for j in report["jobs"] if j["price_locked"] and j["leak_usd"] > 0]
+    assert report["jobs_locked"] == len(locked)
+    assert abs(sum(D(j["leak_usd"]) for j in locked) - D(report["locked_usd"])) <= D("0.01") * max(len(locked), 1)
+
+
+def test_price_locked_means_the_lock_covers_the_order_date(conn, report):
+    locks = dict(conn.execute("SELECT id, price_lock_until FROM customers").fetchall())
+    for j in report["jobs"]:
+        lock = locks[j["customer_id"]]
+        assert j["price_locked"] == bool(lock and lock >= j["ordered_date"]), j["quote_id"]
+
+
+def test_a_lock_that_ended_before_the_order_is_recoverable(conn):
+    qid = _won_job_with(conn, "MAT-FKM-75")
+    cust, ordered = conn.execute("SELECT customer_id, ordered_date FROM quotes WHERE id = ?", (qid,)).fetchone()
+    conn.execute("UPDATE customers SET price_lock_until = date(?, '-1 day') WHERE id = ?", (ordered, cust))
+    assert not next(j for j in leakage.analyze(conn)["jobs"] if j["quote_id"] == qid)["price_locked"]
+    conn.execute("UPDATE customers SET price_lock_until = ? WHERE id = ?", (ordered, cust))
+    assert next(j for j in leakage.analyze(conn)["jobs"] if j["quote_id"] == qid)["price_locked"]

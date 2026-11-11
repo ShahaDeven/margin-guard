@@ -12,8 +12,9 @@ at risk at replacement cost, not an accounting figure.
 
 Every leaked dollar here comes from a cost change that took effect between the
 quote going out and the order coming in: the window in which a revised quote
-or a call to the customer could still have recovered it. That is what Margin
-Guard watches for on open quotes.
+or a call to the customer could still have recovered it, unless the customer
+had a price lock covering the order date. Locked jobs are counted separately
+(locked_usd): that margin was given away by the contract, not missed.
 
     python -m margin_guard.leakage [--db PATH]
 """
@@ -24,7 +25,7 @@ from collections import defaultdict
 from decimal import Decimal
 from pathlib import Path
 
-from . import db, impact, money
+from . import catalog, db, impact, money
 from .config import DB_PATH
 from .money import ZERO, D, out
 
@@ -36,12 +37,35 @@ def _usd(x: Decimal) -> float:
     return out(money.cents(x))
 
 
+def history_row(conn: sqlite3.Connection, material_id: str, on: str) -> dict | None:
+    """The price-history row a cost on `on` came from: the same row impact.cost_entry
+    picks (costing supplier, or a shop entry), with its supplier and source email."""
+    costing = catalog.costing_vendor(conn, material_id)
+    r = conn.execute(
+        """SELECT h.id, h.cost_per_lb, h.effective_date, h.vendor_id, v.name AS vendor_name,
+                  json_extract(e.payload, '$.email_id') AS email_id
+           FROM material_price_history h
+           LEFT JOIN vendors v ON v.id = h.vendor_id
+           LEFT JOIN events e ON e.id = h.source_event_id
+           WHERE h.material_id = ? AND h.effective_date <= ?
+             AND (h.vendor_id IS NULL OR ? IS NULL OR h.vendor_id = ?)
+           ORDER BY h.effective_date DESC, h.id DESC LIMIT 1""",
+        (material_id, on, costing, costing),
+    ).fetchone()
+    return dict(r) if r else None
+
+
 def job(conn: sqlite3.Connection, q: sqlite3.Row) -> dict:
     """One won quote: quoted vs realized material cost, and which materials moved."""
     revenue = quoted_cost = leak = ZERO
     by_material: dict[str, Decimal] = defaultdict(lambda: ZERO)
     gaps: set[str] = set()
-    for ql in conn.execute("SELECT * FROM quote_lines WHERE quote_id = ? ORDER BY id", (q["id"],)):
+    # One entry per quote line x material: the whole calculation, row by row, so
+    # every leaked dollar can be traced to the price-history rows behind it.
+    trace: list[dict] = []
+    for ql in conn.execute(
+            """SELECT ql.*, p.name AS part_name FROM quote_lines ql JOIN parts p ON p.id = ql.part_id
+               WHERE ql.quote_id = ? ORDER BY ql.id""", (q["id"],)):
         qty = D(ql["qty"])
         bom = conn.execute("SELECT material_id, lb_per_unit, scrap_rate FROM part_materials WHERE part_id = ?",
                            (ql["part_id"],)).fetchall()
@@ -56,8 +80,18 @@ def job(conn: sqlite3.Connection, q: sqlite3.Row) -> dict:
                 gaps.add(m["material_id"])
             at_quote, at_order = D(quote_cost), D(order_cost)
             realized_material += lb * at_order
+            moved = qty * lb * (at_order - at_quote)
             if at_order != at_quote:
-                by_material[m["material_id"]] += qty * lb * (at_order - at_quote)
+                by_material[m["material_id"]] += moved
+            trace.append({
+                "line_id": ql["id"], "part_id": ql["part_id"], "part_name": ql["part_name"],
+                "qty": ql["qty"], "material_id": m["material_id"],
+                "lb_per_unit": m["lb_per_unit"], "scrap_rate": m["scrap_rate"],
+                "cost_at_quote": out(money.cost(at_quote)), "cost_at_order": out(money.cost(at_order)),
+                "quote_row": history_row(conn, m["material_id"], q["issued_date"]),
+                "order_row": history_row(conn, m["material_id"], q["ordered_date"]),
+                "leak_usd": _usd(moved),
+            })
         revenue += qty * D(ql["unit_price"])
         quoted_cost += qty * (D(ql["material_cost_basis"]) + D(ql["conversion_cost"]))
         leak += qty * (realized_material - D(ql["material_cost_basis"]))
@@ -82,13 +116,18 @@ def job(conn: sqlite3.Connection, q: sqlite3.Row) -> dict:
         "by_material": {m: _usd(v) for m, v in sorted(by_material.items())},
         "basis_difference_usd": _usd(residual),
         "history_gaps": sorted(gaps),
+        # A contract price lock covering the order date: the job could not have been
+        # repriced, so its leak was locked in, not recoverable.
+        "price_locked": bool(q["price_lock_until"] and q["price_lock_until"] >= q["ordered_date"]),
+        "price_lock_until": q["price_lock_until"],
+        "trace": trace,
     }
 
 
 def analyze(conn: sqlite3.Connection) -> dict:
     """The leakage report over every won quote with an order date."""
     rows = conn.execute(
-        """SELECT q.*, c.name AS customer_name FROM quotes q JOIN customers c ON c.id = q.customer_id
+        """SELECT q.*, c.name AS customer_name, c.price_lock_until FROM quotes q JOIN customers c ON c.id = q.customer_id
            WHERE q.status = 'won' AND q.ordered_date IS NOT NULL ORDER BY q.ordered_date, q.id"""
     ).fetchall()
     analyzed = [job(conn, q) for q in rows]
@@ -97,6 +136,7 @@ def analyze(conn: sqlite3.Connection) -> dict:
     names = dict(conn.execute("SELECT id, name FROM materials").fetchall())
 
     lost = sum((D(j["leak_usd"]) for j in jobs if j["leak_usd"] > 0), ZERO)
+    locked = sum((D(j["leak_usd"]) for j in jobs if j["leak_usd"] > 0 and j["price_locked"]), ZERO)
     gained = sum((-D(j["leak_usd"]) for j in jobs if j["leak_usd"] < 0), ZERO)
     revenue = sum((D(j["revenue_usd"]) for j in jobs), ZERO)
 
@@ -138,6 +178,11 @@ def analyze(conn: sqlite3.Connection) -> dict:
         "leaked_usd": _usd(lost),
         "gained_usd": _usd(gained),
         "net_leaked_usd": _usd(lost - gained),
+        # Of the leaked dollars: what a revised quote could have recovered, and what a
+        # customer price lock had already fixed.
+        "recoverable_usd": _usd(lost - locked),
+        "locked_usd": _usd(locked),
+        "jobs_locked": sum(1 for j in jobs if j["leak_usd"] > 0 and j["price_locked"]),
         "margin_quoted": weighted("margin_quoted"),
         "margin_realized": weighted("margin_realized"),
         "below_floor_jobs": sum(1 for j in jobs if j["below_floor"]),
@@ -159,6 +204,8 @@ def report_markdown(r: dict) -> str:
         f"costs moved between quote and order on **{r['jobs_with_cost_moves']}**",
         f"- Margin leaked: **${r['leaked_usd']:,.2f}** on {r['jobs_leaked']} jobs; "
         f"gained from decreases: ${r['gained_usd']:,.2f}; net **${r['net_leaked_usd']:,.2f}**",
+        f"- Recoverable by a revised quote: **${r['recoverable_usd']:,.2f}**; locked in by customer price locks: "
+        f"${r['locked_usd']:,.2f} on {r['jobs_locked']} jobs",
         f"- Margin as quoted {r['margin_quoted']:.1%} -> as ordered {r['margin_realized']:.1%} (revenue-weighted)",
         f"- Jobs that ended below their margin floor: **{r['below_floor_jobs']}**",
         f"- Assumption: {r['assumption']}",

@@ -22,7 +22,7 @@ Built in four days as a working prototype on a synthetic rubber-molding shop: 15
 | Cards that were stale because an earlier-dated supplier change arrived later (the demo inbox is out of date order) | **50** restated and re-decided; live cards are identical across arrival, date, reverse and random orders |
 | 30 hand-built judgment calls x 3 runs (Claude Sonnet 5.5) | **87 / 90** right, same answer every run, every draft passes its checks |
 | ...of those, calls made with confidence ≥ 0.90 | **93% of calls, 100% right**. All 3 misses came in at ≤ 0.60 |
-| Margin leaked on the shop's 88 won jobs (Jan-Oct 2026, synthetic) because costs moved between quote and order | **$6,151** on 56 jobs ($5,568 net of decreases), 29.4% -> 28.9% margin, 1 job pushed below its floor |
+| Margin leaked on the shop's 88 won jobs (Jan-Oct 2026, synthetic) because costs moved between quote and order | **$6,151** on 56 jobs ($5,568 net of decreases), 29.4% -> 28.9% margin, 1 job pushed below its floor. **$4,617 was recoverable**; $1,535 on 16 jobs was locked in by customer price locks |
 | Prompt injection hidden in a customer note (2 cases) | Refused both times, and **flagged the bad instruction** to the account manager |
 | Cost per judgment call | **$0.009** (Sonnet 5.5) |
 
@@ -181,7 +181,11 @@ day the customer ordered, at the costing supplier's price, and reports dollars l
 on decreases), the margin as quoted vs as ordered, jobs pushed below their floor, and the
 breakdown by material, customer and month. Every leaked dollar comes from a change that took
 effect inside the quote's window, the window in which a revised quote could still have recovered
-it. Same replacement-cost assumption as everywhere else, stated in the report; a job whose
+it, unless the customer had a price lock covering the order date. Those jobs are counted
+separately as locked in (the contract gave that margin away; it was not missed), using each
+customer's current lock since lock history isn't recorded. In the console every figure opens the
+jobs behind it, and every job opens a line-by-line trace down to the price-history rows (and the
+supplier email, when there was one). Same replacement-cost assumption as everywhere else, stated in the report; a job whose
 materials have no price history back to its quote date is listed and left out rather than costed
 at today's price. Also served at `/api/leakage`. Pure code, no LLM.
 

@@ -160,7 +160,7 @@ function App() {
               {c.lane === 'done' ? (
                 <DoneLane cards={c.cards} outbox={c.outbox} onReopen={(id) => c.run(() => api.reopen(id))} onViewQuote={c.focusQuote} />
               ) : null}
-              {c.lane === 'leakage' ? <LeakageLane r={c.leakage} /> : null}
+              {c.lane === 'leakage' ? <LeakageLane r={c.leakage} onViewQuote={c.focusQuote} /> : null}
               {c.lane === 'data' && ov ? (
                 <DataLane
                   asOf={ov.as_of}
