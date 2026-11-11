@@ -396,7 +396,13 @@ def main() -> None:
     if args.db.exists():
         if not args.reset:
             raise SystemExit(f"{args.db} already exists; pass --reset to rebuild it")
-        args.db.unlink()
+        try:
+            args.db.unlink()
+        except PermissionError:
+            raise SystemExit(f"{args.db} is open in another process (usually the API server). "
+                             "Stop uvicorn with Ctrl+C, run this again, then restart it.") from None
+        for suffix in ("-wal", "-shm"):
+            Path(f"{args.db}{suffix}").unlink(missing_ok=True)
     conn = db.connect(args.db)
     build(conn, rng_seed=args.rng_seed)
     counts = {t: conn.execute(f"SELECT COUNT(*) FROM {t}").fetchone()[0]

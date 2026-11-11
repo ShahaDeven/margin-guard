@@ -197,6 +197,27 @@ supplier email, when there was one). Same replacement-cost assumption as everywh
 materials have no price history back to its quote date is listed and left out rather than costed
 at today's price. Also served at `/api/leakage`. Pure code, no LLM.
 
+## Invoice drift: the increases nobody announced
+
+Not every supplier sends a price notice; sometimes the first sign is the invoice. The invoice
+check reads an accounts-payable export and compares every line with the price on file for that
+supplier on the invoice date (its own price, so an alternate supplier is judged against what it
+charged before, not against the costing supplier).
+
+```bash
+python -m margin_guard.invoices check data/invoices_demo.csv
+python -m margin_guard.coordinator          # puts the drift cards in front of a person (no API calls)
+```
+
+A line billed more than 0.5% above the price on file is drift. Each one (per supplier, material
+and billed price) becomes a "needs a look" card with the invoices, the price on file and the
+history row it came from, and the dollars overpaid. Applying it records the billed price as a
+price change from the first invoice date, and the usual impact and decisions run on open quotes;
+dismissing it changes nothing (a one-off, or an error to dispute). Lines for items we don't stock,
+ambiguous items, or suppliers with no price on file are listed, not guessed. On the demo export:
+12 lines, 2 drifts (Ridgeline N550 on two invoices, Summit VMQ 50 by the bag), $728.21 overpaid.
+No model is involved.
+
 ## Bring your own data
 
 A shop is nine CSV files (suppliers, materials, which supplier each material is costed at, price

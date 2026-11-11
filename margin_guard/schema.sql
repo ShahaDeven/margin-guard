@@ -112,6 +112,27 @@ CREATE TABLE IF NOT EXISTS email_attachments (
 );
 CREATE INDEX IF NOT EXISTS idx_attachments_email ON email_attachments(email_id);
 
+-- Supplier invoice lines from an accounts-payable export, each judged against the
+-- price on file for that supplier on the invoice date (invoices.py).
+CREATE TABLE IF NOT EXISTS invoice_lines (
+    id                    INTEGER PRIMARY KEY AUTOINCREMENT,
+    invoice_no            TEXT NOT NULL,
+    line_no               INTEGER NOT NULL,
+    invoice_date          TEXT NOT NULL,
+    vendor_id             TEXT NOT NULL REFERENCES vendors(id),
+    item                  TEXT NOT NULL,              -- the supplier's own item name
+    qty                   REAL NOT NULL,
+    unit                  TEXT NOT NULL,
+    unit_price            REAL NOT NULL,
+    pack_qty              REAL,
+    material_id           TEXT REFERENCES materials(id),
+    billed_cost_per_lb    REAL,
+    expected_cost_per_lb  REAL,
+    status                TEXT CHECK (status IN ('at_price', 'above', 'below', 'not_judged')),
+    note                  TEXT,
+    UNIQUE (invoice_no, line_no)
+);
+
 -- Append-only event log. The coordinator routes on event_type; idempotency_key
 -- makes re-delivered or forwarded emails a no-op.
 CREATE TABLE IF NOT EXISTS events (

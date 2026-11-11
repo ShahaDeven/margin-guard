@@ -54,7 +54,8 @@ def build_graph(conn: sqlite3.Connection, decider: decide.Decider = decide.llm_d
         proposal = {
             "kind": "event_review", "quote_id": None, "action": "resolve_event", "decided_by": "rule",
             "rule_id": "needs_review", "confidence": None, "facts": p, "exposure_usd": 0.0,
-            "rationale": "Vendor email needs a person: " + "; ".join(reasons),
+            "rationale": ("Invoice needs a person: " if p.get("kind") == "invoice_drift" else "Vendor email needs a person: ")
+                         + "; ".join(reasons),
             "draft_subject": None, "draft_body": None,
         }
         return {"proposals": [proposal], "result": {"review_reasons": reasons}}

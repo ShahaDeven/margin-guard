@@ -1,0 +1,13 @@
+invoice_no,line_no,invoice_date,vendor_id,item,qty,unit,unit_price,pack_qty
+INV-MW-88120,1,2026-10-01,V-MWP,EPDM 70 compound,2000,lb,2.10,
+INV-MW-88120,2,2026-10-01,V-MWP,SBR 60 compound,1500,lb,1.62,
+INV-RC-20931,1,2026-10-02,V-RCB,N550 carbon black,40,cwt,114.00,
+INV-RC-20931,2,2026-10-02,V-RCB,Freight surcharge,1,lb,85.00,
+INV-MW-88177,1,2026-10-03,V-MWP,EPDM 60 compound,1200,lb,2.05,
+INV-SS-5512,1,2026-10-05,V-SUM,Silicone VMQ 50 compound,20,kg,300.00,25
+INV-GL-40415,1,2026-10-06,V-GLE,NBR 70 (Buna-N 70),900,kg,4.96,
+INV-GL-40415,2,2026-10-06,V-GLE,Neoprene 60,700,lb,3.26,
+INV-BS-7731,1,2026-10-07,V-BSS,C1018 cold rolled bar,3,short_ton,1680.00,
+INV-FT-1190,1,2026-10-08,V-FLT,FKM 75,300,lb,14.80,
+INV-RC-21007,1,2026-10-09,V-RCB,N550 carbon black,30,cwt,114.00,
+INV-KR-3301,1,2026-10-10,V-KRD,Black 70,500,lb,2.28,

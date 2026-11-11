@@ -22,6 +22,11 @@ export function ReviewCard({
   const canResolve = f.new_cost_per_lb != null && !!f.effective_date
   const name = (id: string) => materials.find((m) => m.id === id)?.name ?? materialLabel(id)
 
+  if (f.kind === 'invoice_drift') {
+    return <DriftCard f={f} name={name} sending={sending} onApply={() => { setSending(true); onResolve(f.material_id!) }}
+      onDismiss={() => { setSending(true); onDismiss() }} />
+  }
+
   return (
     <article className="rounded-sm border border-attn/50 bg-attn/3">
       <div className="space-y-4 px-5 py-4">
@@ -73,6 +78,62 @@ export function ReviewCard({
             <span className="font-label text-[12px] text-ink-dim">No exact price and date to apply, so there's nothing for the agents to act on yet.</span>
           </div>
         )}
+      </div>
+    </article>
+  )
+}
+
+/** An invoice billed a material above the price on file: an increase nobody announced,
+ *  or a billing error. The person applies it as a price change or dismisses it. */
+function DriftCard({ f, name, sending, onApply, onDismiss }: {
+  f: ReviewFacts
+  name: (id: string) => string
+  sending: boolean
+  onApply: () => void
+  onDismiss: () => void
+}) {
+  const head = 'pb-1.5 font-label text-[12px] font-semibold uppercase tracking-[0.08em] text-ink-dim'
+  return (
+    <article className="rounded-sm border border-attn/50 bg-attn/3">
+      <div className="space-y-4 px-5 py-4">
+        <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+          <h2 className="text-[16px] font-semibold text-ink-bright">
+            <span className="mr-2 rounded-sm bg-attn px-1.5 py-px align-[1px] font-label text-[12px] font-semibold text-ground">Needs a look</span>
+            Invoice billed {f.material_id ? name(f.material_id) : f.material_text} above the price on file
+          </h2>
+          <span className="font-label text-[13px] text-ink-dim">{f.vendor_name}</span>
+        </div>
+        <p className="font-label text-[15px] text-ink">
+          On file <span className="text-ink-bright">${f.old_cost_per_lb?.toFixed(4)}/lb</span>
+          {f.expected_row ? <span className="text-ink-dim"> from {shortDate(f.expected_row.effective_date)} (history row #{f.expected_row.id})</span> : null}
+          {' '}· billed <span className="font-semibold text-ink-bright">${f.new_cost_per_lb?.toFixed(4)}/lb</span>
+          {f.pct_change != null ? <span className="text-attn"> {f.pct_change >= 0 ? '+' : ''}{(f.pct_change * 100).toFixed(1)}%</span> : null}
+          <span className="text-ink-dim"> · no price notice on file</span>
+        </p>
+        <table className="w-full max-w-xl text-sm">
+          <thead><tr className="text-left"><th className={head}>Invoice</th><th className={head}>Date</th><th className={`${head} text-right`}>Overpaid</th></tr></thead>
+          <tbody>
+            {(f.invoices ?? []).map((i) => (
+              <tr key={`${i.invoice_no}-${i.line_no}`} className="border-t border-rule">
+                <td className="py-1.5 font-label text-ink">{i.invoice_no} <span className="text-ink-dim">line {i.line_no}</span></td>
+                <td className="py-1.5 font-label text-ink">{shortDate(i.date)}</td>
+                <td className="py-1.5 text-right font-label text-ink-bright">${i.overpaid_usd.toFixed(2)}</td>
+              </tr>
+            ))}
+          </tbody>
+          <tfoot><tr className="border-t border-rule-bright"><td colSpan={2} className="pt-1.5 font-label font-semibold text-ink-bright">Overpaid so far</td>
+            <td className="pt-1.5 text-right font-label font-semibold text-ink-bright">${(f.overpaid_usd ?? 0).toFixed(2)}</td></tr></tfoot>
+        </table>
+        <div className="space-y-2">
+          <div className="flex flex-wrap gap-2">
+            <Button tone="attn" disabled={sending || !f.material_id} onClick={onApply}>Apply as a price change from {shortDate(f.effective_date)}</Button>
+            <Button disabled={sending} onClick={onDismiss}>Dismiss: one-off or billing error</Button>
+          </div>
+          <p className="font-label text-[12px] text-ink-dim">
+            Applying records ${f.new_cost_per_lb?.toFixed(4)}/lb from {f.vendor_name}, and the agents check every open quote that uses it.
+            Dismissing changes nothing; dispute the invoice with the supplier if it's an error.
+          </p>
+        </div>
       </div>
     </article>
   )

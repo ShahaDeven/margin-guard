@@ -51,7 +51,16 @@ export interface CostChange {
 
 /** Payload of a vendor email that needs a person (ambiguous material, advisory, ...). */
 export interface ReviewFacts {
-  email_id: string
+  /** 'invoice_drift' when the question comes from an invoice, not an email. */
+  kind?: 'invoice_drift'
+  email_id: string | null
+  vendor_name?: string
+  material_id?: string | null
+  old_cost_per_lb?: number | null
+  pct_change?: number | null
+  overpaid_usd?: number
+  invoices?: { invoice_no: string; line_no: number; date: string; overpaid_usd: number }[]
+  expected_row?: { id: number; effective_date: string; email_id: string | null } | null
   vendor_id: string | null
   material_text?: string
   match_candidates?: string[]
