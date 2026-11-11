@@ -9,7 +9,7 @@ import json
 import sqlite3
 from pathlib import Path
 
-from . import db, events, parser
+from . import attachments, db, events, parser
 from .config import DB_PATH
 
 
@@ -23,7 +23,18 @@ def outcome_for(normalized: parser.Normalized, created: list[int | None]) -> str
     return "duplicate"
 
 
+def with_attachments(conn: sqlite3.Connection, email: sqlite3.Row | dict) -> dict:
+    """The email as the extractor sees it: its fields plus the text of its attachments."""
+    email = dict(email)
+    files = attachments.load(conn, email["id"])
+    if files:
+        email["attachments_text"] = attachments.for_prompt(files)
+        email["unreadable_attachments"] = [(name, r.note) for name, r in files if not r.text]
+    return email
+
+
 def process_email(conn: sqlite3.Connection, email: sqlite3.Row, extract=parser.extract) -> str:
+    email = with_attachments(conn, email)
     try:
         extraction = extract(email)
     except Exception as exc:  # keep going; the failure is recorded on the email
@@ -37,9 +48,13 @@ def process_email(conn: sqlite3.Connection, email: sqlite3.Row, extract=parser.e
     normalized = parser.normalize(conn, email, extraction)
     created = [events.append(conn, d, source_ref=f"email:{email['id']}") for d in normalized.drafts]
     outcome = outcome_for(normalized, created)
+    note = normalized.ignored_reason
+    if normalized.skipped:
+        left_out = f"Left out {len(normalized.skipped)} price-list row(s): " + "; ".join(normalized.skipped)
+        note = f"{note}. {left_out}" if note else left_out
     conn.execute(
         "UPDATE inbox_emails SET status = 'processed', outcome = ?, extraction = ?, note = ?, error = NULL WHERE id = ?",
-        (outcome, extraction.model_dump_json(), normalized.ignored_reason, email["id"]),
+        (outcome, extraction.model_dump_json(), note, email["id"]),
     )
     conn.commit()
     return outcome

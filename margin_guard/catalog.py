@@ -82,11 +82,20 @@ def resolve_material(conn: sqlite3.Connection, text: str, vendor_id: str | None 
     # Containment: every token of an alias appears in the query
     # ("c 1018 cold rolled bar" contains "1018"). The most specific alias wins.
     q_tokens = set(query.split())
+    q_numbers = {t for t in q_tokens if any(ch.isdigit() for ch in t)}
     contained: dict[str, int] = {}
     for m, aliases in names.items():
-        sizes = [len(a.split()) for a in aliases if a and set(a.split()) <= q_tokens]
-        if sizes:
-            contained[m] = max(sizes)
+        hits = [a for a in aliases if a and set(a.split()) <= q_tokens]
+        if not hits:
+            continue
+        # A generic family alias ("carbon black", "neoprene") must not claim a
+        # different grade: "carbon black N330" is not our N550. If every alias that
+        # matched is number-free and the query names a grade number this material
+        # never uses, it's another grade.
+        own_numbers = {t for a in aliases for t in a.split() if any(ch.isdigit() for ch in t)}
+        if all(not any(ch.isdigit() for ch in a) for a in hits) and q_numbers - own_numbers:
+            continue
+        contained[m] = max(len(a.split()) for a in hits)
     if contained:
         top = max(contained.values())
         best = sorted(m for m, size in contained.items() if size == top)
@@ -94,8 +103,14 @@ def resolve_material(conn: sqlite3.Connection, text: str, vendor_id: str | None 
             return MatchResult(best[0], "contains", best, 0.95)
         return MatchResult(None, "ambiguous", best, 0.95)
 
+    def numbers(aliases: list[str]) -> set[str]:
+        return {t for a in aliases for t in a.split() if any(ch.isdigit() for ch in t)}
+
+    # Same grade rule for near-misses: "carbon black N330" reads 89% like "carbon
+    # black N550", but a grade number the material never uses makes it another grade.
     scored = sorted(
-        ((max(SequenceMatcher(None, query, a).ratio() for a in aliases), m) for m, aliases in names.items()),
+        ((max(SequenceMatcher(None, query, a).ratio() for a in aliases), m) for m, aliases in names.items()
+         if not (q_numbers - numbers(aliases))),
         reverse=True,
     )
     if not scored or scored[0][0] < FUZZY_ACCEPT:

@@ -1,0 +1,57 @@
+[
+  {
+    "id": "A01",
+    "from": "sales@glelastomers.com",
+    "subject": "December compound price list",
+    "received_at": "2026-10-16T09:00:00",
+    "body": "Hello,\n\nPlease find our December price list attached.\n\nMarco Iles\nGreat Lakes Elastomers",
+    "attachments": ["attachments/gle_price_list_dec2026.xlsx"],
+    "gold": {
+      "outcome": "detected",
+      "changes": [
+        {"material_id": "MAT-NBR-70", "new_cost_per_lb": 2.35868, "effective_date": "2026-12-01"},
+        {"material_id": "MAT-CR-60", "new_cost_per_lb": 3.606059, "effective_date": "2026-12-01"}
+      ],
+      "trap": "Excel list in $/kg: two of ours change, one of ours unchanged, two grades we don't buy"
+    }
+  },
+  {
+    "id": "A02",
+    "from": "customerservice@ridgelinecarbon.com",
+    "subject": "Price notice - January",
+    "received_at": "2026-10-16T09:30:00",
+    "body": "Good morning,\n\nOur January price notice is attached.\n\nRidgeline Carbon",
+    "attachments": ["attachments/ridgeline_price_notice_jan2027.pdf"],
+    "gold": {
+      "outcome": "detected",
+      "changes": [{"material_id": "MAT-CB-N550", "new_cost_per_lb": 1.21, "effective_date": "2027-01-01"}],
+      "trap": "PDF letter per cwt: N550 is ours; N330 must not match it via 'carbon black'; N774 unchanged"
+    }
+  },
+  {
+    "id": "A03",
+    "from": "orders@summitsilicones.com",
+    "subject": "Updated silicone price sheet",
+    "received_at": "2026-10-16T10:00:00",
+    "body": "Hello,\n\nPlease see our updated silicone price sheet, attached. Contact us with any questions.\n\nSummit Silicones",
+    "attachments": ["attachments/summit_price_sheet_scan.pdf"],
+    "gold": {
+      "outcome": "needs_review",
+      "changes": [],
+      "trap": "scanned PDF with no text layer: nothing to read, must go to a person"
+    }
+  },
+  {
+    "id": "A04",
+    "from": "quotes@buckeyesteel.com",
+    "subject": "Cold finished bar - December",
+    "received_at": "2026-10-16T10:30:00",
+    "body": "Hi,\n\nUpdated bar pricing attached.\n\nBuckeye Steel Service",
+    "attachments": ["attachments/buckeye_bar_pricing_dec2026.xlsx"],
+    "gold": {
+      "outcome": "detected",
+      "changes": [{"material_id": "MAT-STL-1018", "new_cost_per_lb": 0.91, "effective_date": "2026-12-15"}],
+      "trap": "two sheets, priced per short ton, date only on the Read me sheet; 1045 and 12L14 are not ours"
+    }
+  }
+]

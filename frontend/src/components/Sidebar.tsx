@@ -2,6 +2,7 @@ import { useState } from 'react'
 
 import type { Lane } from '../lib/api'
 import type { DemoEmail, Email, FeedItem } from '../lib/types'
+import { Attachments } from './Attachments'
 import { Button } from './Button'
 
 /** One line on what the email led to, e.g. "17 quotes checked · 5 need you". */
@@ -130,6 +131,7 @@ export function Sidebar({
                   <p className="truncate text-xs text-ink-dim">{m.id} · {m.subject}</p>
                   <Impact m={m} />
                 </button>
+                <Attachments files={m.attachments} className="px-4 pb-2" />
                 <Jump m={m} onShowCards={onShowCards} />
                 {open === m.id ? (
                   <pre className="whitespace-pre-wrap border-t border-rule/60 bg-sheet-2 px-4 py-3 font-sans text-xs leading-relaxed text-ink">

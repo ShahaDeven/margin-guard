@@ -19,5 +19,15 @@
     "from": "quotes@buckeyesteel.com",
     "subject": "1018 bar - correction",
     "body": "Team,\n\nCorrection to our earlier note: C1018 cold rolled bar is $1,060 per ton for December 1, 2026 releases.\n\nBuckeye Steel Service"
+  },
+  {
+    "id": "D4",
+    "label": "N550 price letter as a PDF attachment",
+    "from": "customerservice@ridgelinecarbon.com",
+    "subject": "Price notice - January",
+    "body": "Good morning,\n\nOur January price notice is attached.\n\nRidgeline Carbon",
+    "attachments": [
+      "attachments/ridgeline_price_notice_jan2027.pdf"
+    ]
   }
 ]

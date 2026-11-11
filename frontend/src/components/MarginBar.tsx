@@ -36,9 +36,9 @@ export function MarginBar({ before, after, floor, scale }: { before: number; aft
         Quoted <span className="text-ink">{pct(before)}</span> → now <span className={`font-semibold ${text}`}>{pct(after)}</span>
       </p>
 
-      <div className="relative mt-4 h-2.5" role="img" aria-label={`Margin ${pct(before)} as quoted, ${pct(after)} now, floor ${pct(floor)}`}>
+      <div className="relative mt-6 h-2.5" role="img" aria-label={`Margin ${pct(before)} as quoted, ${pct(after)} now, floor ${pct(floor)}`}>
         <span
-          className="absolute -top-4 -translate-x-1/2 font-label text-[12px] font-semibold uppercase tracking-[0.08em] text-attn"
+          className="absolute bottom-full mb-2 -translate-x-1/2 font-label text-[12px] font-semibold uppercase leading-none tracking-[0.06em] text-attn"
           style={{ left: `${x(floor)}%` }}
         >
           floor

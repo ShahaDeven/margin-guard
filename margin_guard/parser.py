@@ -21,6 +21,8 @@ from pydantic import BaseModel, Field
 from . import catalog, impact, llm, money
 from .config import AS_OF, MIN_EXTRACTION_CONFIDENCE, SANITY_MAX_CHANGE
 from .money import D
+
+UNCHANGED = D("0.001")   # a price-list row within 0.1% of our cost is unchanged
 from .units import to_cost_per_lb
 
 PriceUnit = Literal["lb", "kg", "cwt", "short_ton", "metric_ton"]
@@ -41,6 +43,9 @@ class ExtractedChange(BaseModel):
     old_price: float | None = Field(description="Previous price if the email states it, in the same unit. Null otherwise.")
     pct_change: float | None = Field(description="Percent change if stated, e.g. 6.5 for +6.5%, -4 for a 4% decrease. Null otherwise.")
     effective_date: str | None = Field(description="Effective date as YYYY-MM-DD. Null if not stated.")
+    # Default keeps extractions cached before attachments existed valid.
+    source: Literal["email", "attachment"] = Field(default="email", description=(
+        "Where this price is written: 'email' for the email text, 'attachment' for an attached price list or letter."))
 
 
 class EmailExtraction(BaseModel):
@@ -62,16 +67,25 @@ class EmailExtraction(BaseModel):
 
 SYSTEM_PROMPT = """You read emails sent to the purchasing inbox of a custom rubber-molding manufacturer and extract supplier price changes.
 
-Report only what the email states. Do not convert units or currencies, do not compute new prices from percentages, and do not guess a value that is not written; use null instead. A price written in cents is reported as the number of cents with price_in_cents set. Re-sent or forwarded notices are still price changes; extract them as written. A notice describing a change that has already taken effect is still a price_change."""
+Report only what the email states. Do not convert units or currencies, do not compute new prices from percentages, and do not guess a value that is not written; use null instead. A price written in cents is reported as the number of cents with price_in_cents set. Re-sent or forwarded notices are still price changes; extract them as written. A notice describing a change that has already taken effect is still a price_change.
+
+Attachments (price lists, price letters) are part of the email and appear after it as text. Extract the changes they state and set source to attachment. A price list usually lists many items: include only rows whose price is changing (a new price that differs from the current one, or a stated % change), and leave out rows whose price stays the same. Include rows for every material on the list; do not decide which ones this manufacturer buys. If an attachment could not be read, say so in the rationale and do not guess its contents."""
+
+
+def _get(email: sqlite3.Row | dict, key: str, default=None):
+    return email[key] if key in email.keys() else default
 
 
 def extract(email: sqlite3.Row | dict) -> EmailExtraction:
+    """`email` may carry `attachments_text` (see attachments.for_prompt), added by ingest."""
     user = (
         f"From: {email['from_addr']}\n"
         f"Received: {email['received_at']}\n"
         f"Subject: {email['subject']}\n\n"
         f"{email['body']}"
     )
+    if _get(email, "attachments_text"):
+        user += "\n\n" + email["attachments_text"]
     return llm.parse(SYSTEM_PROMPT, user, EmailExtraction, effort="low")
 
 
@@ -90,6 +104,8 @@ class Normalized:
     vendor_id: str | None
     ignored_reason: str | None = None
     drafts: list[EventDraft] = field(default_factory=list)
+    # Price-sheet rows left out on purpose (materials we don't buy from this supplier).
+    skipped: list[str] = field(default_factory=list)
 
 
 def price_change_key(vendor_id: str | None, material_id: str, cost_per_lb: float, effective: str) -> str:
@@ -116,6 +132,19 @@ def normalize(conn: sqlite3.Connection, email: sqlite3.Row | dict, extraction: E
     vendor_id = vendor_for_sender(conn, email["from_addr"])
     result = Normalized(vendor_id=vendor_id)
 
+    unreadable = _get(email, "unreadable_attachments") or []
+    # A supplier sent a file nobody could read. The model can't tell what's in a
+    # scan, so its "not a price change" verdict is a guess; a person looks instead.
+    if unreadable and vendor_id and not extraction.changes:
+        result.drafts.append(EventDraft(
+            "price_change.needs_review",
+            f"review:{email['id']}:0",
+            {"email_id": email["id"], "vendor_id": vendor_id,
+             "review_reasons": [f"attachment {name} could not be read: {why}" for name, why in unreadable],
+             "summary": extraction.rationale},
+        ))
+        return result
+
     if extraction.email_kind in ("other", "supplier_offer"):
         result.ignored_reason = f"not a price change ({extraction.email_kind})"
         return result
@@ -128,7 +157,8 @@ def normalize(conn: sqlite3.Connection, email: sqlite3.Row | dict, extraction: E
             "price_change.needs_review",
             f"review:{email['id']}:0",
             {"email_id": email["id"], "vendor_id": vendor_id,
-             "review_reasons": ["advisory without an exact price and effective date"],
+             "review_reasons": ([f"attachment {name} could not be read: {why}" for name, why in unreadable]
+                                or ["advisory without an exact price and effective date"]),
              "summary": extraction.rationale},
         ))
         return result
@@ -136,6 +166,11 @@ def normalize(conn: sqlite3.Connection, email: sqlite3.Row | dict, extraction: E
     for i, ch in enumerate(extraction.changes):
         reasons: list[str] = []
         match = catalog.resolve_material(conn, ch.material_text, vendor_id)
+        # A supplier's price list covers everything they sell. A row for a material
+        # we don't buy is not a question for a person; leave it out and say so.
+        if ch.source == "attachment" and match.method == "none":
+            result.skipped.append(f"{ch.material_text}: not a material we buy from this supplier")
+            continue
         if match.material_id is None:
             detail = f" (candidates: {', '.join(match.candidates)})" if match.candidates else ""
             reasons.append(f"material '{ch.material_text}' is {match.method}{detail}")
@@ -180,6 +215,11 @@ def normalize(conn: sqlite3.Connection, email: sqlite3.Row | dict, extraction: E
             if abs(pct) > D(SANITY_MAX_CHANGE):
                 reasons.append(f"{pct:+.1%} vs our cost exceeds the {SANITY_MAX_CHANGE:.0%} sanity bound; check units")
 
+        # A list priced in kg or per ton rounds; under 0.1% is the same price restated.
+        if ch.source == "attachment" and pct is not None and abs(pct) < UNCHANGED and not reasons:
+            result.skipped.append(f"{ch.material_text}: price unchanged")
+            continue
+
         if extraction.confidence < MIN_EXTRACTION_CONFIDENCE:
             reasons.append(f"low extraction confidence ({extraction.confidence:.2f})")
 
@@ -205,4 +245,6 @@ def normalize(conn: sqlite3.Connection, email: sqlite3.Row | dict, extraction: E
         else:
             key = price_change_key(vendor_id, match.material_id, new_cost, effective)
             result.drafts.append(EventDraft("price_change.detected", key, payload))
+    if not result.drafts and result.skipped:
+        result.ignored_reason = "price list has no changes to materials we buy from this supplier"
     return result

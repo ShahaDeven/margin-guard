@@ -15,11 +15,11 @@ from contextlib import asynccontextmanager
 from datetime import datetime, timedelta
 from pathlib import Path
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Response
 from pydantic import BaseModel
 from sse_starlette.sse import EventSourceResponse
 
-from . import actions, coordinator, db, ingest, leakage
+from . import actions, attachments, coordinator, db, ingest, leakage
 from .config import AS_OF, DB_PATH, MODEL, ROOT
 
 DEMO_EMAILS_PATH = ROOT / "data" / "demo_emails.json"
@@ -218,6 +218,11 @@ def inbox() -> list[dict]:
         ):
             alt.setdefault(e["email_id"], []).append(e["note"])
 
+        files: dict[str, list] = {}
+        for a in c.execute("SELECT id, email_id, filename, content_type, note FROM email_attachments ORDER BY id"):
+            files.setdefault(a["email_id"], []).append(
+                {"id": a["id"], "filename": a["filename"], "content_type": a["content_type"], "note": a["note"]})
+
         out = []
         for r in rows:
             mine = cards.get(r["id"], [])
@@ -231,6 +236,7 @@ def inbox() -> list[dict]:
                 "needs_you": sum(1 for p in quotes if p["status"] == "pending" and p["decided_by"] != "rule"),
                 "rule_pending": sum(1 for p in quotes if p["status"] == "pending" and p["decided_by"] == "rule"),
                 "alt_supplier_notes": alt.get(r["id"], []),
+                "attachments": files.get(r["id"], []),
             })
         return out
 
@@ -246,6 +252,18 @@ def leakage_report() -> dict:
     """Margin leaked on won jobs because costs moved between quote and order."""
     with _conn_lock:
         return leakage.analyze(conn())
+
+
+@app.get("/api/attachments/{attachment_id}")
+def attachment(attachment_id: int) -> Response:
+    """The original file a supplier sent, so any extracted price can be checked against it."""
+    with _conn_lock:
+        row = conn().execute("SELECT filename, content_type, data FROM email_attachments WHERE id = ?",
+                             (attachment_id,)).fetchone()
+    if row is None:
+        raise HTTPException(404, f"attachment {attachment_id} not found")
+    return Response(row["data"], media_type=row["content_type"],
+                    headers={"Content-Disposition": f'inline; filename="{row["filename"]}"'})
 
 
 @app.get("/api/outbox")
@@ -441,8 +459,10 @@ def receive_email(b: NewEmail) -> dict:
         if demo is None:
             raise HTTPException(404, f"no demo email {b.demo_id!r}")
         from_addr, subject, body = demo["from"], demo["subject"], demo["body"]
+        demo_files = [DEMO_EMAILS_PATH.parent / rel for rel in demo.get("attachments", [])]
     elif b.from_addr and b.subject and b.body:
         from_addr, subject, body = b.from_addr, b.subject, b.body
+        demo_files = []
     else:
         raise HTTPException(400, "send demo_id, or from_addr + subject + body")
     _require_idle()
@@ -458,6 +478,8 @@ def receive_email(b: NewEmail) -> dict:
             "INSERT INTO inbox_emails (id, from_addr, subject, body, received_at) VALUES (?, ?, ?, ?, ?)",
             (email_id, from_addr, subject, body, received),
         )
+        for f in demo_files:
+            attachments.add(c, email_id, f.name, f.read_bytes())
         c.commit()
     bus.publish("email.received", {"email_id": email_id, "from": from_addr, "subject": subject})
 

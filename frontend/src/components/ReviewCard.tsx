@@ -2,6 +2,7 @@ import { useState } from 'react'
 
 import { materialLabel, shortDate } from '../lib/format'
 import type { Email, Material, Proposal, ReviewFacts } from '../lib/types'
+import { Attachments } from './Attachments'
 import { Button } from './Button'
 
 /** A supplier email the system would not guess on. The person answers the one
@@ -49,6 +50,7 @@ export function ReviewCard({
             </pre>
           </details>
         ) : null}
+        {email ? <Attachments files={email.attachments} /> : null}
 
         {canResolve && candidates.length ? (
           <div className="space-y-2">

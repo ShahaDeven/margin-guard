@@ -18,6 +18,7 @@ Built in four days as a working prototype on a synthetic rubber-molding shop: 15
 | Supplier emails read correctly: the 15 the pipeline was built on | **15 / 15** (outcome, material, $/lb, date) |
 | Supplier emails read correctly: 10 harder ones nothing was tuned against | **9 / 10**; the miss was sent to a person, no wrong price got through |
 | Cents, currency and pack emails, after the cents/currency fix (regression set, written with the fix) | **7 / 7**: 121¢/lb, 88.5 cents, $ with old price in cents, $/cwt, 50 lb bag; CAD and EUR sent to a person |
+| Price lists and letters as attachments (.xlsx and .pdf; regression set written with the feature) | **4 / 4** changes right (unit per kg, per cwt, per short ton; grades we don't buy left out). The live run scored 3 / 4 outcomes: Claude called the scanned PDF "other", so a rule now sends any unreadable supplier attachment to a person; 4 / 4 is that same Claude output rescored |
 | Quote decisions on the full shop, vs. an independent copy of the policy | **282 / 282**: 246 settled by rules, 36 judgment calls by Claude, every draft quoting the computed prices |
 | Cards that were stale because an earlier-dated supplier change arrived later (the demo inbox is out of date order) | **50** restated and re-decided; live cards are identical across arrival, date, reverse and random orders |
 | 30 hand-built judgment calls x 3 runs (Claude Sonnet 5.5) | **87 / 90** right, same answer every run, every draft passes its checks |
@@ -118,6 +119,13 @@ supplier email ──► extract ─────────► normalize ──
   deterministic, so every figure on a card can be traced to a row.
 - **Rules first.** Expired-before-the-change, price locks and above-floor increases never reach
   the model. It is only asked what the rules can't answer.
+- **Price lists and letters are read too.** Excel (.xlsx), CSV and PDF attachments are turned into
+  text by code (every sheet's rows; a PDF's text layer) and read with the email, through the same
+  schema, so units, matching and sanity checks still happen in code. A supplier's list covers
+  everything they sell: rows for materials we don't buy, and rows whose price hasn't moved, are
+  left out and listed on the email rather than sent to a person. A scanned PDF with no text is
+  never guessed at; it goes to a person, and every attachment opens from the inbox so a price can
+  be checked against the original file.
 - **Refuse to guess.** An ambiguous material ("Black 70" from a distributor selling two),
   a move over 30% (usually a unit slip), a missing date or low extraction confidence goes to a
   person as a one-click question.
@@ -212,7 +220,7 @@ import reproduces the demo shop exactly.
 
 | Eval | Command | What it checks |
 |---|---|---|
-| Extraction | `python -m evals.eval_extraction [--set holdout]` | outcome, material, $/lb within 0.5%, date |
+| Extraction | `python -m evals.eval_extraction [--set holdout\|fresh\|attachments]` | outcome, material, $/lb within 0.5%, date |
 | Decisions on the shop | `python -m evals.eval_decisions` | every quote decision vs. the reference policy, and that drafts quote the computed prices |
 | Scenario suite | `python -m evals.eval_scenarios` | 30 edge cases x 3 runs x 2 models: accuracy, consistency, draft checks, cost, calibration, the confidence bar |
 | Reviews | `python -m evals.eval_approvals` | reviewer agreement by confidence; disagreements become regression cases or policy signals |
@@ -250,6 +258,9 @@ undo, the API, and the eval machinery itself.
 - **A debatable policy edge.** On "key account + prefers email for routine changes, call over
   $10k" at $8k, Sonnet chose a call three times out of three, at 0.55 – 0.60 confidence.
   The written policy says the note wins. The console marks these cards as below the bar.
+- **Attachments: text only.** Scanned PDFs, images and legacy .xls files are not read (no OCR);
+  they are flagged and sent to a person. The 4-email attachment set was written alongside the
+  feature, so it is a regression set, not a blind holdout.
 - **Synthetic history.** The year of price history and the won jobs' order dates behind the
   leakage report are generated (all changes dated on or before Jul 1, so the open quotes and
   every decision on them are unchanged). The report's method is the point; its dollar figure is

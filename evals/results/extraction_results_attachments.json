@@ -1,0 +1,86 @@
+{
+  "summary": {
+    "set": "attachments",
+    "model": "replay",
+    "emails": 4,
+    "outcome_accuracy": 1.0,
+    "gold_changes": 4,
+    "change_recall": 1.0,
+    "price_accuracy": 1.0,
+    "date_accuracy": 1.0,
+    "unexpected_changes": 0
+  },
+  "emails": [
+    {
+      "id": "A01",
+      "trap": "Excel list in $/kg: two of ours change, one of ours unchanged, two grades we don't buy",
+      "gold_outcome": "detected",
+      "outcome": "detected",
+      "outcome_ok": true,
+      "changes": [
+        {
+          "material_id": "MAT-NBR-70",
+          "found": true,
+          "price_ok": true,
+          "date_ok": true,
+          "predicted_cost": 2.35868,
+          "gold_cost": 2.35868
+        },
+        {
+          "material_id": "MAT-CR-60",
+          "found": true,
+          "price_ok": true,
+          "date_ok": true,
+          "predicted_cost": 3.606059,
+          "gold_cost": 3.606059
+        }
+      ],
+      "unexpected_changes": []
+    },
+    {
+      "id": "A02",
+      "trap": "PDF letter per cwt: N550 is ours; N330 must not match it via 'carbon black'; N774 unchanged",
+      "gold_outcome": "detected",
+      "outcome": "detected",
+      "outcome_ok": true,
+      "changes": [
+        {
+          "material_id": "MAT-CB-N550",
+          "found": true,
+          "price_ok": true,
+          "date_ok": true,
+          "predicted_cost": 1.21,
+          "gold_cost": 1.21
+        }
+      ],
+      "unexpected_changes": []
+    },
+    {
+      "id": "A03",
+      "trap": "scanned PDF with no text layer: nothing to read, must go to a person",
+      "gold_outcome": "needs_review",
+      "outcome": "needs_review",
+      "outcome_ok": true,
+      "changes": [],
+      "unexpected_changes": []
+    },
+    {
+      "id": "A04",
+      "trap": "two sheets, priced per short ton, date only on the Read me sheet; 1045 and 12L14 are not ours",
+      "gold_outcome": "detected",
+      "outcome": "detected",
+      "outcome_ok": true,
+      "changes": [
+        {
+          "material_id": "MAT-STL-1018",
+          "found": true,
+          "price_ok": true,
+          "date_ok": true,
+          "predicted_cost": 0.91,
+          "gold_cost": 0.91
+        }
+      ],
+      "unexpected_changes": []
+    }
+  ]
+}

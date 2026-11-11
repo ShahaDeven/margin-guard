@@ -124,6 +124,8 @@ export interface Email {
   rule_pending: number
   /** Prices from a supplier the material isn't costed at: recorded, no cards. */
   alt_supplier_notes: string[]
+  /** Price lists and letters that came with the email. */
+  attachments: Attachment[]
 }
 
 export interface Material {
@@ -313,3 +315,11 @@ export interface DataMaterial {
 }
 
 export const isQuote = (p: Proposal): p is Proposal & { facts: QuoteFacts } => p.kind === 'quote_action'
+
+export interface Attachment {
+  id: number
+  filename: string
+  content_type: string
+  /** Why the file was cut or could not be read (e.g. a scan with no text layer). */
+  note: string | null
+}

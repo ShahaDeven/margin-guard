@@ -1,0 +1,125 @@
+{
+  "A01": {
+    "email_kind": "price_change",
+    "changes": [
+      {
+        "material_text": "NBR 70",
+        "new_price": 5.2,
+        "price_unit": "kg",
+        "price_in_cents": false,
+        "currency": "USD",
+        "pack_qty": null,
+        "old_price": 4.96,
+        "pct_change": 4.8,
+        "effective_date": "2026-12-01",
+        "source": "attachment"
+      },
+      {
+        "material_text": "CR 60",
+        "new_price": 7.95,
+        "price_unit": "kg",
+        "price_in_cents": false,
+        "currency": "USD",
+        "pack_qty": null,
+        "old_price": 7.5,
+        "pct_change": 6.0,
+        "effective_date": "2026-12-01",
+        "source": "attachment"
+      },
+      {
+        "material_text": "HNBR 80",
+        "new_price": 19.3,
+        "price_unit": "kg",
+        "price_in_cents": false,
+        "currency": "USD",
+        "pack_qty": null,
+        "old_price": 18.4,
+        "pct_change": 4.9,
+        "effective_date": "2026-12-01",
+        "source": "attachment"
+      },
+      {
+        "material_text": "ECO 70",
+        "new_price": 11.65,
+        "price_unit": "kg",
+        "price_in_cents": false,
+        "currency": "USD",
+        "pack_qty": null,
+        "old_price": 11.2,
+        "pct_change": 4.0,
+        "effective_date": "2026-12-01",
+        "source": "attachment"
+      }
+    ],
+    "confidence": 0.96,
+    "rationale": "The email body only references the attached December price list; four rows have new prices above current (NBR 90 unchanged at 5.47 and excluded), effective 2026-12-01, in USD per kg."
+  },
+  "A02": {
+    "email_kind": "price_change",
+    "changes": [
+      {
+        "material_text": "N550",
+        "new_price": 121.0,
+        "price_unit": "cwt",
+        "price_in_cents": false,
+        "currency": "USD",
+        "pack_qty": null,
+        "old_price": null,
+        "pct_change": null,
+        "effective_date": "2027-01-01",
+        "source": "attachment"
+      },
+      {
+        "material_text": "N330",
+        "new_price": 126.5,
+        "price_unit": "cwt",
+        "price_in_cents": false,
+        "currency": "USD",
+        "pack_qty": null,
+        "old_price": null,
+        "pct_change": null,
+        "effective_date": "2027-01-01",
+        "source": "attachment"
+      }
+    ],
+    "confidence": 0.9,
+    "rationale": "The attached notice gives new per-cwt prices effective 2027-01-01 for N550 and N330, while N774 is stated as unchanged and was left out."
+  },
+  "A03": {
+    "email_kind": "other",
+    "changes": [],
+    "confidence": 0.3,
+    "rationale": "The email only refers to an attached updated price sheet, and the attachment (a scanned PDF with no text layer) could not be read, so no price changes could be extracted and it needs a person to review."
+  },
+  "A04": {
+    "email_kind": "price_change",
+    "changes": [
+      {
+        "material_text": "1018 CR bar",
+        "new_price": 1820.0,
+        "price_unit": "short_ton",
+        "price_in_cents": false,
+        "currency": "USD",
+        "pack_qty": null,
+        "old_price": 1680.0,
+        "pct_change": null,
+        "effective_date": "2026-12-15",
+        "source": "attachment"
+      },
+      {
+        "material_text": "1045 CR bar",
+        "new_price": 1940.0,
+        "price_unit": "short_ton",
+        "price_in_cents": false,
+        "currency": "USD",
+        "pack_qty": null,
+        "old_price": 1790.0,
+        "pct_change": null,
+        "effective_date": "2026-12-15",
+        "source": "attachment"
+      }
+    ],
+    "confidence": 0.93,
+    "rationale": "The attached price list shows new per-short-ton prices effective Dec 15, 2026 for 1018 and 1045 bar; 12L14 is unchanged so it was excluded."
+  }
+}

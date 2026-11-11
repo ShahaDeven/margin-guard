@@ -98,6 +98,20 @@ CREATE TABLE IF NOT EXISTS inbox_emails (
     error        TEXT
 );
 
+-- Files that came with a supplier email (price lists, price letters). `text` is what
+-- attachments.render() read from the file, cached so extraction is reproducible;
+-- `note` says why a file was cut or could not be read.
+CREATE TABLE IF NOT EXISTS email_attachments (
+    id            INTEGER PRIMARY KEY AUTOINCREMENT,
+    email_id      TEXT NOT NULL REFERENCES inbox_emails(id),
+    filename      TEXT NOT NULL,
+    content_type  TEXT NOT NULL,
+    data          BLOB NOT NULL,
+    text          TEXT,
+    note          TEXT
+);
+CREATE INDEX IF NOT EXISTS idx_attachments_email ON email_attachments(email_id);
+
 -- Append-only event log. The coordinator routes on event_type; idempotency_key
 -- makes re-delivered or forwarded emails a no-op.
 CREATE TABLE IF NOT EXISTS events (

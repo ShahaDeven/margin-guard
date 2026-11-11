@@ -11,11 +11,12 @@
         "pack_qty": null,
         "old_price": null,
         "pct_change": null,
-        "effective_date": "2027-01-15"
+        "effective_date": "2027-01-15",
+        "source": "email"
       }
     ],
     "confidence": 0.97,
-    "rationale": "Supplier announces a firm new price of 121 cents per pound for carbon black N550 effective January 15, 2027."
+    "rationale": "The email states a firm new price of 121 cents per pound for carbon black N550 effective 2027-01-15, with no old price or percent change given."
   },
   "F02": {
     "email_kind": "price_change",
@@ -29,11 +30,12 @@
         "pack_qty": null,
         "old_price": null,
         "pct_change": null,
-        "effective_date": "2026-12-01"
+        "effective_date": "2026-12-01",
+        "source": "email"
       }
     ],
-    "confidence": 0.97,
-    "rationale": "Supplier states a specific new price of 88.5 cents per pound for 1018 cold rolled bar effective December 1, 2026."
+    "confidence": 0.95,
+    "rationale": "The supplier states a firm new price of 88.5 cents per pound for 1018 cold rolled bar effective December 1, 2026."
   },
   "F03": {
     "email_kind": "price_change",
@@ -47,11 +49,12 @@
         "pack_qty": null,
         "old_price": 248.0,
         "pct_change": null,
-        "effective_date": "2026-12-01"
+        "effective_date": "2026-12-01",
+        "source": "email"
       }
     ],
-    "confidence": 0.8,
-    "rationale": "Supplier announces NBR 90 at $2.61/lb effective 2026-12-01; the old price is stated as 248 cents, which is reported as written, though it differs from the dollar format of the new price."
+    "confidence": 0.7,
+    "rationale": "The vendor states a new NBR 90 price of $2.61/lb effective 2026-12-01 and a current price of 248 cents, which is reported as written even though the new price is in dollars and the old price in cents."
   },
   "F04": {
     "email_kind": "price_change",
@@ -65,17 +68,18 @@
         "pack_qty": null,
         "old_price": null,
         "pct_change": null,
-        "effective_date": "2026-12-01"
+        "effective_date": "2026-12-01",
+        "source": "email"
       }
     ],
     "confidence": 0.95,
-    "rationale": "Supplier states a firm new price of CAD 21.40/lb for FKM 75 effective December 1, 2026."
+    "rationale": "The supplier states a firm new price of CAD 21.40/lb for FKM 75 effective December 1, 2026, so it is read as a price change in CAD with no old price given."
   },
   "F05": {
     "email_kind": "price_change",
     "changes": [
       {
-        "material_text": "SBR 60",
+        "material_text": "SBR 60 compound",
         "new_price": 172.0,
         "price_unit": "cwt",
         "price_in_cents": false,
@@ -83,11 +87,12 @@
         "pack_qty": null,
         "old_price": null,
         "pct_change": null,
-        "effective_date": "2026-12-01"
+        "effective_date": "2026-12-01",
+        "source": "email"
       }
     ],
-    "confidence": 0.9,
-    "rationale": "The supplier states a firm new price of $172.00 per cwt for SBR 60 compound effective 2026-12-01, with no old price or percent change given."
+    "confidence": 0.97,
+    "rationale": "The email states a specific new price per cwt for SBR 60 compound with an effective date of 2026-12-01."
   },
   "F06": {
     "email_kind": "price_change",
@@ -101,11 +106,12 @@
         "pack_qty": 50.0,
         "old_price": null,
         "pct_change": null,
-        "effective_date": "2026-12-01"
+        "effective_date": "2026-12-01",
+        "source": "email"
       }
     ],
     "confidence": 0.9,
-    "rationale": "Supplier announces a new price of $57.25 per 50 lb bag of N550 effective 2026-12-01, so it is reported as a pack price in lb with pack_qty 50."
+    "rationale": "The vendor announces a new price of $57.25 per 50 lb bag of N550 effective 2026-12-01, so it is reported as a per-pack price in lb with pack_qty 50."
   },
   "F07": {
     "email_kind": "price_change",
@@ -119,10 +125,11 @@
         "pack_qty": null,
         "old_price": null,
         "pct_change": null,
-        "effective_date": "2026-12-01"
+        "effective_date": "2026-12-01",
+        "source": "email"
       }
     ],
-    "confidence": 0.95,
-    "rationale": "Supplier states a firm new price of \u20ac10.20/kg for Silicone VMQ 50 effective December 1, 2026."
+    "confidence": 0.93,
+    "rationale": "Supplier states a firm new price of \u20ac10.20/kg for Silicone VMQ 50 from the EU line effective 2026-12-01, so the price is reported as written in EUR without conversion."
   }
 }

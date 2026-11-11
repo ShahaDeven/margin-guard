@@ -12,7 +12,7 @@ import random
 from datetime import date, timedelta
 from pathlib import Path
 
-from . import db
+from . import attachments, db
 from .config import AS_OF, DB_PATH, EMAILS_PATH
 
 VENDORS = [
@@ -379,6 +379,10 @@ def build(conn, emails_path: Path = EMAILS_PATH, rng_seed: int = RNG_SEED) -> No
             "INSERT INTO inbox_emails (id, from_addr, subject, body, received_at) VALUES (?, ?, ?, ?, ?)",
             (e["id"], e["from"], e["subject"], e["body"], e["received_at"]),
         )
+        # Attachment paths are relative to the emails file (data/attachments/...).
+        for rel in e.get("attachments", []):
+            path = Path(emails_path).parent / rel
+            attachments.add(conn, e["id"], path.name, path.read_bytes())
     conn.commit()
 
 

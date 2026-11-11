@@ -3,3 +3,4 @@
 pytest==9.0.3
 httpx==0.28.1
 matplotlib==3.11.0     # promotion report charts
+pymupdf  # only for evals/make_attachments.py (regenerating the PDF fixtures)
