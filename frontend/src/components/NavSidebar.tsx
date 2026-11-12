@@ -4,7 +4,7 @@ import type { Overview } from '../lib/types'
 type Item = { id: Lane; label: string; count?: (ov: Overview) => number }
 
 /** Grouped by what the person is doing: working the queue, checking before a quote,
- *  reading reports, or setting the shop up. Overview joins in a later redesign step. */
+ *  reading reports, or setting the shop up. */
 const GROUPS: { label: string; items: Item[] }[] = [
   {
     label: 'Queue',
@@ -47,29 +47,13 @@ export function NavSidebar({ lane, setLane, ov, busy, onOpenDemo }: {
       className="flex shrink-0 flex-col gap-5 border-b border-rule bg-sheet px-3.5 py-5 lg:sticky lg:top-0 lg:h-screen lg:w-[230px] lg:gap-[22px] lg:overflow-y-auto lg:border-b-0 lg:border-r"
     >
       <div className="px-2.5 text-base font-bold text-ink">Margin Guard</div>
+      <NavItem item={{ id: 'home', label: 'Home' }} lane={lane} setLane={setLane} ov={ov} />
 
       <div className="grid grid-cols-2 gap-x-4 gap-y-5 sm:grid-cols-4 lg:flex lg:flex-col lg:gap-[22px]">
         {GROUPS.map((g) => (
           <div key={g.label} className="flex flex-col gap-0.5">
             <div className="px-2.5 pb-1.5 text-xs text-ink-dim">{g.label}</div>
-            {g.items.map((it) => {
-              const on = lane === it.id
-              const n = ov && it.count ? it.count(ov) : null
-              return (
-                <button
-                  key={it.id}
-                  type="button"
-                  aria-current={on ? 'page' : undefined}
-                  onClick={() => setLane(it.id)}
-                  className={`flex items-center justify-between gap-2 rounded-sm px-2.5 py-[9px] text-left transition-colors ${
-                    on ? 'bg-nav-active font-semibold text-go-soft' : 'text-ink hover:bg-nav-active/60'
-                  }`}
-                >
-                  {it.label}
-                  {n != null ? <span className={on ? '' : 'text-ink-dim'}>{n}</span> : null}
-                </button>
-              )
-            })}
+            {g.items.map((it) => <NavItem key={it.id} item={it} lane={lane} setLane={setLane} ov={ov} />)}
           </div>
         ))}
       </div>
@@ -84,5 +68,23 @@ export function NavSidebar({ lane, setLane, ov, busy, onOpenDemo }: {
         </p>
       </div>
     </nav>
+  )
+}
+
+function NavItem({ item, lane, setLane, ov }: { item: Item; lane: Lane; setLane: (l: Lane) => void; ov: Overview | null }) {
+  const on = lane === item.id
+  const n = ov && item.count ? item.count(ov) : null
+  return (
+    <button
+      type="button"
+      aria-current={on ? 'page' : undefined}
+      onClick={() => setLane(item.id)}
+      className={`flex items-center justify-between gap-2 rounded-sm px-2.5 py-[9px] text-left transition-colors ${
+        on ? 'bg-nav-active font-semibold text-go-soft' : 'text-ink hover:bg-nav-active/60'
+      }`}
+    >
+      {item.label}
+      {n != null ? <span className={on ? '' : 'text-ink-dim'}>{n}</span> : null}
+    </button>
   )
 }

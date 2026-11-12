@@ -56,7 +56,7 @@ function describe(kind: string, d: Msg): Omit<FeedItem, 'id' | 'at'> | null {
   }
 }
 
-const LANES: Lane[] = ['decide', 'rules', 'done', 'outcomes', 'quote', 'leakage', 'inbox', 'imports', 'data']
+const LANES: Lane[] = ['home', 'decide', 'rules', 'done', 'quote', 'leakage', 'outcomes', 'inbox', 'imports', 'data']
 const laneFromHash = (): Lane | null => {
   const h = window.location.hash.replace('#', '') as Lane
   return LANES.includes(h) ? h : null
@@ -64,7 +64,7 @@ const laneFromHash = (): Lane | null => {
 
 export function useConsole() {
   // Each view has its own URL (#decide, #leakage, ...), so a view can be linked or reloaded.
-  const [lane, setLaneState] = useState<Lane>(() => laneFromHash() ?? 'decide')
+  const [lane, setLaneState] = useState<Lane>(() => laneFromHash() ?? 'home')
   const setLane = useCallback((l: Lane) => {
     setLaneState(l)
     if (window.location.hash !== `#${l}`) window.history.replaceState(null, '', `#${l}`)

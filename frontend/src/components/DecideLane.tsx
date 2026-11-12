@@ -9,8 +9,10 @@ import { ReviewCard } from './ReviewCard'
 
 const WHAT_IF = [1, 1.25, 1.5, 2]
 
-type Filter = 'all' | 'below' | 'contact_customer' | 'reprice' | 'questions'
-const FILTERS: { id: Filter; label: string }[] = [
+type Basic = 'all' | 'below' | 'contact_customer' | 'reprice' | 'questions'
+/** What the table shows; `customer:{id}` comes from a Home link. */
+export type DecideFilter = Basic | `customer:${string}`
+const FILTERS: { id: Basic; label: string }[] = [
   { id: 'all', label: 'Everything' },
   { id: 'below', label: 'Under the floor' },
   { id: 'contact_customer', label: 'Call the customer first' },
@@ -77,7 +79,7 @@ function reviewRow(p: Proposal, inbox: Email[]) {
 
 /** The estimator's screen: every decision waiting, one row each, and the selected one in
  *  full beside it. Supplier questions sit at the top of the same table. */
-export function DecideLane({ cards, inbox, materials, arrived, bar, notice, onReview, onResolve, onDismiss, onRedecide, onViewQuote }: {
+export function DecideLane({ cards, inbox, materials, arrived, bar, notice, filter, setFilter, onReview, onResolve, onDismiss, onRedecide, onViewQuote }: {
   cards: Proposal[]
   inbox: Email[]
   materials: Material[]
@@ -85,6 +87,8 @@ export function DecideLane({ cards, inbox, materials, arrived, bar, notice, onRe
   bar: number | null
   /** Shown under the header, e.g. "only cards from email E03". */
   notice?: ReactNode
+  filter: DecideFilter
+  setFilter: (f: DecideFilter) => void
   onReview: (id: number) => Review
   onResolve: (id: number, materialId: string) => void
   onDismiss: (id: number, note?: string) => void
@@ -92,7 +96,6 @@ export function DecideLane({ cards, inbox, materials, arrived, bar, notice, onRe
   onViewQuote: (quoteId: string) => void
 }) {
   const [k, setK] = useState(1)
-  const [filter, setFilter] = useState<Filter>('all')
   const [selectedId, setSelectedId] = useState<number | null>(null)
   const panel = useRef<HTMLElement>(null)
 
@@ -102,6 +105,7 @@ export function DecideLane({ cards, inbox, materials, arrived, bar, notice, onRe
     const show = (p: Proposal) => {
       if (filter === 'all') return true
       if (filter === 'questions') return p.kind === 'event_review'
+      if (filter.startsWith('customer:')) return isQuote(p) && p.facts.customer_id === filter.slice(9)
       if (!isQuote(p)) return false
       if (filter === 'below') return p.facts.margin_after < p.facts.margin_floor
       return p.action === filter
@@ -138,6 +142,9 @@ export function DecideLane({ cards, inbox, materials, arrived, bar, notice, onRe
   }, [rows, selected])
 
   const below = quotes.filter((p) => p.facts.margin_after < p.facts.margin_floor).length
+  const filterLabel = filter.startsWith('customer:')
+    ? quotes.find((p) => p.facts.customer_id === filter.slice(9))?.facts.customer_name ?? 'one customer'
+    : FILTERS.find((x) => x.id === filter)?.label.toLowerCase() ?? ''
   const atRisk = quotes.reduce((s, p) => s + p.facts.exposure_usd, 0)
   const summary = [
     quotes.length === below
@@ -155,7 +162,7 @@ export function DecideLane({ cards, inbox, materials, arrived, bar, notice, onRe
           <p className="mt-1 text-ink-dim">{cards.length ? summary : 'Nothing needs you right now.'}</p>
         </div>
         <div className="flex gap-2">
-          <Popover label={filter === 'all' ? 'Filter' : `Filter: ${FILTERS.find((x) => x.id === filter)!.label.toLowerCase()}`} active={filter !== 'all'}>
+          <Popover label={filter === 'all' ? 'Filter' : `Filter: ${filterLabel}`} active={filter !== 'all'}>
             {(close) => (
               <div role="menu" aria-label="Show">
                 {FILTERS.map((x) => (

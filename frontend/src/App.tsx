@@ -1,11 +1,11 @@
 import { useState } from 'react'
 
-import { BacklogSection } from './components/BacklogSection'
 import { DataLane } from './components/DataLane'
-import { DecideLane } from './components/DecideLane'
+import { DecideLane, type DecideFilter } from './components/DecideLane'
 import { DoneLane } from './components/DoneLane'
 import { ImportsLane } from './components/ImportsLane'
-import { LeakageLane } from './components/LeakageLane'
+import { HomeLane, type HomeTarget } from './components/HomeLane'
+import { LeakagePage, type LeakageTab } from './components/LeakageLane'
 import { NavSidebar } from './components/NavSidebar'
 import { OutcomesLane } from './components/Outcomes'
 import { QuoteCheckLane } from './components/QuoteCheckLane'
@@ -13,14 +13,24 @@ import { RulesLane } from './components/RulesLane'
 import { DemoDrawer, InboxLane } from './components/Sidebar'
 import { useConsole } from './hooks/useConsole'
 import { api, type Lane } from './lib/api'
-import { shortDate, usd } from './lib/format'
-import { isQuote, type Leakage, type Overview } from './lib/types'
+import { shortDate } from './lib/format'
+import { isQuote, type Overview } from './lib/types'
 
 function App() {
   const c = useConsole()
   const ov = c.overview
   const quoteCards = c.cards.filter(isQuote)
   const [demoOpen, setDemoOpen] = useState(false)
+  const [decideFilter, setDecideFilter] = useState<DecideFilter>('all')
+  const [leakTab, setLeakTab] = useState<LeakageTab>('orders')
+  const [leakFocus, setLeakFocus] = useState<{ material?: string; quote?: string }>({})
+  /** Follow a Home link: open the lane with the right filter or tab already set. */
+  const go = (t: HomeTarget) => {
+    if (t.lane === 'decide') setDecideFilter(t.filter ?? 'all')
+    if (t.lane === 'leakage') { setLeakTab(t.tab); setLeakFocus({ material: t.material, quote: t.quote }) }
+    c.setLane(t.lane)
+    window.scrollTo({ top: 0 })
+  }
   const queue = c.lane === 'decide' || c.lane === 'rules' || c.lane === 'done'
   const chip = c.emailFilter && queue ? (
     <FilterChip
@@ -46,9 +56,6 @@ function App() {
 
       <div className="flex min-w-0 flex-1 flex-col">
       <div className="mx-auto w-full max-w-[96rem] flex-1 px-4 pb-10 pt-7 sm:px-7">
-        {/* The KPI strip moves to Overview (redesign step 4); To decide has its own header. */}
-        {ov && c.lane !== 'decide' ? <Figures ov={ov} leak={c.leakage} setLane={c.setLane} /> : null}
-
         {ov?.data_problems?.length ? (
           <div className="mt-4 rounded-sm border border-stop/50 bg-stop/5 px-4 py-2 text-sm text-ink">
             <span className="font-semibold text-stop">Costing data needs fixing.</span> Margins for these materials ignore every
@@ -62,7 +69,8 @@ function App() {
 
         <div className="mt-6">
           <main className="min-w-0">
-            {c.lane !== 'decide' ? <ViewHeading lane={c.lane} ov={ov} /> : null}
+            {/* Home and To decide set their own headers. */}
+            {c.lane !== 'decide' && c.lane !== 'home' ? <ViewHeading lane={c.lane} ov={ov} /> : null}
             {c.lane !== 'decide' ? chip : null}
 
             <div className="mt-4 space-y-3">
@@ -74,6 +82,8 @@ function App() {
                   arrived={c.arrived}
                   bar={ov?.autonomy?.threshold ?? null}
                   notice={chip}
+                  filter={decideFilter}
+                  setFilter={setDecideFilter}
                   onReview={(id) => (body) => c.run(() => api.review(id, body))}
                   onResolve={(id, mat) => c.run(() => api.resolve(id, mat))}
                   onDismiss={(id, note) => c.run(() => api.dismiss(id, note))}
@@ -81,6 +91,7 @@ function App() {
                   onViewQuote={c.focusQuote}
                 />
               ) : null}
+              {c.lane === 'home' && ov ? <HomeLane ov={ov} leak={c.leakage} version={c.version} go={go} /> : null}
               {c.lane === 'inbox' ? <InboxLane inbox={c.inbox} onShowCards={c.focusEmail} /> : null}
               {c.lane === 'rules' ? (
                 <RulesLane cards={quoteCards} onConfirm={(eventId) => c.run(() => api.confirmRules(eventId))} />
@@ -94,12 +105,10 @@ function App() {
                   onRecord={(id, body) => c.run(() => api.recordOutcome(id, body))} onUndo={(id) => c.run(() => api.undoOutcome(id))} />
               ) : null}
               {c.lane === 'imports' ? <ImportsLane onOpenDecide={() => c.setLane('decide')} /> : null}
-              {c.lane === 'quote' ? <QuoteCheckLane onAnswer={() => c.setLane('decide')} /> : null}
+              {c.lane === 'quote' ? <QuoteCheckLane inbox={c.inbox} onAnswer={() => go({ lane: 'decide', filter: 'questions' })} /> : null}
               {c.lane === 'leakage' ? (
-                <div className="space-y-6">
-                  <BacklogSection version={c.version} onViewQuote={c.focusQuote} run={c.run} />
-                  <LeakageLane r={c.leakage} onViewQuote={c.focusQuote} />
-                </div>
+                <LeakagePage tab={leakTab} setTab={(t) => { setLeakTab(t); setLeakFocus({}) }} r={c.leakage} version={c.version}
+                  run={c.run} onViewQuote={c.focusQuote} focusMaterial={leakFocus.material} focusQuote={leakFocus.quote} />
               ) : null}
               {c.lane === 'data' && ov ? (
                 <DataLane
@@ -123,51 +132,16 @@ function App() {
   )
 }
 
-/** Four figures, each naming the rows it came from. Click one to open its view. */
-function Figures({ ov, leak, setLane }: { ov: Overview; leak: Leakage | null; setLane: (l: Lane) => void }) {
-  const items: { lane: Lane; value: string; label: string; source: string; tone: string }[] = [
-    { lane: 'decide', value: usd(ov.live_exposure), label: 'at risk on open quotes', source: 'sum of every live card · impact on quote lines', tone: 'text-ink-bright' },
-    {
-      lane: 'decide', value: String(ov.needs_you), label: 'need your decision', tone: 'text-attn',
-      source: ov.autonomy?.threshold != null
-        ? `${usd(ov.needs_you_exposure)} at risk · ${ov.autonomy.would_clear} clear the ${ov.autonomy.threshold.toFixed(2)} confidence bar`
-        : `${usd(ov.needs_you_exposure)} at risk`,
-    },
-    { lane: 'rules', value: String(ov.rule_pending), label: 'settled by rules', source: 'honor or absorb · confirm in bulk', tone: 'text-ink-bright' },
-    {
-      lane: 'leakage', value: leak ? usd(leak.leaked_usd) : '–', label: 'leaked on won jobs', tone: 'text-stop',
-      source: leak?.period ? `${leak.jobs_leaked} of ${leak.won_jobs} jobs since ${shortDate(leak.period.from)} · price history` : 'won quotes vs price history',
-    },
-  ]
-  return (
-    <div className="mt-5 grid grid-cols-1 border-y border-rule sm:grid-cols-2 xl:grid-cols-4">
-      {items.map((s) => (
-        <button
-          key={s.label}
-          type="button"
-          onClick={() => setLane(s.lane)}
-          className="border-rule px-4 py-3 text-left transition-colors hover:bg-sheet sm:border-l sm:first:border-l-0 xl:[&:nth-child(3)]:border-l"
-        >
-          <p className="flex items-baseline gap-2">
-            <span className={`font-label text-[26px] font-semibold leading-none ${s.tone}`}>{s.value}</span>
-            <span className="text-[15px] text-ink">{s.label}</span>
-          </p>
-          <p className="mt-1.5 font-label text-[12px] text-ink-dim">{s.source}</p>
-        </button>
-      ))}
-    </div>
-  )
-}
-
 function ViewHeading({ lane, ov }: { lane: Lane; ov: Overview | null }) {
   const text: Record<Lane, [string, string]> = {
     decide: ['Needs your decision', 'Judgment calls Claude made and supplier emails it would not guess on, largest dollars first.'],
     rules: ['Settled by rules', 'Honor and absorb decisions the policy settles by itself, grouped by price change.'],
     done: ['Done', 'What each person decided next to what was proposed, and the outbox. Every decision can be undone.'],
+    home: ['Home', ''],
     inbox: ['Supplier inbox', 'Every supplier email, how the agents read it, and what it led to.'],
     outcomes: ['Outcomes', 'What customers did after an increase went out: what was kept, what was negotiated away, which jobs walked.'],
     quote: ['Quote check', 'Before a quote goes out: will a price change already on file land while it is still valid?'],
-    leakage: ['Leakage', 'Margin won jobs are about to absorb, and margin they already lost, because costs moved after the quote.'],
+    leakage: ['Leakage', 'Margin won jobs are about to absorb, and margin they have already lost, because costs moved after the quote.'],
     imports: ['Imports', 'Bring in an invoice export: match it, check it, then write it in one step.'],
     data: ['Data', `Quotes, customers and materials behind every number${ov ? `, as of ${shortDate(ov.as_of)}` : ''}.`],
   }

@@ -1,24 +1,30 @@
-import { type ReactNode, useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 import { api } from '../lib/api'
-import { pct, shortDate, usd } from '../lib/format'
-import type { DataCustomer, Part, QuoteCheck } from '../lib/types'
+import { materialLabel, pct, shortDate, usd } from '../lib/format'
+import type { DataCustomer, Email, Part, QuoteCheck } from '../lib/types'
 import { Button } from './Button'
-import { MarginBar } from './MarginBar'
-import { Family } from './QuoteParts'
 
 type Line = { key: number; part_id: string; qty: string; unit_price: string }
 
-const head = 'pb-2 font-label text-[12px] font-semibold uppercase tracking-[0.08em] text-ink-dim'
-const field = 'w-full rounded-sm border border-rule bg-sheet-2 px-2.5 py-1.5 text-sm text-ink-bright outline-none focus:border-attn/70'
+const label = 'mb-1 block text-[13px] text-ink-dim'
+const head = 'pb-2 text-[13px] font-medium text-ink-dim'
+const field = 'w-full rounded-sm border border-rule-bright bg-ground px-2.5 py-2 text-sm text-ink outline-none focus:border-go'
+const panel = 'rounded-md border border-rule bg-sheet px-5 py-4'
 const TARGET = 0.3   // a new line is priced at a 30% margin on today's cost until the estimator changes it
+/** Shortening is the recommended way out only if the quote stays valid this long; otherwise price for the increases. */
+const MIN_USEFUL_DAYS = 14
 
 let seq = 0
 const priceFor = (p?: Part) => (p ? (p.unit_cost_now / (1 - TARGET)).toFixed(4) : '')
+const names = (ids: string[]) => {
+  const xs = ids.map(materialLabel)
+  return xs.length < 2 ? xs.join('') : `${xs.slice(0, -1).join(', ')} and ${xs[xs.length - 1]}`
+}
 
 /** Check a quote before it goes out: does a price change already on file land inside it?
  *  Everything is computed by margin_guard/quotecheck.py; nothing is saved. */
-export function QuoteCheckLane({ onAnswer }: { onAnswer: () => void }) {
+export function QuoteCheckLane({ inbox, onAnswer }: { inbox: Email[]; onAnswer: () => void }) {
   const [customers, setCustomers] = useState<DataCustomer[]>([])
   const [parts, setParts] = useState<Part[]>([])
   const [customer, setCustomer] = useState('')
@@ -64,56 +70,56 @@ export function QuoteCheckLane({ onAnswer }: { onAnswer: () => void }) {
 
   return (
     <div className="grid gap-6 xl:grid-cols-[minmax(0,26rem)_minmax(0,1fr)]">
-      <section className="rounded-sm border border-rule bg-sheet px-5 py-4" aria-label="The quote">
-        <h2 className="mb-3 font-label text-lg font-semibold text-ink-bright">The quote</h2>
-        <div className="space-y-3">
+      <section className={`${panel} self-start`} aria-label="The quote">
+        <h2 className="mb-4 text-lg font-semibold text-ink">The quote</h2>
+        <div className="space-y-4">
           <label className="block">
-            <span className={head}>Customer</span>
+            <span className={label}>Customer</span>
             <select value={customer} onChange={(e) => setCustomer(e.target.value)} className={field}>
               {customers.map((c) => <option key={c.id} value={c.id}>{c.name}{c.tier === 'key' ? ' (key account)' : ''}</option>)}
             </select>
-            {cust?.price_lock_until ? <span className="mt-1 block font-label text-[12px] text-ink-dim">Price lock to {shortDate(cust.price_lock_until)}</span> : null}
+            {cust?.price_lock_until ? <span className="mt-1 block text-[13px] text-ink-dim">Price lock to {shortDate(cust.price_lock_until)}</span> : null}
           </label>
           <div className="grid grid-cols-2 gap-3">
-            <label className="block"><span className={head}>Valid for (days)</span>
+            <label className="block"><span className={label}>Valid for (days)</span>
               <input type="number" min={1} value={days} onChange={(e) => setDays(e.target.value)} className={field} /></label>
-            <label className="block"><span className={head}>Margin floor (%)</span>
+            <label className="block"><span className={label}>Margin floor (%)</span>
               <input type="number" min={0} max={99} step={0.5} value={floor} onChange={(e) => setFloor(e.target.value)} className={field} /></label>
           </div>
           <div>
-            <span className={head}>Lines</span>
+            <span className={label}>Lines</span>
             <div className="space-y-2">
               {lines.map((l) => {
                 const p = partOf(l.part_id)
                 return (
-                  <div key={l.key} className="rounded-sm border border-rule bg-ground/40 p-2.5">
+                  <div key={l.key} className="rounded-sm bg-ground p-2.5">
                     <select value={l.part_id} aria-label="Part"
                       onChange={(e) => setLine(l.key, { part_id: e.target.value, unit_price: priceFor(partOf(e.target.value)) })} className={field}>
-                      {parts.map((x) => <option key={x.id} value={x.id}>{x.id} · {x.name}</option>)}
+                      {parts.map((x) => <option key={x.id} value={x.id}>{x.name}</option>)}
                     </select>
                     <div className="mt-2 grid grid-cols-[1fr_1fr_auto] items-end gap-2">
-                      <label className="block"><span className="font-label text-[12px] text-ink-dim">Qty</span>
+                      <label className="block"><span className={label}>Quantity</span>
                         <input type="number" min={1} value={l.qty} onChange={(e) => setLine(l.key, { qty: e.target.value })} className={field} /></label>
-                      <label className="block"><span className="font-label text-[12px] text-ink-dim">Unit price ($)</span>
+                      <label className="block"><span className={label}>Unit price ($)</span>
                         <input type="number" min={0} step={0.0001} value={l.unit_price} onChange={(e) => setLine(l.key, { unit_price: e.target.value })} className={field} /></label>
                       <button type="button" disabled={lines.length === 1} onClick={() => edit((ls) => ls.filter((x) => x.key !== l.key))}
-                        className="pb-1.5 font-label text-[13px] font-semibold text-ink-dim hover:text-stop disabled:opacity-30">Remove</button>
+                        className="min-h-10 px-1 text-[13px] text-ink-dim hover:text-ink disabled:opacity-30">Remove</button>
                     </div>
-                    {p ? <p className="mt-1.5 font-label text-[12px] text-ink-dim">Cost today ${p.unit_cost_now.toFixed(4)}/unit · {p.materials.map((m) => <Family key={m} id={m} />).reduce<ReactNode[]>((a, x, i) => (i ? [...a, ' ', x] : [x]), [])}</p> : null}
+                    {p ? <p className="mt-1.5 text-[13px] text-ink-dim">Costs ${p.unit_cost_now.toFixed(4)} a unit today. Made from {names(p.materials)}.</p> : null}
                   </div>
                 )
               })}
             </div>
             <button type="button" onClick={() => edit((ls) => [...ls, { key: ++seq, part_id: parts[0]?.id ?? '', qty: '1000', unit_price: priceFor(parts[0]) }])}
-              className="mt-2 font-label text-[13px] font-semibold text-ink-dim underline-offset-2 hover:text-ink-bright hover:underline">Add a line</button>
+              className="mt-2 text-[13px] text-go hover:text-go-soft">Add a line</button>
           </div>
-          <p className="text-xs text-ink-dim">New lines start at a {TARGET * 100}% margin on today's cost. Nothing here is saved; the check reads the price changes on file.</p>
+          <p className="text-[13px] text-ink-dim">New lines start at a {TARGET * 100}% margin on today's cost. Nothing here is saved; the check reads the price changes on file.</p>
         </div>
       </section>
 
       <section aria-live="polite" className="min-w-0 space-y-5">
-        {error ? <p className="rounded-sm border border-stop/50 bg-stop/5 px-4 py-2 text-sm text-stop">{error}</p> : null}
-        {r ? <Result r={r} copied={copied} held={held}
+        {error ? <p className="rounded-sm border border-stop/50 px-4 py-2 text-sm text-stop">{error}</p> : null}
+        {r ? <Result r={r} inbox={inbox} copied={copied} held={held}
           onShorten={(d) => setDays(String(d))}
           onReprice={() => {
             if (held) return          // one-shot: applying again would hold the already-raised margin
@@ -136,6 +142,7 @@ export function QuoteCheckLane({ onAnswer }: { onAnswer: () => void }) {
   )
 }
 
+/** A status word, then one plain sentence. Only "Below floor" is coloured. */
 function Verdict({ r }: { r: QuoteCheck }) {
   const worst = r.worst_margin_during_validity
   const gap = Math.abs(worst - r.margin_floor) * 100
@@ -143,102 +150,139 @@ function Verdict({ r }: { r: QuoteCheck }) {
   // An increase later partly reversed: the quote recovers by expiry, but not while it lasts.
   const recovers = r.margin_at_expiry > worst + 0.0005
     ? ` It recovers to ${pct(r.margin_at_expiry)} by expiry, but an order in between gets the worse margin.` : ''
-  const [tone, text] = {
-    clear: ['text-go', `No increase on file lands before this quote expires on ${shortDate(r.valid_until)}. Margin holds at ${pct(r.margin_now)}${r.margin_at_expiry > r.margin_now + 0.0005 ? ` or better` : ''}.`],
-    margin_erodes: ['text-attn', `Increases on file land before this quote expires. An order on or after ${when} gets ${pct(worst)}, still above the ${pct(r.margin_floor)} floor (${usd(r.maximum_exposure_usd)} less margin).${recovers}`],
-    below_floor_after_change: ['text-stop', `If the customer orders on or after ${when}, margin falls to ${pct(worst)}, ${gap.toFixed(1)} pts below the ${pct(r.margin_floor)} floor: ${usd(r.maximum_exposure_usd)} at risk on this quote.${recovers}`],
-    below_floor_now: ['text-stop', `This is priced below the floor already: ${pct(r.margin_now)} against ${pct(r.margin_floor)}, before any change on file.`],
+  const [word, tone, text] = {
+    clear: ['Clear', 'text-ink-dim', `No increase on file lands before this quote expires on ${shortDate(r.valid_until)}. Margin holds at ${pct(r.margin_now)}${r.margin_at_expiry > r.margin_now + 0.0005 ? ' or better' : ''}.`],
+    margin_erodes: ['Tighter', 'text-ink-dim', `An order on or after ${when} gets ${pct(worst)}, still above the floor, with ${usd(r.maximum_exposure_usd)} less margin.${recovers}`],
+    below_floor_after_change: ['Below floor', 'text-stop', `If the customer orders on or after ${when}, margin falls to ${pct(worst)}, ${gap.toFixed(1)} points under the floor: ${usd(r.maximum_exposure_usd)} at risk.${recovers}`],
+    below_floor_now: ['Below floor', 'text-stop', `This is priced under the floor already, before any change on file.`],
   }[r.verdict]
-  return <h2 className={`font-label text-[22px] font-semibold leading-snug ${tone}`}>{text}</h2>
+  return (
+    <div>
+      <p className={`text-[13px] font-semibold ${tone}`}>{word}</p>
+      <h2 className="mt-0.5 text-xl leading-snug text-ink">{text}</h2>
+    </div>
+  )
 }
 
-function Result({ r, copied, held, onShorten, onReprice, onUndo, onCopy, onAnswer }: {
-  r: QuoteCheck; copied: boolean; held: { fromUsd: number; toUsd: number } | null
+function Result({ r, inbox, copied, held, onShorten, onReprice, onUndo, onCopy, onAnswer }: {
+  r: QuoteCheck; inbox: Email[]; copied: boolean; held: { fromUsd: number; toUsd: number } | null
   onShorten: (days: number) => void; onReprice: () => void; onUndo: () => void; onCopy: (t: string) => void; onAnswer: () => void
 }) {
-  const scale = { lo: Math.min(r.worst_margin_during_validity, r.margin_floor) - 0.012, hi: Math.max(r.margin_now, r.margin_floor) + 0.012 }
+  const [showClause, setShowClause] = useState(false)
+  const worst = r.worst_margin_during_validity
+  const dips = worst < r.margin_now - 0.0005
+  const shorten = r.suggestions.find((s) => s.kind === 'shorten')
+  const recommended = shorten?.valid_days && shorten.valid_days >= MIN_USEFUL_DAYS && !held ? 'shorten' : 'reprice'
+
   return (
     <>
-      <div className="rounded-sm border border-rule bg-sheet px-5 py-4">
+      <div className={panel}>
         <Verdict r={r} />
-        <p className="mt-1 text-sm text-ink-dim">{r.customer.name} · {usd(r.value_usd)} · issued {shortDate(r.issued)}, valid until {shortDate(r.valid_until)}</p>
-        <div className="mt-4 max-w-md"><MarginBar before={r.margin_now} after={r.worst_margin_during_validity} floor={r.margin_floor} scale={scale} /></div>
-        {r.price_locked ? (
-          <p className="mt-3 rounded-sm border border-rule-bright px-3 py-2 text-sm text-ink">
-            {r.customer.name} has a price lock to {shortDate(r.customer.price_lock_until)}. An escalation clause may not hold against it; price for the increases or shorten the validity instead.
-          </p>
-        ) : null}
-        {r.pending_reviews.length ? (
-          <div className="mt-3 rounded-sm border border-attn/50 bg-attn/3 px-3 py-2 text-sm text-ink">
-            {r.pending_reviews.length} supplier {r.pending_reviews[0].kind === 'invoice_drift' ? 'item' : 'email'}{r.pending_reviews.length === 1 ? '' : 's'} about these materials still need{r.pending_reviews.length === 1 ? 's' : ''} a person, so a change may be missing from this check:
-            <ul className="mt-1 list-disc pl-5">{r.pending_reviews.map((p) => <li key={p.proposal_id}>{p.email_id ?? 'invoice'}: {p.reasons[0]}</li>)}</ul>
-            <button type="button" onClick={onAnswer} className="mt-1 font-label text-[13px] font-semibold text-attn underline-offset-2 hover:underline">Answer in Decide</button>
+        <p className="mt-1 text-[13px] text-ink-dim">{r.customer.name}, {usd(r.value_usd)}, valid until {shortDate(r.valid_until)}.</p>
+        <dl className="mt-4 grid max-w-lg grid-cols-3 gap-3">
+          <div><dt className="text-[13px] text-ink-dim">Quoted</dt><dd className="text-xl font-semibold text-ink">{pct(r.margin_now)}</dd></div>
+          <div>
+            <dt className="text-[13px] text-ink-dim">{dips ? `If ordered after ${shortDate(r.worst_date)}` : 'Lowest while valid'}</dt>
+            <dd className={`text-xl font-semibold ${worst < r.margin_floor ? 'text-stop' : 'text-ink'}`}>{pct(worst)}</dd>
           </div>
-        ) : null}
+          <div><dt className="text-[13px] text-ink-dim">Floor</dt><dd className="text-xl font-semibold text-ink">{pct(r.margin_floor)}</dd></div>
+        </dl>
       </div>
 
+      {r.price_locked ? (
+        <p className="rounded-sm border border-rule bg-sheet px-4 py-3 text-sm text-ink">
+          {r.customer.name} has a price lock to {shortDate(r.customer.price_lock_until)}, so an escalation clause may not hold.
+          {shorten?.valid_days ? <> <button type="button" className="text-go hover:text-go-soft" onClick={() => onShorten(shorten.valid_days!)}>Shorten it to {shorten.valid_days} days</button></> : null}
+        </p>
+      ) : null}
+      {r.pending_reviews.map((p) => {
+        const email = inbox.find((m) => m.id === p.email_id)
+        const who = p.kind === 'invoice_drift' ? 'An invoice' : `An email from ${email?.vendor_name ?? 'a supplier'}`
+        return (
+          <p key={p.proposal_id} className="rounded-sm border border-rule bg-sheet px-4 py-3 text-sm text-ink">
+            {who} about {names(p.materials)} still needs an answer, so a price change may be missing from this check.{' '}
+            <button type="button" className="text-go hover:text-go-soft" onClick={onAnswer}>Answer it</button>
+          </p>
+        )
+      })}
+
       {r.changes.length ? (
-        <div className="rounded-sm border border-rule bg-sheet px-5 py-4">
-          <h3 className="mb-2 font-label text-lg font-semibold text-ink-bright">Ways out</h3>
-          <div className="divide-y divide-rule">
-            {r.suggestions.map((s) => (
-              <div key={s.kind} className="flex flex-wrap items-start gap-x-4 gap-y-2 py-3 first:pt-0">
-                <p className="min-w-0 flex-1 text-sm leading-relaxed text-ink">
-                  {s.kind === 'reprice' && held
-                    ? `Prices set to hold each line's margin through ${shortDate(r.valid_until)}: ${usd(held.fromUsd, 2)} became ${usd(held.toUsd, 2)}. If the order comes after the increases, margin is back where you priced it.`
-                    : s.text}
-                </p>
-                {s.kind === 'shorten' && s.valid_days ? <Button small onClick={() => onShorten(s.valid_days!)}>Use {s.valid_days} days</Button> : null}
-                {s.kind === 'reprice' ? (held
-                  ? <Button small onClick={onUndo}>Undo prices</Button>
-                  : <Button small onClick={onReprice}>Use these prices</Button>) : null}
-                {s.kind === 'clause' ? <Button small onClick={() => onCopy(s.text)}>{copied ? 'Copied' : 'Copy clause'}</Button> : null}
-              </div>
-            ))}
+        <div className={panel}>
+          <h3 className="mb-1 text-lg font-semibold text-ink">Ways out</h3>
+          <div className="divide-y divide-rule-soft">
+            {r.suggestions.map((s) => {
+              const tone = s.kind === recommended ? 'go' : 'neutral'
+              return (
+                <div key={s.kind} className="py-3 last:pb-0">
+                  <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+                    <p className="min-w-0 flex-1 text-sm text-ink">
+                      {s.kind === 'shorten' ? `Shorten it to ${s.valid_days} days, so it expires before the first increase.`
+                        : s.kind === 'reprice' ? (held
+                          ? `Prices now hold margin through ${shortDate(r.valid_until)}: ${usd(held.fromUsd, 2)} became ${usd(held.toUsd, 2)}.`
+                          : `Price for the increases: ${usd(s.value_usd ?? r.value_usd, 2)} in total, ${usd((s.value_usd ?? r.value_usd) - r.value_usd, 2)} more.`)
+                          : 'Add a material escalation clause, so the price moves with the supplier cost.'}
+                    </p>
+                    {s.kind === 'shorten' && s.valid_days ? <Button small tone={tone} onClick={() => onShorten(s.valid_days!)}>Use {s.valid_days} days</Button> : null}
+                    {s.kind === 'reprice' ? (held
+                      ? <Button small onClick={onUndo}>Undo prices</Button>
+                      : <Button small tone={tone} onClick={onReprice}>Use these prices</Button>) : null}
+                    {s.kind === 'clause' ? (
+                      <Button small onClick={() => setShowClause(!showClause)}>{showClause ? 'Hide clause' : 'Show clause'}</Button>
+                    ) : null}
+                  </div>
+                  {s.kind === 'clause' && showClause ? (
+                    <div className="mt-2 space-y-2 rounded-sm bg-ground px-3 py-2.5">
+                      <p className="text-[13px] leading-relaxed text-ink">{s.text}</p>
+                      <Button small onClick={() => onCopy(s.text)}>{copied ? 'Copied' : 'Copy clause'}</Button>
+                    </div>
+                  ) : null}
+                </div>
+              )
+            })}
           </div>
         </div>
       ) : null}
 
-      <div className="rounded-sm border border-rule bg-sheet px-5 py-4">
-        <h3 className="mb-2 font-label text-lg font-semibold text-ink-bright">Margin if the order comes on or after</h3>
+      <div className={panel}>
+        <h3 className="mb-2 text-lg font-semibold text-ink">Margin if the order comes on or after</h3>
         <table className="w-full text-sm">
           <thead><tr className="text-left"><th className={head}>Date</th><th className={head}>What changes</th><th className={`${head} text-right`}>Margin</th></tr></thead>
           <tbody>
             {r.timeline.map((t, i) => (
-              <tr key={t.date} className="border-t border-rule align-top">
-                <td className="py-2 pr-4 font-label text-ink">{i === 0 ? `Today, ${shortDate(t.date)}` : shortDate(t.date)}</td>
-                <td className="py-2 pr-4 font-label text-[13px] text-ink">
+              <tr key={t.date} className="border-t border-rule-soft align-top">
+                <td className="py-2 pr-4 text-ink">{i === 0 ? `Today, ${shortDate(t.date)}` : shortDate(t.date)}</td>
+                <td className="py-2 pr-4 text-[13px] text-ink">
                   {i === 0 ? <span className="text-ink-dim">Costs on file today</span> : t.changes.map((c) => (
-                    <span key={c.material_id} className="mr-4 inline-block">
-                      <Family id={c.material_id}>{c.material_name}</Family> to ${c.cost_per_lb.toFixed(2)}/lb
-                      <span className="text-ink-dim"> · {c.vendor_name ?? 'shop entry'}{c.email_id ? ` · email ${c.email_id}` : ''}</span>
+                    <span key={c.material_id} className="block">
+                      {materialLabel(c.material_id)} to ${c.cost_per_lb.toFixed(2)}/lb
+                      <span className="text-ink-dim">, from {c.vendor_name ?? 'a shop entry'}</span>
                     </span>
                   ))}
                 </td>
-                <td className={`py-2 text-right font-label font-semibold ${t.below_floor ? 'text-stop' : 'text-ink-bright'}`}>{pct(t.margin)}</td>
+                <td className={`py-2 text-right font-semibold ${t.below_floor ? 'text-stop' : 'text-ink'}`}>{pct(t.margin)}</td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
 
-      <div className="rounded-sm border border-rule bg-sheet px-5 py-4">
-        <h3 className="mb-2 font-label text-lg font-semibold text-ink-bright">By line</h3>
+      <div className={panel}>
+        <h3 className="mb-2 text-lg font-semibold text-ink">By line</h3>
         <div className="-mx-5 overflow-x-auto px-5">
-        <table className="w-full min-w-[40rem] text-sm">
+        <table className="w-full min-w-[34rem] text-sm">
           <thead><tr className="text-left">
-            <th className={head}>Part</th><th className={`${head} text-right`}>Qty</th><th className={`${head} text-right`}>Price</th>
-            <th className={`${head} text-right`}>Cost today → at its highest</th><th className={`${head} text-right`}>Margin, worst point</th><th className={`${head} text-right`}>Price to hold margin</th>
+            <th className={head}>Part</th><th className={`${head} pl-3 text-right`}>Qty</th><th className={`${head} pl-3 text-right`}>Price</th>
+            <th className={`${head} pl-3 text-right`}>Cost now, at peak</th><th className={`${head} pl-3 text-right`}>Margin now, at worst</th><th className={`${head} pl-3 text-right`}>Price to hold</th>
           </tr></thead>
           <tbody>
             {r.lines.map((l, i) => (
-              <tr key={`${l.part_id}-${i}`} className="border-t border-rule">
-                <td className="py-2 pr-3 text-ink-bright">{l.part_name}</td>
-                <td className="py-2 text-right font-label text-ink">{l.qty.toLocaleString()}</td>
-                <td className="py-2 text-right font-label text-ink">${l.unit_price.toFixed(4)}</td>
-                <td className="py-2 text-right font-label text-ink-dim">${l.unit_cost_now.toFixed(4)} → <span className={l.affected ? 'text-ink-bright' : ''}>${l.unit_cost_worst.toFixed(4)}</span></td>
-                <td className="py-2 text-right font-label text-ink">{pct(l.margin_now)} → <span className={l.margin_worst < r.margin_floor ? 'text-stop' : ''}>{pct(l.margin_worst)}</span></td>
-                <td className={`py-2 text-right font-label ${l.affected ? 'font-semibold text-ink-bright' : 'text-ink-dim'}`}>${l.price_to_hold_margin.toFixed(4)}</td>
+              <tr key={`${l.part_id}-${i}`} className="border-t border-rule-soft">
+                <td className="py-2 pr-3 text-ink">{l.part_name}</td>
+                <td className="py-2 pl-3 text-right text-ink">{l.qty.toLocaleString()}</td>
+                <td className="py-2 pl-3 text-right text-ink">${l.unit_price.toFixed(4)}</td>
+                <td className="py-2 pl-3 text-right text-ink-dim">${l.unit_cost_now.toFixed(4)}, <span className={l.affected ? 'text-ink' : ''}>${l.unit_cost_worst.toFixed(4)}</span></td>
+                <td className="py-2 pl-3 text-right text-ink">{pct(l.margin_now)}, <span className={l.margin_worst < r.margin_floor ? 'text-stop' : ''}>{pct(l.margin_worst)}</span></td>
+                <td className={`py-2 pl-3 text-right ${l.affected ? 'font-semibold text-ink' : 'text-ink-dim'}`}>${l.price_to_hold_margin.toFixed(4)}</td>
               </tr>
             ))}
           </tbody>

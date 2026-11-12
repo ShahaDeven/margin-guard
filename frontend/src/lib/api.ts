@@ -29,7 +29,7 @@ export type ImportPlan = {
 
 const post = <T>(path: string, body: unknown = {}) => call<T>(path, { method: 'POST', body: JSON.stringify(body) })
 
-export type Lane = 'decide' | 'rules' | 'done' | 'outcomes' | 'quote' | 'leakage' | 'inbox' | 'imports' | 'data'
+export type Lane = 'home' | 'decide' | 'rules' | 'done' | 'quote' | 'leakage' | 'outcomes' | 'inbox' | 'imports' | 'data'
 
 export const api = {
   overview: () => call<Overview>('/api/overview'),
