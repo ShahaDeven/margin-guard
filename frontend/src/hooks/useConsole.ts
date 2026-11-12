@@ -56,7 +56,7 @@ function describe(kind: string, d: Msg): Omit<FeedItem, 'id' | 'at'> | null {
   }
 }
 
-const LANES: Lane[] = ['decide', 'rules', 'done', 'outcomes', 'quote', 'leakage', 'imports', 'data']
+const LANES: Lane[] = ['decide', 'rules', 'done', 'outcomes', 'quote', 'leakage', 'inbox', 'imports', 'data']
 const laneFromHash = (): Lane | null => {
   const h = window.location.hash.replace('#', '') as Lane
   return LANES.includes(h) ? h : null

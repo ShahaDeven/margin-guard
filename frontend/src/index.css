@@ -1,44 +1,45 @@
-@import "@fontsource/archivo/400.css";
-@import "@fontsource/archivo/500.css";
-@import "@fontsource/archivo/600.css";
-@import "@fontsource/archivo/700.css";
-@import "@fontsource/archivo-narrow/500.css";
-@import "@fontsource/archivo-narrow/600.css";
-@import "@fontsource/archivo-narrow/700.css";
+@import "@fontsource/inter/400.css";
+@import "@fontsource/inter/500.css";
+@import "@fontsource/inter/600.css";
+@import "@fontsource/inter/700.css";
 @import "tailwindcss";
 
-/* The Supply Catalogue. Graphite catalogue stock, paper-white ink, hairline rules,
-   a deep catalogue-green navigation band. Colour carries a job, never decoration:
-   go = approve / healthy, attn = needs a person, stop = below floor / faults,
-   claude = the model's judgment. Material families get their own catalogue tabs: deep copper elastomer
-   (browner and darker than the ochre role), slate filler, steel-blue metal. */
+/* Soft slate (docs/redesign/REDESIGN.md). A dim grey ground, off-white text, muted accents,
+   so nothing glares. Three meaning colours only: go = the one filled button and links,
+   stop = under floor and leakage, attn = needs a look. */
 @theme {
-  --color-ground: #131416;
-  --color-sheet: #1b1d20;
-  --color-sheet-2: #24262a;
-  --color-rule: #2e3135;
-  --color-rule-bright: #474a50;
+  --color-ground: #1e2227;       /* page background, inset boxes */
+  --color-sheet: #262b31;        /* sidebar, table, panels, tiles */
+  --color-sheet-2: #2e353d;      /* selected row */
+  --color-nav-active: #313945;   /* active sidebar item */
+  --color-rule: #363c44;         /* borders */
+  --color-rule-soft: #30363d;    /* row dividers, bar tracks */
+  --color-rule-bright: #4a525c;  /* outline button borders */
 
-  --color-ink-bright: #f1ebdc;
-  --color-ink: #d2cbb9;
-  --color-ink-dim: #a29c8b;
+  --color-ink: #dde1e6;          /* text */
+  --color-ink-dim: #9ea7b3;      /* secondary text */
 
-  --color-shell: #173b2b;
-  --color-shell-2: #1f4a37;
-  --color-shell-ink: #e4efe5;
-  --color-shell-dim: #a8c4b0;
+  --color-go: #8fb4e0;           /* the one filled button (text ground), links */
+  --color-go-soft: #b4ccea;      /* active nav text, tile titles, link hover */
+  --color-stop: #e5a08c;         /* under floor, leakage */
+  --color-attn: #d9b777;         /* needs a look only */
 
-  --color-go: #5cc48a;
-  --color-attn: #e3a53c;
-  --color-stop: #ef6249;
-  --color-claude: #b7a3f2;
+  /* Legacy names still used by lanes not yet rebuilt (redesign steps 2-4). They point at the
+     palette above so nothing renders in the old colours; remove each as its lane is redone.
+     `claude` and the material families are no longer colour roles. */
+  --color-ink-bright: #dde1e6;
+  --color-claude: #9ea7b3;
+  --color-elastomer: #9ea7b3;
+  --color-filler: #9ea7b3;
+  --color-metal: #9ea7b3;
 
-  --color-elastomer: #b0603a;
-  --color-filler: #a2a8b0;
-  --color-metal: #7ea3d3;
+  --font-sans: "Inter", ui-sans-serif, system-ui, "Segoe UI", sans-serif;
+  --font-label: "Inter", ui-sans-serif, system-ui, "Segoe UI", sans-serif;
 
-  --font-sans: "Archivo", ui-sans-serif, system-ui, "Segoe UI", sans-serif;
-  --font-label: "Archivo Narrow", "Archivo", ui-sans-serif, system-ui, sans-serif;
+  --radius-sm: 6px;              /* controls */
+  --radius: 6px;
+  --radius-md: 8px;              /* panels */
+  --radius-lg: 10px;             /* tiles */
 }
 
 :root { color-scheme: dark; }
@@ -50,14 +51,19 @@ body {
   background: var(--color-ground);
   color: var(--color-ink);
   font-family: var(--font-sans);
-  font-variant-numeric: tabular-nums;
+  font-size: 14px;
+  line-height: 1.45;
   -webkit-font-smoothing: antialiased;
 }
 
-::selection { background: color-mix(in oklab, var(--color-attn) 35%, transparent); color: var(--color-ink-bright); }
-input, textarea { caret-color: var(--color-attn); }
+/* Tabular numerals where figures line up in columns. Not on the body: Inter's tnum also
+   swaps the hyphen for a digit-width one, which spaces out ids like Q-2026-0101. */
+:where(td.text-right, th.text-right) { font-variant-numeric: tabular-nums; }
+
+::selection { background: color-mix(in oklab, var(--color-go) 35%, transparent); color: var(--color-ink); }
+input, textarea { caret-color: var(--color-go); }
 input::placeholder, textarea::placeholder { color: var(--color-ink-dim); }
-:focus-visible { outline: 2px solid var(--color-attn); outline-offset: 2px; }
+:focus-visible { outline: 2px solid var(--color-go); outline-offset: 2px; }
 a { text-underline-offset: 3px; }
 
 @keyframes mg-breathe {

@@ -33,15 +33,15 @@ export function ReviewCard({
   }
 
   return (
-    <article className="rounded-sm border border-attn/50 bg-attn/3">
-      <div className="space-y-4 px-5 py-4">
+    <article>
+      <div className="space-y-4">
         <div>
           <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
-            <h2 className="text-[16px] font-semibold text-ink-bright">
-              <span className="mr-2 rounded-sm bg-attn px-1.5 py-px align-[1px] font-label text-[12px] font-semibold text-ground">Needs a look</span>
+            <h2 className="text-xl font-bold text-ink">
+              <span className="mb-1 block text-[13px] font-medium text-attn">Needs a look</span>
               {email?.subject ?? p.event.email_subject}
             </h2>
-            <span className="font-label text-[13px] text-ink-dim">{f.email_id} · {email?.vendor_name ?? email?.from_addr ?? 'unknown sender'}</span>
+            <span className="text-[13px] text-ink-dim">{email?.vendor_name ?? email?.from_addr ?? 'Unknown sender'}, email {f.email_id}</span>
           </div>
           <ul className="mt-2 list-disc space-y-0.5 pl-5 text-sm text-ink marker:text-attn">
             {(f.review_reasons ?? []).map((r) => (
@@ -51,7 +51,7 @@ export function ReviewCard({
         </div>
         {email ? (
           <details className="group">
-            <summary className="inline-flex cursor-pointer select-none items-center gap-1.5 font-label text-[13px] font-semibold text-ink-dim hover:text-ink-bright">
+            <summary className="inline-flex cursor-pointer select-none items-center gap-1.5 text-[13px] font-medium text-go hover:text-go-soft">
               <svg width="10" height="10" viewBox="0 0 10 10" aria-hidden className="transition-transform group-open:rotate-90"><path d="M3 1.5 L7 5 L3 8.5" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" /></svg>
               <span className="group-open:hidden">Show the email</span><span className="hidden group-open:inline">Hide the email</span>
             </summary>
@@ -75,12 +75,12 @@ export function ReviewCard({
               ))}
               <Button disabled={sending} onClick={() => { setSending(true); onDismiss() }}>Neither, dismiss</Button>
             </div>
-            <p className="font-label text-[12px] text-ink-dim">Your answer becomes a price change, and the agents check every open quote that uses it.</p>
+            <p className="text-[12px] text-ink-dim">Your answer becomes a price change, and the agents check every open quote that uses it.</p>
           </div>
         ) : (
           <div className="flex items-center gap-3">
             <Button disabled={sending} onClick={() => { setSending(true); onDismiss() }}>Noted, dismiss</Button>
-            <span className="font-label text-[12px] text-ink-dim">No exact price and date to apply, so there's nothing for the agents to act on yet.</span>
+            <span className="text-[12px] text-ink-dim">No exact price and date to apply, so there's nothing for the agents to act on yet.</span>
           </div>
         )}
       </div>
@@ -97,44 +97,44 @@ function DriftCard({ f, name, sending, onApply, onDismiss }: {
   onApply: () => void
   onDismiss: () => void
 }) {
-  const head = 'pb-1.5 font-label text-[12px] font-semibold uppercase tracking-[0.08em] text-ink-dim'
+  const head = 'pb-1.5 text-[13px] font-medium text-ink-dim'
   return (
-    <article className="rounded-sm border border-attn/50 bg-attn/3">
-      <div className="space-y-4 px-5 py-4">
+    <article>
+      <div className="space-y-4">
         <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
-          <h2 className="text-[16px] font-semibold text-ink-bright">
-            <span className="mr-2 rounded-sm bg-attn px-1.5 py-px align-[1px] font-label text-[12px] font-semibold text-ground">Needs a look</span>
+          <h2 className="text-xl font-bold text-ink">
+            <span className="mb-1 block text-[13px] font-medium text-attn">Needs a look</span>
             Invoice billed {f.material_id ? name(f.material_id) : f.material_text} above the price on file
           </h2>
-          <span className="font-label text-[13px] text-ink-dim">{f.vendor_name}</span>
+          <span className="text-[13px] text-ink-dim">{f.vendor_name}</span>
         </div>
-        <p className="font-label text-[15px] text-ink">
+        <p className="text-[15px] text-ink">
           On file <span className="text-ink-bright">${f.old_cost_per_lb?.toFixed(4)}/lb</span>
           {f.expected_row ? <span className="text-ink-dim"> from {shortDate(f.expected_row.effective_date)} (history row #{f.expected_row.id})</span> : null}
-          {' '}· billed <span className="font-semibold text-ink-bright">${f.new_cost_per_lb?.toFixed(4)}/lb</span>
+          {', '}billed <span className="font-semibold text-ink-bright">${f.new_cost_per_lb?.toFixed(4)}/lb</span>
           {f.pct_change != null ? <span className="text-attn"> {f.pct_change >= 0 ? '+' : ''}{(f.pct_change * 100).toFixed(1)}%</span> : null}
-          <span className="text-ink-dim"> · no price notice on file</span>
+          <span className="text-ink-dim">. No price notice on file.</span>
         </p>
         <table className="w-full max-w-xl text-sm">
           <thead><tr className="text-left"><th className={head}>Invoice</th><th className={head}>Date</th><th className={`${head} text-right`}>Overpaid</th></tr></thead>
           <tbody>
             {(f.invoices ?? []).map((i) => (
               <tr key={`${i.invoice_no}-${i.line_no}`} className="border-t border-rule">
-                <td className="py-1.5 font-label text-ink">{i.invoice_no} <span className="text-ink-dim">line {i.line_no}</span></td>
-                <td className="py-1.5 font-label text-ink">{shortDate(i.date)}</td>
-                <td className="py-1.5 text-right font-label text-ink-bright">${i.overpaid_usd.toFixed(2)}</td>
+                <td className="py-1.5 text-ink">{i.invoice_no} <span className="text-ink-dim">line {i.line_no}</span></td>
+                <td className="py-1.5 text-ink">{shortDate(i.date)}</td>
+                <td className="py-1.5 text-right text-ink-bright">${i.overpaid_usd.toFixed(2)}</td>
               </tr>
             ))}
           </tbody>
-          <tfoot><tr className="border-t border-rule-bright"><td colSpan={2} className="pt-1.5 font-label font-semibold text-ink-bright">Overpaid so far</td>
-            <td className="pt-1.5 text-right font-label font-semibold text-ink-bright">${(f.overpaid_usd ?? 0).toFixed(2)}</td></tr></tfoot>
+          <tfoot><tr className="border-t border-rule-bright"><td colSpan={2} className="pt-1.5 font-semibold text-ink-bright">Overpaid so far</td>
+            <td className="pt-1.5 text-right font-semibold text-ink-bright">${(f.overpaid_usd ?? 0).toFixed(2)}</td></tr></tfoot>
         </table>
         <div className="space-y-2">
           <div className="flex flex-wrap gap-2">
             <Button tone="attn" disabled={sending || !f.material_id} onClick={onApply}>Apply as a price change from {shortDate(f.effective_date)}</Button>
             <Button disabled={sending} onClick={onDismiss}>Dismiss: one-off or billing error</Button>
           </div>
-          <p className="font-label text-[12px] text-ink-dim">
+          <p className="text-[12px] text-ink-dim">
             Applying records ${f.new_cost_per_lb?.toFixed(4)}/lb from {f.vendor_name}, and the agents check every open quote that uses it.
             Dismissing changes nothing; dispute the invoice with the supplier if it's an error.
           </p>
@@ -156,17 +156,17 @@ function CorrectionCard({ f, sending, onRedecide, onKeep }: {
   const o = f.original!
   const r = f.revised!
   const floor = f.margin_floor ?? 0
-  const head = 'pb-1.5 font-label text-[12px] font-semibold uppercase tracking-[0.08em] text-ink-dim'
+  const head = 'pb-1.5 text-[13px] font-medium text-ink-dim'
   const tone = (m: number) => (m < floor ? 'text-stop' : 'text-ink-bright')
   return (
-    <article className="rounded-sm border border-attn/50 bg-attn/3">
-      <div className="space-y-4 px-5 py-4">
+    <article>
+      <div className="space-y-4">
         <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
-          <h2 className="text-[16px] font-semibold text-ink-bright">
-            <span className="mr-2 rounded-sm bg-attn px-1.5 py-px align-[1px] font-label text-[12px] font-semibold text-ground">Needs a look</span>
-            A decision you approved missed a later price change: {f.customer_name} · {f.quote_id}
+          <h2 className="text-xl font-bold text-ink">
+            <span className="mb-1 block text-[13px] font-medium text-attn">Needs a look</span>
+            A decision you approved missed a later price change: {f.customer_name}, {f.quote_id}
           </h2>
-          <span className="font-label text-[13px] text-ink-dim">corrects card #{f.corrects}</span>
+          <span className="text-[13px] text-ink-dim">corrects card #{f.corrects}</span>
         </div>
         <p className="text-sm text-ink">{f.review_reasons?.[0]}</p>
         <table className="w-full max-w-2xl text-sm">
@@ -197,7 +197,7 @@ function CorrectionCard({ f, sending, onRedecide, onKeep }: {
             <Button tone="attn" disabled={sending} onClick={onRedecide}>Re-decide with the revised numbers</Button>
             <Button disabled={sending} onClick={onKeep}>Keep the original decision</Button>
           </div>
-          <p className="font-label text-[12px] text-ink-dim">
+          <p className="text-[12px] text-ink-dim">
             Re-deciding raises a new card for this quote, decided on the revised numbers, for you to approve. The original
             decision and anything it sent stay on record either way.
           </p>

@@ -72,14 +72,14 @@ export function Contact({ f, action }: { f: QuoteFacts; action: Action }) {
 /** Line-by-line: what each part costs us now and after, what we quoted, what we'd revise to. */
 export function LinesTable({ f, revisedLabel = 'Revised' }: { f: QuoteFacts; revisedLabel?: string }) {
   return (
-    <table className="w-full font-label text-xs">
-      <thead className="text-left text-[12px] uppercase tracking-wider text-ink-dim">
+    <table className="w-full text-[13px]">
+      <thead className="text-left text-[13px] text-ink-dim">
         <tr>
           <th className="pb-2 font-normal">Part</th>
           <th className="pb-2 text-right font-normal">Qty</th>
-          <th className="pb-2 text-right font-normal">Unit cost now → after</th>
-          <th className="pb-2 text-right font-normal">Quoted / unit</th>
-          <th className="pb-2 text-right font-normal">{revisedLabel} / unit</th>
+          <th className="pb-2 text-right font-normal">Unit cost, now to after</th>
+          <th className="pb-2 text-right font-normal">Quoted each</th>
+          <th className="pb-2 text-right font-normal">{revisedLabel} each</th>
         </tr>
       </thead>
       <tbody>
@@ -87,14 +87,14 @@ export function LinesTable({ f, revisedLabel = 'Revised' }: { f: QuoteFacts; rev
           const hits = ln.changed_materials ?? (ln.uses_changed_material ? [f.material_id] : [])
           return (
             <tr key={ln.line_id} className="border-t border-rule/60 align-top">
-              <td className="py-1.5 font-sans text-[13px] text-ink">
+              <td className="py-1.5 text-ink">
                 {ln.part_name}
                 {hits.length ? (
                   <span className="mt-0.5 flex flex-wrap gap-1">
                     {hits.map((m) => (
                       <span
                         key={m}
-                        className={`rounded-sm bg-sheet-2 px-1 font-label text-[12px] ${m === f.material_id ? 'text-ink-bright' : 'text-ink-dim'}`}
+                        className={`text-[12px] ${m === f.material_id ? 'text-ink' : 'text-ink-dim'}`}
                       >
                         {materialLabel(m)}
                       </span>
@@ -103,7 +103,7 @@ export function LinesTable({ f, revisedLabel = 'Revised' }: { f: QuoteFacts; rev
                 ) : null}
               </td>
               <td className="py-1.5 text-right text-ink-dim">{ln.qty.toLocaleString()}</td>
-              <td className="py-1.5 text-right text-ink-dim">{unitPrice(ln.unit_cost_before)} → {unitPrice(ln.unit_cost_after)}</td>
+              <td className="py-1.5 text-right text-ink-dim">{unitPrice(ln.unit_cost_before)} to {unitPrice(ln.unit_cost_after)}</td>
               <td className="py-1.5 text-right text-ink">{unitPrice(ln.unit_price)}</td>
               <td className={`py-1.5 text-right ${ln.proposed_unit_price !== ln.unit_price ? 'text-go' : 'text-ink-dim'}`}>
                 {unitPrice(ln.proposed_unit_price)}
