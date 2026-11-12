@@ -70,7 +70,7 @@ function App() {
         <div className="mt-6">
           <main className="min-w-0">
             {/* Home and To decide set their own headers. */}
-            {c.lane !== 'decide' && c.lane !== 'home' ? <ViewHeading lane={c.lane} ov={ov} /> : null}
+            {c.lane !== 'decide' && c.lane !== 'home' && c.lane !== 'rules' ? <ViewHeading lane={c.lane} ov={ov} /> : null}
             {c.lane !== 'decide' ? chip : null}
 
             <div className="mt-4 space-y-3">
@@ -94,7 +94,8 @@ function App() {
               {c.lane === 'home' && ov ? <HomeLane ov={ov} leak={c.leakage} version={c.version} go={go} /> : null}
               {c.lane === 'inbox' ? <InboxLane inbox={c.inbox} onShowCards={c.focusEmail} /> : null}
               {c.lane === 'rules' ? (
-                <RulesLane cards={quoteCards} onConfirm={(eventId) => c.run(() => api.confirmRules(eventId))} />
+                <RulesLane cards={quoteCards} onConfirm={(eventId) => c.run(() => api.confirmRules(eventId))}
+                  onConfirmAll={(ids) => c.run(async () => { for (const id of ids) await api.confirmRules(id) })} />
               ) : null}
               {c.lane === 'done' ? (
                 <DoneLane cards={c.cards} outbox={c.outbox} onReopen={(id) => c.run(() => api.reopen(id))} onViewQuote={c.focusQuote}
@@ -134,7 +135,7 @@ function App() {
 
 function ViewHeading({ lane, ov }: { lane: Lane; ov: Overview | null }) {
   const text: Record<Lane, [string, string]> = {
-    decide: ['Needs your decision', 'Judgment calls Claude made and supplier emails it would not guess on, largest dollars first.'],
+    decide: ['To decide', 'Judgment calls Claude made and supplier emails it would not guess on, largest dollars first.'],
     rules: ['Settled by rules', 'Honor and absorb decisions the policy settles by itself, grouped by price change.'],
     done: ['Done', 'What each person decided next to what was proposed, and the outbox. Every decision can be undone.'],
     home: ['Home', ''],
@@ -142,14 +143,14 @@ function ViewHeading({ lane, ov }: { lane: Lane; ov: Overview | null }) {
     outcomes: ['Outcomes', 'What customers did after an increase went out: what was kept, what was negotiated away, which jobs walked.'],
     quote: ['Quote check', 'Before a quote goes out: will a price change already on file land while it is still valid?'],
     leakage: ['Leakage', 'Margin won jobs are about to absorb, and margin they have already lost, because costs moved after the quote.'],
-    imports: ['Imports', 'Bring in an invoice export: match it, check it, then write it in one step.'],
-    data: ['Data', `Quotes, customers and materials behind every number${ov ? `, as of ${shortDate(ov.as_of)}` : ''}.`],
+    imports: ['Imports', 'Bring in an invoice export from your accounts-payable system. Nothing is written until you press Import.'],
+    data: ['Shop data', `Quotes, customers and materials behind every number${ov ? `, as of ${shortDate(ov.as_of)}` : ''}.`],
   }
   const [title, sub] = text[lane]
   return (
     <div>
-      <h1 className="font-label text-[26px] font-semibold text-ink-bright">{title}</h1>
-      <p className="mt-0.5 text-[15px] text-ink-dim">{sub}</p>
+      <h1 className="text-2xl font-bold text-ink">{title}</h1>
+      <p className="mt-1 text-ink-dim">{sub}</p>
     </div>
   )
 }

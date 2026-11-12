@@ -4,6 +4,7 @@ import { api } from '../lib/api'
 import { materialLabel, pct, shortDate, unitPrice, usd } from '../lib/format'
 import type { Backlog, BacklogOrder } from '../lib/types'
 import { Button } from './Button'
+import { FIGURE } from './MarginBar'
 
 const head = 'border-b border-rule px-4 py-3 text-[13px] font-medium text-ink-dim'
 const cell = 'border-b border-rule-soft px-4 py-3'
@@ -43,9 +44,15 @@ export function BacklogSection({ version, onViewQuote, run, focusQuote }: {
   return (
     <div className="flex flex-col gap-5">
       <div>
+        {/* Both counts, labelled in one sentence; the second is the same one Home shows. */}
         <h2 className="text-xl font-semibold text-ink">
-          {r.waiting} won order{r.waiting === 1 ? '' : 's'} still to buy material for:{' '}
-          <span className={r.absorbing_usd ? 'text-stop' : ''}>{usd(r.absorbing_usd)} of increases to absorb</span>
+          {r.waiting} won order{r.waiting === 1 ? '' : 's'} still to buy.{' '}
+          {r.orders_absorbing ? (
+            <>
+              {r.orders_absorbing} absorb{r.orders_absorbing === 1 ? 's' : ''} increases,{' '}
+              <span className={`${FIGURE} text-[28px] text-stop`}>{usd(r.absorbing_usd)}</span> in total.
+            </>
+          ) : 'None absorb increases.'}
         </h2>
         <p className="mt-1 max-w-3xl text-ink">
           These jobs are won, so their prices are fixed and can't be revised. Their material is bought when the job is
@@ -58,8 +65,13 @@ export function BacklogSection({ version, onViewQuote, run, focusQuote }: {
       {buyable.length ? (
         <div className="flex flex-wrap items-center gap-x-5 gap-y-2 rounded-md border border-rule bg-sheet px-4 py-3">
           <p className="min-w-0 flex-1 text-ink">
-            <span className="font-semibold">Buying now saves {usd(r.buy_now_saves_usd)}.</span> The material for those orders
-            would be bought before the increases take effect. Whether that's worth the cash and the storage is your call.
+            <span className="font-semibold">Buying now saves {usd(r.buy_now_saves_usd)}.</span>{' '}
+            {buyable.length === r.orders_absorbing
+              ? `${buyable.length === 1 ? 'It is' : `All ${buyable.length} are`} worth buying early`
+              : `${buyable.length} of them ${buyable.length === 1 ? 'is' : 'are'} worth buying early`}: an increase still to
+            come lands before {buyable.length === 1 ? 'its' : 'their'} buy date.
+            {buyable.length < r.orders_absorbing ? ' For the others, the increase is already in effect.' : ''}
+            {' '}Whether the cash and the storage are worth it is your call.
           </p>
           <Button tone="go" className="font-semibold" onClick={() => run(async () => {
             for (const o of buyable) await api.buyNow(o.quote_id)

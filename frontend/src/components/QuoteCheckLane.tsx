@@ -4,6 +4,7 @@ import { api } from '../lib/api'
 import { materialLabel, pct, shortDate, usd } from '../lib/format'
 import type { DataCustomer, Email, Part, QuoteCheck } from '../lib/types'
 import { Button } from './Button'
+import { MarginBar } from './MarginBar'
 
 type Line = { key: number; part_id: string; qty: string; unit_price: string }
 
@@ -151,9 +152,9 @@ function Verdict({ r }: { r: QuoteCheck }) {
   const recovers = r.margin_at_expiry > worst + 0.0005
     ? ` It recovers to ${pct(r.margin_at_expiry)} by expiry, but an order in between gets the worse margin.` : ''
   const [word, tone, text] = {
-    clear: ['Clear', 'text-ink-dim', `No increase on file lands before this quote expires on ${shortDate(r.valid_until)}. Margin holds at ${pct(r.margin_now)}${r.margin_at_expiry > r.margin_now + 0.0005 ? ' or better' : ''}.`],
-    margin_erodes: ['Tighter', 'text-ink-dim', `An order on or after ${when} gets ${pct(worst)}, still above the floor, with ${usd(r.maximum_exposure_usd)} less margin.${recovers}`],
-    below_floor_after_change: ['Below floor', 'text-stop', `If the customer orders on or after ${when}, margin falls to ${pct(worst)}, ${gap.toFixed(1)} points under the floor: ${usd(r.maximum_exposure_usd)} at risk.${recovers}`],
+    clear: ['Clear', 'text-ink-dim', `No increase on file lands before this quote expires on ${shortDate(r.valid_until)}, so the margin holds.`],
+    margin_erodes: ['Tighter', 'text-ink-dim', `An order on or after ${when} earns ${usd(r.maximum_exposure_usd)} less margin, but stays above the floor.${recovers}`],
+    below_floor_after_change: ['Below floor', 'text-stop', `If the customer orders on or after ${when}, margin falls ${gap.toFixed(1)} points under the floor: ${usd(r.maximum_exposure_usd)} at risk.${recovers}`],
     below_floor_now: ['Below floor', 'text-stop', `This is priced under the floor already, before any change on file.`],
   }[r.verdict]
   return (
@@ -179,14 +180,10 @@ function Result({ r, inbox, copied, held, onShorten, onReprice, onUndo, onCopy, 
       <div className={panel}>
         <Verdict r={r} />
         <p className="mt-1 text-[13px] text-ink-dim">{r.customer.name}, {usd(r.value_usd)}, valid until {shortDate(r.valid_until)}.</p>
-        <dl className="mt-4 grid max-w-lg grid-cols-3 gap-3">
-          <div><dt className="text-[13px] text-ink-dim">Quoted</dt><dd className="text-xl font-semibold text-ink">{pct(r.margin_now)}</dd></div>
-          <div>
-            <dt className="text-[13px] text-ink-dim">{dips ? `If ordered after ${shortDate(r.worst_date)}` : 'Lowest while valid'}</dt>
-            <dd className={`text-xl font-semibold ${worst < r.margin_floor ? 'text-stop' : 'text-ink'}`}>{pct(worst)}</dd>
-          </div>
-          <div><dt className="text-[13px] text-ink-dim">Floor</dt><dd className="text-xl font-semibold text-ink">{pct(r.margin_floor)}</dd></div>
-        </dl>
+        <div className="mt-2 max-w-xl">
+          <MarginBar before={r.margin_now} after={worst} floor={r.margin_floor}
+            afterLabel={dips ? `If ordered after ${shortDate(r.worst_date)}` : 'Lowest while valid'} />
+        </div>
       </div>
 
       {r.price_locked ? (

@@ -153,6 +153,9 @@ export function DecideLane({ cards, inbox, materials, arrived, bar, notice, filt
     `${usd(atRisk)} at risk, largest first.`,
     questions.length ? `${plural(questions.length, 'supplier question')} at the top.` : '',
   ].filter(Boolean).join(' ')
+  // A column that says the same thing on every row is said once, above the table (rule 9).
+  const actionOf = (p: Proposal) => (isQuote(p) ? ACTION_TEXT[p.action].verb : 'Answer a question')
+  const sameAction = rows.length > 1 && new Set(rows.map(actionOf)).size === 1 ? actionOf(rows[0]) : null
 
   return (
     <div className="flex flex-col gap-[18px]">
@@ -160,6 +163,9 @@ export function DecideLane({ cards, inbox, materials, arrived, bar, notice, filt
         <div>
           <h1 className="text-2xl font-bold text-ink">To decide</h1>
           <p className="mt-1 text-ink-dim">{cards.length ? summary : 'Nothing needs you right now.'}</p>
+          {sameAction ? (
+            <p className="text-ink-dim">Recommended for every one shown: {sameAction.charAt(0).toLowerCase() + sameAction.slice(1)}.</p>
+          ) : null}
         </div>
         <div className="flex gap-2">
           <Popover label={filter === 'all' ? 'Filter' : `Filter: ${filterLabel}`} active={filter !== 'all'}>
@@ -196,7 +202,7 @@ export function DecideLane({ cards, inbox, materials, arrived, bar, notice, filt
                 <tr className="text-left text-[13px] text-ink-dim">
                   <th className="border-b border-rule px-4 py-3 font-medium">Customer</th>
                   <th className="border-b border-rule px-4 py-3 font-medium">Margin now</th>
-                  <th className="border-b border-rule px-4 py-3 font-medium">Recommended</th>
+                  {sameAction ? null : <th className="border-b border-rule px-4 py-3 font-medium">Recommended</th>}
                   <th className="border-b border-rule px-4 py-3 text-right font-medium">At risk</th>
                 </tr>
               </thead>
@@ -211,7 +217,7 @@ export function DecideLane({ cards, inbox, materials, arrived, bar, notice, filt
                       <tr key={p.id} id={`row-${p.id}`} tabIndex={0} aria-selected={on} onClick={() => select(p.id)} onKeyDown={keys} className={cls}>
                         <td className="border-b border-rule-soft px-4 py-3.5"><div className="font-semibold">{r.name}</div><div className="text-[13px] text-ink-dim">{r.sub}</div></td>
                         <td className="border-b border-rule-soft px-4 py-3.5 text-ink-dim">–</td>
-                        <td className="border-b border-rule-soft px-4 py-3.5 text-attn">Answer a question</td>
+                        {sameAction ? null : <td className="border-b border-rule-soft px-4 py-3.5 text-attn">Answer a question</td>}
                         <td className="border-b border-rule-soft px-4 py-3.5 text-right font-semibold">{r.risk}</td>
                       </tr>
                     )
@@ -231,7 +237,7 @@ export function DecideLane({ cards, inbox, materials, arrived, bar, notice, filt
                           {(Math.abs(gap) * 100).toFixed(1)} pts {gap < 0 ? 'under' : 'above'} floor
                         </div>
                       </td>
-                      <td className={`border-b border-rule-soft px-4 py-3.5 ${p.decided_by === 'error' ? 'text-stop' : ''}`}>{ACTION_TEXT[p.action].verb}</td>
+                      {sameAction ? null : <td className={`border-b border-rule-soft px-4 py-3.5 ${p.decided_by === 'error' ? 'text-stop' : ''}`}>{ACTION_TEXT[p.action].verb}</td>}
                       <td className="border-b border-rule-soft px-4 py-3.5 text-right font-semibold">{usd(s.exposure_usd)}</td>
                     </tr>
                   )

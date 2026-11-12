@@ -3,6 +3,7 @@ import { Fragment, useState } from 'react'
 import { materialLabel, pct, shortDate, usd } from '../lib/format'
 import type { HistoryRow, Leakage, LeakageJob } from '../lib/types'
 import { BacklogSection } from './BacklogSection'
+import { FIGURE, MarginBar } from './MarginBar'
 import { Empty } from './RulesLane'
 
 const head = 'border-b border-rule px-4 py-3 text-[13px] font-medium text-ink-dim'
@@ -95,7 +96,7 @@ export function LeakageLane({ r, onViewQuote, focusMaterial }: {
     <div className="flex flex-col gap-6">
       <section>
         <h2 className="text-xl font-semibold text-ink">
-          <span className="text-stop">{usd(r.leaked_usd)}</span> of margin leaked on {r.jobs_leaked} of {r.won_jobs} won jobs
+          <span className={`${FIGURE} text-[28px] text-stop`}>{usd(r.leaked_usd)}</span> of margin leaked on {r.jobs_leaked} of {r.won_jobs} won jobs
         </h2>
         <p className="mt-1 max-w-3xl text-ink">
           Between {shortDate(r.period.from)} and {shortDate(r.period.to)}, costs moved after these jobs were quoted and
@@ -259,6 +260,9 @@ function Trace({ j }: { j: LeakageJob }) {
   const th = 'pb-1.5 text-[13px] font-medium text-ink-dim'
   return (
     <div>
+      <div className="mb-6 max-w-xl">
+        <MarginBar before={j.margin_quoted} after={j.margin_realized} floor={j.margin_floor} afterLabel="As ordered" />
+      </div>
       <p className="mb-2 text-[13px] text-ink">
         Each line: quantity × lb per unit × (1 + scrap) × (material cost on the order date, {shortDate(j.ordered_date)}, minus the cost
         on the quote date, {shortDate(j.issued_date)}), at the costing supplier's price.

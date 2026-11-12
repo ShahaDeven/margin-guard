@@ -41,13 +41,17 @@ export function ReviewCard({
               <span className="mb-1 block text-[13px] font-medium text-attn">Needs a look</span>
               {email?.subject ?? p.event.email_subject}
             </h2>
-            <span className="text-[13px] text-ink-dim">{email?.vendor_name ?? email?.from_addr ?? 'Unknown sender'}, email {f.email_id}</span>
+            <span className="text-[13px] text-ink-dim">From {email?.vendor_name ?? email?.from_addr ?? 'an unknown sender'}</span>
           </div>
-          <ul className="mt-2 list-disc space-y-0.5 pl-5 text-sm text-ink marker:text-attn">
-            {(f.review_reasons ?? []).map((r) => (
-              <li key={r}>{r}</li>
-            ))}
-          </ul>
+          {/* The reasons name internal ids ("candidates: MAT-EPDM-70…"); when the question below
+              asks the same thing in plain words, it stands alone. */}
+          {canResolve && candidates.length ? null : (
+            <ul className="mt-2 list-disc space-y-0.5 pl-5 text-sm text-ink marker:text-attn">
+              {(f.review_reasons ?? []).map((r) => (
+                <li key={r}>{r.charAt(0).toUpperCase() + r.slice(1)}.</li>
+              ))}
+            </ul>
+          )}
         </div>
         {email ? (
           <details className="group">
@@ -69,7 +73,7 @@ export function ReviewCard({
             </p>
             <div className="flex flex-wrap gap-2">
               {candidates.map((id) => (
-                <Button key={id} tone="attn" disabled={sending} onClick={() => { setSending(true); onResolve(id) }}>
+                <Button key={id} disabled={sending} onClick={() => { setSending(true); onResolve(id) }}>
                   It's {name(id)}
                 </Button>
               ))}
@@ -110,13 +114,13 @@ function DriftCard({ f, name, sending, onApply, onDismiss }: {
         </div>
         <p className="text-[15px] text-ink">
           On file <span className="text-ink-bright">${f.old_cost_per_lb?.toFixed(4)}/lb</span>
-          {f.expected_row ? <span className="text-ink-dim"> from {shortDate(f.expected_row.effective_date)} (history row #{f.expected_row.id})</span> : null}
+          {f.expected_row ? <span className="text-ink-dim"> from {shortDate(f.expected_row.effective_date)}</span> : null}
           {', '}billed <span className="font-semibold text-ink-bright">${f.new_cost_per_lb?.toFixed(4)}/lb</span>
-          {f.pct_change != null ? <span className="text-attn"> {f.pct_change >= 0 ? '+' : ''}{(f.pct_change * 100).toFixed(1)}%</span> : null}
+          {f.pct_change != null ? <span className="text-stop"> {f.pct_change >= 0 ? '+' : ''}{(f.pct_change * 100).toFixed(1)}%</span> : null}
           <span className="text-ink-dim">. No price notice on file.</span>
         </p>
         <table className="w-full max-w-xl text-sm">
-          <thead><tr className="text-left"><th className={head}>Invoice</th><th className={head}>Date</th><th className={`${head} text-right`}>Overpaid</th></tr></thead>
+          <thead><tr className="text-left"><th className={head}>Invoice</th><th className={head}>Date</th><th className={`${head} text-right`}>Over the price on file</th></tr></thead>
           <tbody>
             {(f.invoices ?? []).map((i) => (
               <tr key={`${i.invoice_no}-${i.line_no}`} className="border-t border-rule">
@@ -126,12 +130,12 @@ function DriftCard({ f, name, sending, onApply, onDismiss }: {
               </tr>
             ))}
           </tbody>
-          <tfoot><tr className="border-t border-rule-bright"><td colSpan={2} className="pt-1.5 font-semibold text-ink-bright">Overpaid so far</td>
+          <tfoot><tr className="border-t border-rule-bright"><td colSpan={2} className="pt-1.5 font-semibold text-ink-bright">Total over the price on file</td>
             <td className="pt-1.5 text-right font-semibold text-ink-bright">${(f.overpaid_usd ?? 0).toFixed(2)}</td></tr></tfoot>
         </table>
         <div className="space-y-2">
           <div className="flex flex-wrap gap-2">
-            <Button tone="attn" disabled={sending || !f.material_id} onClick={onApply}>Apply as a price change from {shortDate(f.effective_date)}</Button>
+            <Button disabled={sending || !f.material_id} onClick={onApply}>Apply as a price change from {shortDate(f.effective_date)}</Button>
             <Button disabled={sending} onClick={onDismiss}>Dismiss: one-off or billing error</Button>
           </div>
           <p className="text-[12px] text-ink-dim">
@@ -194,7 +198,7 @@ function CorrectionCard({ f, sending, onRedecide, onKeep }: {
         <p className="text-xs text-ink-dim">Floor {(floor * 100).toFixed(1)}%. Nothing already sent or written is changed by this card.</p>
         <div className="space-y-2">
           <div className="flex flex-wrap gap-2">
-            <Button tone="attn" disabled={sending} onClick={onRedecide}>Re-decide with the revised numbers</Button>
+            <Button disabled={sending} onClick={onRedecide}>Re-decide with the revised numbers</Button>
             <Button disabled={sending} onClick={onKeep}>Keep the original decision</Button>
           </div>
           <p className="text-[12px] text-ink-dim">

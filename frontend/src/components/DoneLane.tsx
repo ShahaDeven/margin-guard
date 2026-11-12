@@ -1,9 +1,8 @@
 import { useState } from 'react'
 
-import { ACTION_TEXT, usd } from '../lib/format'
+import { ACTION_TEXT, pct, usd } from '../lib/format'
 import type { OutboxItem, OutcomeBody, Proposal, QuoteFacts, ReviewFacts } from '../lib/types'
 import { Button } from './Button'
-import { MarginBar } from './MarginBar'
 import { askedFor, CustomerRecordLine, OutcomeBadge, OutcomeControl } from './Outcomes'
 import { Contact, CostChanges, LinesTable } from './QuoteParts'
 import { Empty } from './RulesLane'
@@ -108,7 +107,10 @@ function DoneRow({ p, open, onToggle, onReopen, onViewQuote, onRecord, onUndoOut
             <>
               <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
                 <div className="min-w-0 flex-1 text-xs"><CostChanges f={f} /></div>
-                <div className="w-56"><MarginBar before={f.margin_before} after={f.margin_after} floor={f.margin_floor} /></div>
+                <span className="text-sm text-ink">
+                  Margin {pct(f.margin_before)} quoted, <span className={f.margin_after < f.margin_floor ? 'text-stop' : ''}>{pct(f.margin_after)} now</span>,
+                  floor {pct(f.margin_floor)}
+                </span>
                 <span className="font-label text-sm text-ink-bright">{usd(f.exposure_usd)} <span className="text-[12px] text-ink-dim">at risk</span></span>
               </div>
               <p className="text-sm leading-relaxed text-ink">

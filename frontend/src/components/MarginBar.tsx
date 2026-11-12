@@ -1,63 +1,83 @@
 import { pct } from '../lib/format'
 
-export type Scale = { lo: number; hi: number }
+/** The display-figure style: Archivo Narrow 600 with tabular numerals. Numbers only. */
+export const FIGURE = 'font-figure font-semibold tabular-nums'
 
-/** The scale every margin bar on a screen shares, so bars compare down the column. */
-export function sharedScale(rows: { margin_before: number; margin_after: number; margin_floor: number }[]): Scale | undefined {
-  if (!rows.length) return undefined
-  const lo = Math.min(...rows.map((r) => Math.min(r.margin_after, r.margin_floor)))
-  const hi = Math.max(...rows.map((r) => Math.max(r.margin_before, r.margin_floor)))
-  return { lo: lo - 0.01, hi: hi + 0.01 }
-}
-
-const pts = (v: number) => `${(Math.abs(v) * 100).toFixed(1)} pts`
-
-/** Margin as quoted, margin now, and the floor between them.
+/** The margin-floor bar, the product's one signature chart.
  *
- *  The sentence underneath carries the meaning ("0.7 pts below the 27.7% floor,
- *  was 3.0 pts above"); the bar illustrates it. Everything left of the floor tick
- *  is the shaded below-floor zone, the hollow dot is the margin as quoted and the
- *  arrowhead is the margin now. */
-export function MarginBar({ before, after, floor, scale }: { before: number; after: number; floor: number; scale?: Scale }) {
-  const lo = scale?.lo ?? Math.min(after, floor) - 0.012
-  const hi = scale?.hi ?? Math.max(before, floor) + 0.012
-  const x = (v: number) => Math.max(0, Math.min(100, ((v - lo) / (hi - lo)) * 100))
+ *  A track with a tick at the floor, a hollow dot at the margin as quoted and an arrow to the
+ *  margin now, each labelled on the bar ("Quoted 31.2%", "Now 28.2%", "Floor 29.7%"). The part
+ *  of the track below the floor is terracotta, the rest dim. It replaces the margin numbers
+ *  wherever it appears, and appears once per screen: the To decide panel, the Quote check
+ *  verdict and a Leakage job's detail. Never in list rows.
+ *
+ *  The scale is fitted to the three values with room either side, so the labels on the two
+ *  outer points can run outward without leaving the bar. */
+export function MarginBar({ before, after, floor, beforeLabel = 'Quoted', afterLabel = 'Now' }: {
+  before: number
+  after: number
+  floor: number
+  beforeLabel?: string
+  afterLabel?: string
+}) {
+  const lo0 = Math.min(before, after, floor)
+  const hi0 = Math.max(before, after, floor)
+  const span = Math.max(hi0 - lo0, 0.01)
+  const lo = lo0 - span * 0.75
+  const hi = hi0 + span * 0.75
+  const x = (v: number) => ((v - lo) / (hi - lo)) * 100
   const below = after < floor
-  const text = below ? 'text-stop' : 'text-go'
-  const fill = below ? 'bg-stop' : 'bg-go'
+  const fell = after < before
+  const same = Math.abs(after - before) < 0.0005
   const left = Math.min(x(before), x(after))
   const width = Math.abs(x(before) - x(after))
-  const gapNow = after - floor
-  const gapThen = before - floor
+
+  // The point further left takes its label to the left, the other to the right, so they never meet.
+  const label = (text: string, v: number, side: 'left' | 'right', tone = 'text-ink') => (
+    <span
+      className="absolute bottom-full mb-2 whitespace-nowrap text-[13px] leading-none text-ink-dim"
+      style={{ left: `${x(v)}%`, transform: side === 'left' ? 'translateX(calc(-100% + 5px))' : 'translateX(-5px)' }}
+    >
+      {text} <span className={`font-semibold ${tone}`}>{pct(v)}</span>
+    </span>
+  )
 
   return (
-    <div className="w-full min-w-48">
-      <p className="font-label text-[13px] text-ink-dim">
-        Quoted <span className="text-ink">{pct(before)}</span> → now <span className={`font-semibold ${text}`}>{pct(after)}</span>
-      </p>
+    <div
+      className="relative mb-7 mt-7 h-1.5 w-full min-w-48"
+      role="img"
+      aria-label={`Margin ${pct(before)} ${beforeLabel.toLowerCase()}, ${pct(after)} ${afterLabel.toLowerCase()}, floor ${pct(floor)}${below ? ', below the floor' : ''}.`}
+    >
+      {/* Track: terracotta below the floor, dim above it. */}
+      <div className="absolute inset-y-0 left-0 rounded-l-full bg-stop/45" style={{ width: `${x(floor)}%` }} />
+      <div className="absolute inset-y-0 right-0 rounded-r-full bg-rule-bright" style={{ left: `${x(floor)}%` }} />
+      {/* Floor tick and its label underneath. */}
+      <div className="absolute -inset-y-1.5 w-0.5 bg-ink" style={{ left: `calc(${x(floor)}% - 1px)` }} />
+      <span className="absolute top-full mt-2.5 -translate-x-1/2 whitespace-nowrap text-[13px] leading-none text-ink-dim" style={{ left: `${x(floor)}%` }}>
+        Floor <span className="font-semibold text-ink">{pct(floor)}</span>
+      </span>
 
-      <div className="relative mt-6 h-2.5" role="img" aria-label={`Margin ${pct(before)} as quoted, ${pct(after)} now, floor ${pct(floor)}`}>
-        <span
-          className="absolute bottom-full mb-2 -translate-x-1/2 font-label text-[12px] font-semibold uppercase leading-none tracking-[0.06em] text-attn"
-          style={{ left: `${x(floor)}%` }}
-        >
-          floor
-        </span>
-        <div className="absolute inset-y-0 left-0 bg-stop/20" style={{ width: `${x(floor)}%` }} />
-        <div className="absolute inset-y-0 right-0 bg-sheet-2" style={{ left: `${x(floor)}%` }} />
-        <div className="absolute -inset-y-1 w-0.5 bg-attn" style={{ left: `calc(${x(floor)}% - 1px)` }} />
-        <div className={`absolute top-1/2 h-0.5 -translate-y-1/2 ${fill}`} style={{ left: `${left}%`, width: `${width}%` }} />
-        <div className="absolute top-1/2 h-2.5 w-2.5 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-ink bg-ground" style={{ left: `${x(before)}%` }} />
-        <div
-          className={`absolute top-1/2 h-0 w-0 -translate-y-1/2 border-y-[6px] border-r-[8px] border-y-transparent ${below ? 'border-r-stop' : 'border-r-go'}`}
-          style={{ left: `calc(${x(after)}% - 3px)` }}
-        />
-      </div>
+      {same ? null : (
+        <>
+          {/* The move from quoted to now, with its arrowhead at now. */}
+          <div className={`absolute top-1/2 h-0.5 -translate-y-1/2 ${below ? 'bg-stop' : 'bg-ink'}`} style={{ left: `${left}%`, width: `${width}%` }} />
+          <div
+            className={`absolute top-1/2 h-0 w-0 -translate-y-1/2 border-y-[6px] border-y-transparent ${
+              fell ? `border-r-[9px] ${below ? 'border-r-stop' : 'border-r-ink'}` : `border-l-[9px] ${below ? 'border-l-stop' : 'border-l-ink'}`}`}
+            style={{ left: fell ? `calc(${x(after)}% - 2px)` : `calc(${x(after)}% - 7px)` }}
+          />
+        </>
+      )}
+      <div className="absolute top-1/2 h-3 w-3 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-ink bg-sheet" style={{ left: `${x(before)}%` }} />
 
-      <p className={`mt-2 font-label text-[13px] font-semibold ${text}`}>
-        {Math.abs(gapNow) < 0.0005 ? 'Right at' : `${pts(gapNow)} ${below ? 'below' : 'above'}`} the {pct(floor)} floor
-        <span className="font-normal text-ink-dim"> · was {pts(gapThen)} {gapThen >= 0 ? 'above' : 'below'}</span>
-      </p>
+      {same
+        ? label(`${beforeLabel} and ${afterLabel.toLowerCase()}`, before, 'right', below ? 'text-stop' : 'text-ink')
+        : (
+          <>
+            {label(beforeLabel, before, fell ? 'right' : 'left')}
+            {label(afterLabel, after, fell ? 'left' : 'right', below ? 'text-stop' : 'text-ink')}
+          </>
+        )}
     </div>
   )
 }

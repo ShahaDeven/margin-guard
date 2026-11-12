@@ -18,7 +18,7 @@ without saying so, and after the job has shipped.
 customers behind any number. Rubber molding is the demo; anything quoted from a bill of
 materials fits.*
 
-![The decision queue: each quote a ruled row with the cost that moved, margin against the floor on one shared scale, and dollars at risk](docs/screenshots/queue.png)
+![To decide: quotes below their floor in one table, the selected one in a panel with the margin-floor bar, the costs that moved and one Approve button](docs/screenshots/queue.png)
 
 ## Quick start
 
@@ -43,38 +43,41 @@ cd frontend && npm install && npm run dev      # second terminal: http://localho
 `seed --reset` refuses while the API server has the database open (Windows locks the file):
 stop uvicorn, rebuild, start it again. Run the tests with `python -m pytest` (no API calls).
 
-**Try it (about five minutes):**
-1. **Decide.** Open the first row (Bluewater Filtration). Claude's reasoning, the line-by-line
-   prices, who to call and the draft are all there. Read the margin line: "1.1 pts below the
-   23.7% floor · was 1.5 pts above". Press **J** and **K** to step through the rows, and try
-   **×1.5** above the table to see every margin if the increases came in bigger.
-2. **Needs a look.** The "Black 70" email at the top: the distributor sells two compounds by that
-   name, so the system asks instead of guessing. Pick one; it becomes a price change, and the
-   agents check every open quote that uses it.
+**Try it (about five minutes):** the console opens on **Home**, the owner's page: what needs a
+person, which won orders will absorb increases, and what has already leaked.
+1. **To decide.** Press **Start deciding**. Each row is one quote below its floor; the selected one
+   opens in the panel on the right: one sentence on what happened, the margin-floor bar (quoted,
+   now and the floor, on one line) with dollars at risk beside it, and the costs that moved
+   ("FKM 75, $14.80 → $15.76/lb, Dec 1"). **Why Claude recommends this**, the line prices, the
+   draft and the customer's record are one click down. Press **J** and **K** to move through the
+   rows, and try **What if increases were bigger** to see every margin at 1.5 times.
+2. **A supplier question.** The "Black 70" email sits at the top as **Answer a question**: the
+   distributor sells two compounds by that name, so the system asks instead of guessing. Pick one;
+   it becomes a price change, and the agents check every open quote that uses it.
 3. **Quote check.** A 60-day quote for 2,500 HVAC duct boots at 30% margin. An increase on Nov 1
    lands inside it. Click **Use 16 days**, and the check comes back clear.
-4. **Leakage.** At the top: 13 won orders whose material isn't bought yet will absorb $1,682 of
-   increases. Their prices are fixed, so nothing can be revised. Open **Q-2026-0351** (Prairie Ag):
-   the Nov 15 SBR 60 increase costs it $989, and **Buy now · save $1,059** records buying its
-   material before the increases land (undo is next to it). Below: $6,151 already leaked on won
-   jobs. Click **1018 cold-rolled steel**, then **Trace** on a job: every line, the cost at quote
-   and at order, and the price-history row behind each.
-5. **Imports.** Click **AP export (needs matching)**: a messy accounts-payable file with its own
+4. **Leakage.** **Orders still to buy**: 13 won orders whose material isn't bought yet; 7 absorb
+   increases, $1,682 in total. Their prices are fixed, so nothing can be revised. Open
+   **Prairie Ag Equipment** (Q-2026-0351): the Nov 15 SBR 60 increase costs it $989, and **Buy now**
+   records buying its material before the increases land (undo is next to it). **Already
+   leaked**: $6,151 on won jobs. Click **1018 steel**, then **Trace** on a job: the margin-floor
+   bar, every line, the cost at quote and at order, and the price-history row behind each.
+5. **Imports.** Choose **or try a sample file**, then the messy accounts-payable export: its own
    column names, US dates and "LBS"/"CWT"/"TON" units. The columns are matched for you. Match "GLE"
    to Great Lakes Elastomers and "EPM70 BLK" to EPDM 70, and mark Freight as not an item you stock.
-   The check shows what an import would do (4 lines at price, 3 billed above, $495.93 overpaid)
-   before anything is written. Press **Import**, then open the new cards in Decide: Ridgeline
-   billed carbon black at $1.14/lb against $1.09 on file, with no price notice. **Apply** it as a
-   price change, or **Dismiss** it.
-6. **Outcomes.** Approve a **Revise quote** card in Decide (each card now shows that customer's
-   record: "2 past increases: 1 accepted, 1 lost the job · has walked over increases"). In
-   **Done**, open it and record what the customer said: **Accepted**, **Negotiated** (type the
-   dollars they agreed to) or **Lost the job**. **Outcomes** shows recovered against asked, the
-   revenue walked away, and every customer's record.
+   The check shows what an import would do (8 lines, 3 above quoted cost, $495.93 overpaid) before
+   anything is written. Press **Import**, then open the new decisions in To decide: Ridgeline billed
+   carbon black at $1.14/lb against $1.09 on file, with no price notice. **Apply** it as a price
+   change, or **Dismiss** it.
+6. **Outcomes.** Approve a **Send a revised quote** row in To decide (the panel's "This customer's
+   past increases" says how they took the last ones). In **Done**, open it and record what the
+   customer said: **Accepted**, **Negotiated** (type the dollars they agreed to) or **Walked**.
+   **Outcomes** shows recovered against asked, the revenue walked away, and every customer's record.
 
-With an `ANTHROPIC_API_KEY` in `.env`, **Send test email** in the inbox reads a new email live
-(about a cent; D4 is a PDF price letter). Without a key it fails gracefully: the email shows
-"could not read" and any judgment call becomes a card for a person.
+With an `ANTHROPIC_API_KEY` in `.env`, **Open demo controls** at the foot of the sidebar and
+**Send test email** reads a new supplier email live (about a cent; D4 is a PDF price letter).
+Without a key it fails gracefully: the email shows "could not read" and any judgment call becomes a
+decision for a person.
 
 ## One price change, end to end
 
@@ -97,7 +100,7 @@ November 1.* Here is what happens to it.
    stay above their floor (absorb). The other four are judgment calls. Lakeshore is a key account
    over $15,000, so the policy says call before sending a revised price; Claude writes the call
    brief for the account manager, quoting the computed numbers.
-5. **Approve.** In the console the estimator reads the card, edits the draft if needed, and
+5. **Approve.** In the console the estimator reads the decision, edits the draft if needed, and
    approves. That creates a call task with the buyer's name and number. Nothing is sent and no
    price changes until a person says so, and every decision can be undone.
 
@@ -184,7 +187,7 @@ material's quoted and announced price. It flags a customer price lock that cover
 for a person. The 2,500-duct-boot example: 30% falls to 26.9% after Nov 1, $518 at risk; valid
 16 days instead, it's clear. Nothing is saved; quotes live in the shop's own system.
 
-![Quote check: an increase on Nov 1 lands inside a 60-day quote; the ways out are a 16-day validity, a held price, or an escalation clause](docs/screenshots/quote-check.png)
+![Quote check: an increase on Nov 1 lands inside a 60-day quote; the margin-floor bar shows the quoted and worst margin against the floor, and the ways out are a 16-day validity, a held price, or an escalation clause](docs/screenshots/quote-check.png)
 
 ### When nobody announced it: invoice drift
 
@@ -237,8 +240,8 @@ The **Outcomes** view answers the owner's question, "does repricing work?":
 - what is still waiting for an answer;
 - each customer's record ("usually pushes back", "has walked over increases").
 
-That record also sits on every decision card in Decide, so the person approving a reprice sees
-how this customer took the last ones.
+That record also sits in the To decide panel, under "This customer's past increases", so the person
+approving a reprice sees how this customer took the last ones.
 
 It is shown to people and never given to the model: no decision prompt changed, so every cached
 decision and eval still holds. Whether a customer's record *should* change the decision is a
@@ -292,7 +295,7 @@ is listed and left out, not costed at today's price.
 
 | An increase found on an invoice | Leakage traced to the rows |
 |---|---|
-| ![Invoice drift card: on file $1.09/lb, billed $1.14/lb on two invoices, $350 overpaid](docs/screenshots/invoice-drift.png) | ![Leakage trace: each quote line, quantity, cost at quote and at order with the price-history row behind it](docs/screenshots/leakage-trace.png) |
+| ![Invoice drift question: on file $1.09/lb, billed $1.14/lb on two invoices, $350 overpaid](docs/screenshots/invoice-drift.png) | ![Leakage trace: the margin-floor bar, then each quote line with its cost at quote and at order and the price-history row behind it](docs/screenshots/leakage-trace.png) |
 
 ```bash
 python -m margin_guard.leakage              # the report in the terminal; also /api/leakage
@@ -300,34 +303,37 @@ python -m margin_guard.leakage              # the report in the terminal; also /
 
 ## The console
 
-Built for two people: the estimator who works the queue every day, and the owner who wants the
-dollars. Dark only, set like an industrial supply catalogue: dense ruled tables, figures in a
-condensed face, every moved cost tabbed by material family. The full system is in
-[DESIGN.md](DESIGN.md). Colour always has one job: green approves, orange needs a person, red is
-below the floor, violet is Claude.
+One primary user and one task per screen. Dark only, in a soft slate: a dim grey ground, off-white
+text and muted accents. Colour has one job each: blue is something you can click, terracotta is
+below the floor or money lost, amber needs a person; everything else is plain text. Each screen
+has one filled button. The visual system is in [DESIGN.md](DESIGN.md), from the brief in
+[docs/redesign/REDESIGN.md](docs/redesign/REDESIGN.md).
 
-A green band carries the views, each with its own URL (`#decide`, `#leakage`, ...). Under it, four
-figures that each name their source: dollars at risk on open quotes, decisions waiting, decisions
-settled by rules, and margin already leaked.
+A left sidebar groups the views, each with its own URL (`#home`, `#decide`, `#leakage`, ...):
 
-- **Decide:** the queue as one ruled table (customer and action, the cost that moved, margin
-  against the floor on one shared scale, dollars at risk). A row opens in place to Claude's
-  reasoning and confidence (and whether it clears the eval's bar), the line prices, who to call
-  and an editable draft. Above it: emails and invoices the system wouldn't guess on, the what-if
-  control, and J / K.
-- **Settled by rules:** honor and absorb decisions grouped by price change, confirmed in bulk.
-- **Done:** what each person decided next to what was proposed, the outbox, undo, and the
-  customer's response to every reprice and call.
-- **Outcomes:** recovered against asked, revenue lost, what is waiting for an answer, and each
-  customer's record.
-- **Quote check**, and **Leakage**: won orders still to buy material for (with **Buy now**), then
-  margin already lost on won jobs.
-- **Imports:** an invoice export matched, checked as a dry run, then written in one step, with
-  the history of earlier imports.
-- **Data:** quotes, customers and materials, so any number can be checked.
-- **Supplier inbox** beside the queue: each email's status and what it led to ("26 quotes
-  checked · 2 need you"), its attachments (each opens the original file), and any price-list rows
-  it left out. **Send test email** drops in a new one, and the activity feed streams the agents.
+- **Home** (the owner's page, where the console opens): what needs a person, with a count, a
+  sentence and a button for each kind of work; the customer with the most at risk; and margin
+  already leaked on won jobs, by order month.
+- **Queue.** **To decide**: one table (customer, margin now and the gap to the floor, recommended
+  action, dollars at risk), supplier questions at the top, and the selected row in a detail panel
+  with the margin-floor bar, the costs that moved and one Approve; Claude's reasoning and
+  confidence (and whether it clears the eval's bar), the line prices, the editable draft and the
+  customer's record are collapsed under it. Filter and the what-if control sit in the header;
+  J / K move the selection. **Settled by rules**: one row per price change, costliest first,
+  confirmed one at a time or all at once. **Done**: what each person decided next to what was
+  proposed, the outbox, undo, and the customer's response to every reprice and call.
+- **Before you quote. Quote check**: will a price change already on file land while a new quote is
+  valid, and the ways out.
+- **Reports. Leakage**: won orders still to buy material for (with **Buy now**), and margin already
+  lost on won jobs, each job traced to its rows. **Outcomes**: recovered against asked, revenue
+  lost, and each customer's record.
+- **Setup. Supplier inbox**: each email's status and what it led to ("26 quotes checked, 2 need
+  you"), its attachments (each opens the original file), and any price-list rows it left out.
+  **Imports**: an invoice export matched, checked as a dry run, then written in one step, with
+  earlier imports. **Shop data**: quotes, customers and materials, so any number can be checked.
+
+The demo controls (a test supplier email and the agents' live activity) are in a drawer behind
+**Open demo controls**, out of the working layout.
 
 ## How far to trust it
 
@@ -486,5 +492,5 @@ import reproduces the demo shop exactly.
   inbox and the CSV import.
 
 Stack: Python 3.11, LangGraph, FastAPI + SSE, SQLite (WAL), openpyxl and pypdf for attachments,
-React 19 + Vite + Tailwind 4 with self-hosted Archivo, and Claude Sonnet 5.5 through the
+React 19 + Vite + Tailwind 4 with self-hosted Inter and Archivo Narrow, and Claude Sonnet 5.5 through the
 Anthropic SDK with structured outputs.

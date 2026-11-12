@@ -4,49 +4,51 @@ import { api } from '../lib/api'
 import { pct, shortDate, unitPrice, usd } from '../lib/format'
 import type { CustomerRecord, Outcome, OutcomeBody, OutcomeKind, OutcomesSummary, OutcomeTally, QuoteFacts } from '../lib/types'
 import { Button } from './Button'
+import { FIGURE } from './MarginBar'
 import { Empty } from './RulesLane'
 
-const head = 'pb-2 font-label text-[12px] font-semibold uppercase tracking-[0.08em] text-ink-dim'
-const link = 'font-label text-[13px] font-semibold text-ink-dim underline-offset-2 hover:text-ink-bright hover:underline'
+const head = 'border-b border-rule px-4 py-2.5 text-[13px] font-medium text-ink-dim'
+const cell = 'border-b border-rule-soft px-4 py-2.5 align-top'
+const link = 'text-[13px] text-go hover:text-go-soft'
+const panel = 'rounded-md border border-rule bg-sheet'
 
 /** The increase a decision asked for over the whole quote (same sum as outcomes.asked on the server). */
 export const askedFor = (f: QuoteFacts) =>
   Math.round(f.lines.reduce((s, l) => s + (l.proposed_unit_price - l.unit_price) * l.qty, 0) * 100) / 100
 
 export const OUTCOME_TEXT: Record<OutcomeKind, { label: string; tone: string }> = {
-  accepted: { label: 'Accepted', tone: 'text-go border-go/40' },
-  negotiated: { label: 'Negotiated', tone: 'text-attn border-attn/40' },
-  lost: { label: 'Lost the job', tone: 'text-stop border-stop/40' },
+  accepted: { label: 'Accepted', tone: 'text-ink' },
+  negotiated: { label: 'Negotiated', tone: 'text-ink' },
+  lost: { label: 'Walked', tone: 'text-stop' },
 }
 
 export function OutcomeBadge({ o }: { o: Outcome }) {
   const t = OUTCOME_TEXT[o.outcome]
-  return <span className={`rounded border px-1.5 py-px font-label text-[12px] uppercase tracking-wider ${t.tone}`}>{t.label}</span>
+  return <span className={`text-[13px] font-medium ${t.tone}`}>{t.label}</span>
 }
+
+/** Only "has walked" is coloured; a customer who pushes back is information, not an alarm. */
+const patternTone = (pattern: string) => (pattern.startsWith('has walked') ? 'text-stop' : 'text-ink-dim')
 
 /** One line on a decision card: how this customer has taken increases before. People read it; the model never sees it. */
 export function CustomerRecordLine({ r, name }: { r: CustomerRecord | null | undefined; name: string }) {
   if (!r) {
     return (
-      <p className="text-[13px] text-ink-dim">
-        <span className="font-label text-[12px] uppercase tracking-wider">Customer record · </span>
-        No past increases on record for {name}.
-      </p>
+      <p className="text-[13px] text-ink-dim">No past increases on record for {name}.</p>
     )
   }
   const parts = [
     r.accepted ? `${r.accepted} accepted` : '',
     r.negotiated ? `${r.negotiated} negotiated down` : '',
-    r.lost ? `${r.lost} lost the job` : '',
+    r.lost ? `${r.lost} walked` : '',
   ].filter(Boolean)
-  const tone = r.pattern.startsWith('has walked') ? 'text-stop' : r.pattern.includes('pushes back') ? 'text-attn' : 'text-ink-bright'
+  const tone = r.pattern.startsWith('has walked') ? 'text-stop' : 'text-ink'
   return (
     <p className="text-[13px] text-ink">
-      <span className="font-label text-[12px] uppercase tracking-wider text-ink-dim">Customer record · </span>
-      {r.requests} past increase{r.requests === 1 ? '' : 's'}: {parts.join(', ')}
-      {r.kept != null && r.negotiated ? <> (kept {pct(r.kept, 0)} of what was asked)</> : null}
-      {' · '}<span className={`font-semibold ${tone}`}>{r.pattern}</span>
-      <span className="text-ink-dim"> · last {OUTCOME_TEXT[r.last.outcome].label.toLowerCase()} {shortDate(r.last.date)}</span>
+      {name} {r.pattern === 'too few increases to say' ? 'has' : <span className={`font-semibold ${tone}`}>{r.pattern}</span>}
+      {r.pattern === 'too few increases to say' ? '' : ':'} {r.requests} past increase{r.requests === 1 ? '' : 's'}, {parts.join(', ')}
+      {r.kept != null && r.negotiated ? <> (kept {pct(r.kept, 0)} of what was asked)</> : null}.
+      <span className="text-ink-dim"> The last one {OUTCOME_TEXT[r.last.outcome].label.toLowerCase()}, {shortDate(r.last.date)}.</span>
     </p>
   )
 }
@@ -66,15 +68,15 @@ export function OutcomeControl({ proposalId, asked, quoteId, channel, outcome, o
 
   if (outcome) {
     return (
-      <div className="flex flex-wrap items-center gap-x-3 gap-y-2 rounded border border-rule bg-sheet px-3 py-2 text-sm">
-        <span className="font-label text-[12px] uppercase tracking-wider text-ink-dim">Customer response</span>
+      <div className="flex flex-wrap items-center gap-x-3 gap-y-2 rounded-sm border border-rule bg-sheet px-3 py-2 text-sm">
+        <span className="text-ink-dim">Customer response:</span>
         <OutcomeBadge o={outcome} />
         <span className="text-ink">
           {outcome.outcome === 'lost'
             ? <>{quoteId} marked lost on {shortDate(outcome.outcome_date)}: {usd(outcome.lost_revenue_usd)} of revenue</>
             : <>kept {usd(outcome.recovered_usd, 2)} of the {usd(outcome.asked_usd, 2)} asked, {shortDate(outcome.outcome_date)}
               {outcome.price_changes.length ? <span className="text-ink-dim">
-                {' · '}quote price{outcome.price_changes.length === 1 ? '' : 's'} now {outcome.outcome === 'negotiated' ? 'agreed at' : 'at'}{' '}
+                {'. '}Quote price{outcome.price_changes.length === 1 ? '' : 's'} now {outcome.outcome === 'negotiated' ? 'agreed at' : 'at'}{' '}
                 {outcome.price_changes.map((c) => unitPrice(c.after)).join(', ')}
               </span> : null}</>}
         </span>
@@ -86,14 +88,14 @@ export function OutcomeControl({ proposalId, asked, quoteId, channel, outcome, o
   const value = Number(amount)
   const validAmount = amount.trim() !== '' && value > 0 && value < asked
   return (
-    <div className="space-y-2 rounded border border-attn/40 bg-attn/5 px-3 py-2.5 text-sm">
-      <p className="text-ink-bright">
+    <div className="space-y-2 rounded-sm border border-rule bg-sheet px-3 py-2.5 text-sm">
+      <p className="text-ink">
         What did the customer say to the {usd(asked, 2)} increase{channel === 'call' ? ' on the call' : ''}?
       </p>
       <div className="flex flex-wrap items-center gap-2">
-        <Button small tone="go" onClick={() => onRecord(proposalId, { outcome: 'accepted' })}>Accepted</Button>
-        <Button small tone="attn" onClick={() => setMode(mode === 'negotiated' ? null : 'negotiated')}>Negotiated</Button>
-        <Button small tone="stop" onClick={() => setMode(mode === 'lost' ? null : 'lost')}>Lost the job</Button>
+        <Button small onClick={() => onRecord(proposalId, { outcome: 'accepted' })}>Accepted</Button>
+        <Button small onClick={() => setMode(mode === 'negotiated' ? null : 'negotiated')}>Negotiated</Button>
+        <Button small onClick={() => setMode(mode === 'lost' ? null : 'lost')}>Walked</Button>
       </div>
       {mode === null ? (
         <p className="text-xs text-ink-dim">
@@ -110,10 +112,10 @@ export function OutcomeControl({ proposalId, asked, quoteId, channel, outcome, o
             inputMode="decimal"
             value={amount}
             onChange={(e) => setAmount(e.target.value.replace(/[^\d.]/g, ''))}
-            className="w-28 rounded border border-rule bg-sheet-2 px-2 py-1 font-label text-ink-bright outline-none focus:border-attn/70"
+            className="w-28 rounded-sm border border-rule-bright bg-ground px-2 py-1 text-ink outline-none focus:border-go"
           />
           <span className="text-ink-dim">of the {usd(asked, 2)}{validAmount ? ` (${pct(value / asked, 0)})` : ''}</span>
-          <Button small tone="attn" disabled={!validAmount} onClick={() => { onRecord(proposalId, { outcome: 'negotiated', recovered_usd: amount }); setMode(null) }}>
+          <Button small disabled={!validAmount} onClick={() => { onRecord(proposalId, { outcome: 'negotiated', recovered_usd: amount }); setMode(null) }}>
             Save
           </Button>
           <span className="w-full text-xs text-ink-dim">Each line moves by the same share of its increase.</span>
@@ -158,129 +160,147 @@ export function OutcomesLane({ version, onViewQuote, onRecord, onUndo }: {
   const t: OutcomeTally = s[scope]
   const recent = s.recent.filter((o) => scope === 'all' || o.source === scope)
 
+  const historyOnly = s.console.requests === 0 && s.history.requests > 0
+  const mixed = scope === 'all' && s.console.requests > 0 && s.history.requests > 0
+
   return (
-    <div className="space-y-6">
-      <section className="rounded-sm border border-rule bg-sheet px-6 py-5">
-        <div className="flex flex-wrap items-center gap-2" role="group" aria-label="Which responses to count">
+    <div className="flex flex-col gap-6">
+      <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
+        <div className="inline-flex rounded-sm border border-rule-bright p-0.5" role="group" aria-label="Which responses to count">
           {SCOPES.map((x) => (
             <button
               key={x.id}
               type="button"
               aria-pressed={scope === x.id}
               onClick={() => setScope(x.id)}
-              className={`rounded-sm border px-2.5 py-0.5 font-label text-[13px] transition-colors ${
-                scope === x.id ? 'border-attn bg-attn/15 text-ink-bright' : 'border-rule-bright text-ink-dim hover:text-ink'
+              className={`rounded-[4px] px-3 py-1.5 text-[13px] transition-colors ${
+                scope === x.id ? 'bg-nav-active font-semibold text-go-soft' : 'text-ink hover:text-go-soft'
               }`}
             >
               {x.label} <span className="text-ink-dim">{s[x.id].requests}</span>
             </button>
           ))}
         </div>
+        {historyOnly ? (
+          <p className="text-[13px] text-ink-dim">
+            All {s.history.requests} responses are from before Margin Guard, synthetic in the demo.
+          </p>
+        ) : null}
+      </div>
+
+      <section>
         {t.requests ? (
           <>
-            <h2 className="mt-4 font-label text-2xl font-semibold text-ink-bright">
-              {usd(t.recovered_usd)} recovered of {usd(t.asked_kept_jobs_usd)} asked on the jobs kept
-              {t.kept != null ? <span className="text-go"> · {pct(t.kept, 0)}</span> : null}
+            <h2 className="text-xl font-semibold text-ink">
+              <span className={`${FIGURE} text-[28px]`}>{usd(t.recovered_usd)}</span> recovered of {usd(t.asked_kept_jobs_usd)} asked
+              on the jobs kept{t.kept != null ? `, ${pct(t.kept, 0)}` : ''}
             </h2>
-            <p className="mt-1 max-w-3xl text-[15px] leading-relaxed text-ink">
+            <p className="mt-1 max-w-3xl text-ink">
               {t.requests} increase{t.requests === 1 ? '' : 's'} with a response: {t.accepted} accepted, {t.negotiated} negotiated
-              down, and {t.lost} where the customer walked,{' '}
-              <span className={t.lost ? 'font-semibold text-stop' : ''}>{usd(t.lost_revenue_usd)} of revenue</span> on those quotes.
+              down, and {t.lost} where the customer walked, with{' '}
+              <span className={t.lost ? 'text-stop' : ''}>{usd(t.lost_revenue_usd)} of revenue lost</span>.
             </p>
           </>
         ) : (
-          <p className="mt-4 text-[15px] text-ink">No responses recorded {scope === 'console' ? 'since Margin Guard' : 'here'} yet.</p>
+          <p className="text-ink">No responses recorded {scope === 'console' ? 'since Margin Guard' : 'here'} yet.</p>
         )}
-        <p className="mt-3 text-xs text-ink-dim">
-          "Kept" counts only the jobs the customer stayed on; a lost job's cost is its revenue, shown on its own. History is the
-          shop's record from before Margin Guard (synthetic in the demo). Responses are shown to people next to each decision and
-          are never given to the model.
+        <p className="mt-2 max-w-3xl text-[13px] text-ink-dim">
+          "Kept" counts only the jobs the customer stayed on; a lost job's cost is its revenue, counted on its own. Responses are
+          shown to people next to each decision and are never given to the model.
         </p>
       </section>
 
-      <section className="rounded-sm border border-rule bg-sheet px-5 py-4">
-        <h3 className="font-label text-lg font-semibold text-ink-bright">Waiting for the customer</h3>
-        <p className="mb-3 text-xs text-ink-dim">Approved reprices and calls with no response recorded. Click one to record it.</p>
-        {s.awaiting.length ? (
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="text-left">
-                <th className={head}>Quote</th><th className={head}>Customer</th><th className={head}>Sent as</th>
-                <th className={`${head} text-right`}>Increase asked</th><th className={`${head} pl-4`}>Approved</th>
-              </tr>
-            </thead>
-            <tbody>
-              {s.awaiting.map((a) => (
-                <WaitingRow key={a.proposal_id} a={a} open={open === a.proposal_id}
-                  record={s.customers.find((c) => c.customer_id === a.customer_id)}
-                  onToggle={() => setOpen(open === a.proposal_id ? null : a.proposal_id)}
-                  onViewQuote={onViewQuote} onRecord={onRecord} onUndo={onUndo} />
-              ))}
-            </tbody>
-          </table>
-        ) : <p className="text-sm text-ink-dim">Nothing waiting. Approve a reprice or a call in Decide and it shows up here.</p>}
-      </section>
-
-      <div className="grid gap-6 xl:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)]">
-        <section className="rounded-sm border border-rule bg-sheet px-5 py-4">
-          <h3 className="font-label text-lg font-semibold text-ink-bright">By customer</h3>
-          <p className="mb-3 text-xs text-ink-dim">All responses, history included: this is the record each decision card shows.</p>
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="text-left">
-                <th className={head}>Customer</th>
-                <th className={`${head} text-right`}>Increases</th>
-                <th className={`${head} text-right`} title="accepted / negotiated / lost">Acc · Neg · Lost</th>
-                <th className={`${head} text-right`}>Kept</th>
-                <th className={`${head} pl-4`}>Pattern</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-rule">
-              {s.customers.map((c) => (
-                <tr key={c.customer_id}>
-                  <td className="py-1.5 text-ink-bright">{c.customer_name}</td>
-                  <td className="py-1.5 text-right font-label text-ink">{c.requests}</td>
-                  <td className="py-1.5 text-right font-label text-ink">
-                    <span className="text-go">{c.accepted}</span> · <span className="text-attn">{c.negotiated}</span> · <span className="text-stop">{c.lost}</span>
-                  </td>
-                  <td className="py-1.5 text-right font-label text-ink">{c.kept != null ? pct(c.kept, 0) : '–'}</td>
-                  <td className={`py-1.5 pl-4 text-[13px] ${c.pattern.startsWith('has walked') ? 'text-stop' : c.pattern.includes('pushes') ? 'text-attn' : 'text-ink-dim'}`}>{c.pattern}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </section>
-
-        <section className="rounded-sm border border-rule bg-sheet px-5 py-4">
-          <h3 className="font-label text-lg font-semibold text-ink-bright">Responses</h3>
-          <p className="mb-3 text-xs text-ink-dim">Newest first. {scope === 'all' ? 'History rows are marked.' : ''}</p>
-          {recent.length ? (
-            <table className="w-full text-sm">
+      {s.awaiting.length ? (
+        <section className="flex flex-col gap-2">
+          <h3 className="text-lg font-semibold text-ink">Waiting for the customer</h3>
+          <p className="text-[13px] text-ink-dim">Approved reprices and calls with no response recorded. Click one to record it.</p>
+          <div className={`${panel} overflow-x-auto`}>
+            <table className="w-full min-w-[520px] border-collapse text-sm">
               <thead>
                 <tr className="text-left">
-                  <th className={head}>Date</th><th className={head}>Quote · customer</th><th className={head}>Response</th>
-                  <th className={`${head} text-right`}>Kept / lost</th>
+                  <th className={head}>Customer</th><th className={head}>Sent as</th>
+                  <th className={`${head} text-right`}>Increase asked</th><th className={head}>Approved</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-rule">
-                {recent.slice(0, 40).map((o) => (
-                  <tr key={o.id}>
-                    <td className="py-1.5 pr-3 font-label text-ink-dim">{shortDate(o.outcome_date)}</td>
-                    <td className="py-1.5 pr-3">
-                      <button type="button" className={link} onClick={() => onViewQuote(o.quote_id)}>{o.quote_id}</button>
-                      <span className="text-ink"> · {o.customer_name}</span>
-                      {o.source === 'history' ? <span className="ml-2 font-label text-[11px] uppercase tracking-wider text-ink-dim">history</span> : null}
-                    </td>
-                    <td className="py-1.5 pr-3"><OutcomeBadge o={o} /></td>
-                    <td className="py-1.5 text-right font-label">
-                      {o.outcome === 'lost'
-                        ? <span className="text-stop">{usd(o.lost_revenue_usd)}</span>
-                        : <span className="text-ink">{usd(o.recovered_usd)} <span className="text-ink-dim">of {usd(o.asked_usd)}</span></span>}
-                    </td>
+              <tbody>
+                {s.awaiting.map((a) => (
+                  <WaitingRow key={a.proposal_id} a={a} open={open === a.proposal_id}
+                    record={s.customers.find((c) => c.customer_id === a.customer_id)}
+                    onToggle={() => setOpen(open === a.proposal_id ? null : a.proposal_id)}
+                    onViewQuote={onViewQuote} onRecord={onRecord} onUndo={onUndo} />
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </section>
+      ) : null}
+
+      <div className="grid gap-6 xl:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)]">
+        <section className="flex min-w-0 flex-col gap-2">
+          <h3 className="text-lg font-semibold text-ink">By customer</h3>
+          <p className="text-[13px] text-ink-dim">Every response, history included: the record each decision card shows.</p>
+          <div className={`${panel} overflow-x-auto`}>
+            <table className="w-full min-w-[560px] border-collapse text-sm">
+              <thead>
+                <tr className="text-left">
+                  <th className={head}>Customer</th>
+                  <th className={`${head} text-right`}>Increases</th>
+                  <th className={`${head} text-right`}>Accepted</th>
+                  <th className={`${head} text-right`}>Negotiated</th>
+                  <th className={`${head} text-right`}>Walked</th>
+                  <th className={`${head} text-right`}>Kept</th>
+                  <th className={head}>Pattern</th>
+                </tr>
+              </thead>
+              <tbody>
+                {s.customers.map((c) => (
+                  <tr key={c.customer_id}>
+                    <td className={`${cell} text-ink`}>{c.customer_name}</td>
+                    <td className={`${cell} text-right`}>{c.requests}</td>
+                    <td className={`${cell} text-right`}>{c.accepted}</td>
+                    <td className={`${cell} text-right`}>{c.negotiated}</td>
+                    <td className={`${cell} text-right ${c.lost ? 'text-stop' : ''}`}>{c.lost}</td>
+                    <td className={`${cell} text-right`}>{c.kept != null ? pct(c.kept, 0) : '–'}</td>
+                    <td className={`${cell} text-[13px] ${patternTone(c.pattern)}`}>{c.pattern.charAt(0).toUpperCase() + c.pattern.slice(1)}</td>
                   </tr>
                 ))}
               </tbody>
             </table>
+          </div>
+        </section>
+
+        <section className="flex min-w-0 flex-col gap-2">
+          <h3 className="text-lg font-semibold text-ink">Responses</h3>
+          <p className="text-[13px] text-ink-dim">Newest first.{mixed ? ' Responses from before Margin Guard are marked.' : ''}</p>
+          {recent.length ? (
+            <div className={`${panel} overflow-x-auto`}>
+              <table className="w-full min-w-[420px] border-collapse text-sm">
+                <thead>
+                  <tr className="text-left">
+                    <th className={head}>Date</th><th className={head}>Customer</th><th className={head}>Response</th>
+                    <th className={`${head} text-right`}>Kept</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {recent.slice(0, 40).map((o) => (
+                    <tr key={o.id}>
+                      <td className={`${cell} whitespace-nowrap text-ink-dim`}>{shortDate(o.outcome_date)}</td>
+                      <td className={cell}>
+                        <div className="text-ink">{o.customer_name}</div>
+                        <button type="button" className={link} onClick={() => onViewQuote(o.quote_id)}>{o.quote_id}</button>
+                        {mixed && o.source === 'history' ? <span className="ml-2 text-[13px] text-ink-dim">before Margin Guard</span> : null}
+                      </td>
+                      <td className={cell}><OutcomeBadge o={o} /></td>
+                      <td className={`${cell} text-right`}>
+                        {o.outcome === 'lost'
+                          ? <span className="text-stop">{usd(o.lost_revenue_usd)} lost</span>
+                          : <>{usd(o.recovered_usd)} <span className="text-ink-dim">of {usd(o.asked_usd)}</span></>}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           ) : <p className="text-sm text-ink-dim">None yet.</p>}
         </section>
       </div>
@@ -299,20 +319,19 @@ function WaitingRow({ a, open, record, onToggle, onViewQuote, onRecord, onUndo }
 }) {
   return (
     <>
-      <tr className="cursor-pointer border-t border-rule hover:bg-sheet-2" onClick={onToggle}>
-        <td className="py-2 pr-3 font-label text-ink-bright">{a.quote_id}</td>
-        <td className="py-2 pr-3 text-ink">{a.customer_name}</td>
-        <td className="py-2 pr-3 text-ink-dim">{a.channel === 'call' ? 'Call' : 'Email'}</td>
-        <td className="py-2 text-right font-label text-ink-bright">{usd(a.asked_usd, 2)}</td>
-        <td className="py-2 pl-4 font-label text-ink-dim">{a.reviewed_at ? shortDate(a.reviewed_at) : ''}</td>
+      <tr className={`cursor-pointer ${open ? 'bg-sheet-2' : 'hover:bg-sheet-2/50'}`} onClick={onToggle}>
+        <td className={cell}><div className="text-ink">{a.customer_name}</div><div className="text-[13px] text-ink-dim">{a.quote_id}</div></td>
+        <td className={`${cell} text-ink-dim`}>{a.channel === 'call' ? 'Call' : 'Email'}</td>
+        <td className={`${cell} text-right`}>{usd(a.asked_usd, 2)}</td>
+        <td className={`${cell} text-ink-dim`}>{a.reviewed_at ? shortDate(a.reviewed_at) : ''}</td>
       </tr>
       {open ? (
         <tr>
-          <td colSpan={5} className="space-y-2 pb-3">
+          <td colSpan={4} className="space-y-2 border-b border-rule-soft bg-ground/40 px-4 pb-3 pt-2">
             <CustomerRecordLine r={record} name={a.customer_name} />
             <OutcomeControl proposalId={a.proposal_id} asked={a.asked_usd} quoteId={a.quote_id} channel={a.channel}
               outcome={null} onRecord={onRecord} onUndo={onUndo} />
-            <button type="button" className={link} onClick={() => onViewQuote(a.quote_id)}>View {a.quote_id} in Data</button>
+            <button type="button" className={link} onClick={() => onViewQuote(a.quote_id)}>Open {a.quote_id} in shop data</button>
           </td>
         </tr>
       ) : null}

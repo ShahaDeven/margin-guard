@@ -8,7 +8,7 @@ web
 
 ## Users
 
-Two primary users, served equally by two distinct surfaces:
+Two primary users, with one primary user per screen: Home is the owner's, To decide is the estimator's, and each report and setup page has a single task.
 
 - **Estimators** at a custom manufacturing job shop. They work the approval queue daily: read each card, check the numbers, approve, edit or reject a recommended action, and send the customer communication. They read sentences, not telemetry.
 - **Owners / general managers** of the same shop. They care about margin, not individual cards: how much is exposed right now, how many quotes are below the margin floor, and how much margin has leaked historically because costs moved after quoting.
@@ -29,7 +29,7 @@ The LLM reads; code does every number. Claude extracts what an email says and ma
 
 - Market: custom manufacturing job shops that quote from a BOM. Rubber molding is the demo dataset, not the whole market.
 - Workflow: supplier email → extraction → normalization (catalog match, units, sanity checks) → append-only event log → impact → rules-first decision, Claude for judgment calls → approval queue → outbox / call task → outcome.
-- Console lanes today: Needs your decision, Settled by rules, Done (with undo), Data, Supplier inbox with a live activity feed.
+- Console lanes today: Home (the owner's landing page); Queue: To decide, Settled by rules, Done (with undo); Before you quote: Quote check; Reports: Leakage (orders still to buy, already leaked), Outcomes; Setup: Supplier inbox, Imports, Shop data. Demo controls (test supplier email, agent activity) live in a drawer behind "Open demo controls".
 - Doubtful inputs (ambiguous material, >30% move, missing date, low confidence) go to a person as a one-click question rather than being guessed.
 
 ## Capabilities and Constraints
@@ -37,15 +37,16 @@ The LLM reads; code does every number. Claude extracts what an email says and ma
 - Stack: FastAPI-style Python backend (`margin_guard/`), SQLite, LangGraph coordinator; React 19 + Vite + Tailwind 4 console (`frontend/`).
 - A person approves everything; nothing is approved automatically. Every decision can be undone.
 - Exposure is replacement-cost exposure (material bought when the order is placed); inventory-aware costing is out of scope.
-- Built (2026-11): supplier-specific costing, Decimal money with cents and currency, restatement when changes arrive out of date order, CSV import, the margin-leakage report with line-level traces and price-lock split, PDF/Excel/CSV price-list attachments, invoice price drift, the quote check, and the owner-facing Leakage view.
-- Still open: outcome tracking (what customers did after a reprice), won-but-unshipped orders in exposure, OCR for scanned files.
+- Built (2026-11): supplier-specific costing, Decimal money with cents and currency, restatement when changes arrive out of date order, CSV import, the margin-leakage report with line-level traces and price-lock split, PDF/Excel/CSV price-list attachments, invoice price drift, the quote check, the owner-facing Leakage view, the console invoice import, customer outcomes after a reprice, and the won-order backlog (won orders whose material isn't bought yet).
+- Still open: OCR for scanned price sheets, shop-data onboarding through the console (the nine CSVs are command line only).
 - Out of scope for the proof: Gmail/Outlook OAuth, ERP connectors, multi-tenant/RBAC.
-- Terminology: quote, quote line, BOM, margin floor, exposure / dollars at risk, honor / absorb / reprice / contact customer, card, superseded, costing vendor.
+- Terminology: quote, quote line, BOM, margin floor, exposure / dollars at risk, honor / absorb / reprice / contact customer, decision ("card" in code), superseded, costing vendor.
 
 ## Brand Commitments
 
 - Name: **Margin Guard**.
-- Voice: plain English for estimators; margin moves stated in words ("0.7 pts below the 27.7% floor"); honest about limits.
+- Voice: plain English for estimators; margin moves stated in words ("1.1 points under its floor"); cost moves as "EPDM 70, $2.10 → $2.27/lb, Nov 1"; plain names, never internal ids; honest about limits.
+- Visual system: [DESIGN.md](DESIGN.md), from the brief in [docs/redesign/REDESIGN.md](docs/redesign/REDESIGN.md).
 
 ## Evidence on Hand
 

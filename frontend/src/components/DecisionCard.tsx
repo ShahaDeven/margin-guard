@@ -1,10 +1,10 @@
 import { useState, type ReactNode } from 'react'
 
-import { ACTION_TEXT, CHOOSABLE, materialLabel, pct, shortDate, signedPct, usd } from '../lib/format'
+import { ACTION_TEXT, CHOOSABLE, materialLabel, shortDate, signedPct, usd } from '../lib/format'
 import type { Action, Proposal, QuoteFacts } from '../lib/types'
 import { whatIf } from '../lib/whatif'
 import { Button } from './Button'
-import { MarginBar } from './MarginBar'
+import { FIGURE, MarginBar } from './MarginBar'
 import { CustomerRecordLine } from './Outcomes'
 import { Contact, LinesTable } from './QuoteParts'
 
@@ -34,10 +34,8 @@ function whatHappened(f: QuoteFacts, shown: { margin_after: number; margin_floor
   const ups = (f.cost_changes ?? []).filter((c) => c.pct_change > 0).length || 1
   const materials = `${COUNT[ups] ?? ups} material${ups === 1 ? '' : 's'} on this quote went up.`
   const gap = shown.margin_after - shown.margin_floor
-  const where = gap < 0
-    ? `which is ${pts(gap)} under this quote's ${pct(shown.margin_floor)} floor.`
-    : `still ${pts(gap)} above this quote's ${pct(shown.margin_floor)} floor.`
-  return `${materials} At the new costs the margin is ${pct(shown.margin_after)}, ${where}`
+  const where = gap < 0 ? `${pts(gap)} under its floor` : `still ${pts(gap)} above its floor`
+  return `${materials} At the new costs it sits ${where}.`
 }
 
 /** The detail panel for one quote Claude made a judgment call on: what happened, the three
@@ -90,22 +88,24 @@ export function QuoteDetail({ p, bar, k = 1, onReview, onViewQuote }: {
         <p className="text-[13px] text-attn">These numbers show the increases at {k} times. Approving always uses the real numbers.</p>
       ) : null}
 
-      <dl className="grid grid-cols-3 gap-3">
-        <div><dt className="text-[13px] text-ink-dim">Quoted</dt><dd className="text-xl font-semibold text-ink">{pct(shown.margin_before)}</dd></div>
-        <div><dt className="text-[13px] text-ink-dim">Now</dt><dd className={`text-xl font-semibold ${below ? 'text-stop' : 'text-ink'}`}>{pct(shown.margin_after)}</dd></div>
-        <div><dt className="text-[13px] text-ink-dim">At risk</dt><dd className="text-xl font-semibold text-ink">{usd(shown.exposure_usd)}</dd></div>
-      </dl>
+      <div className="flex items-center gap-6">
+        <div className="min-w-0 flex-1">
+          <MarginBar before={shown.margin_before} after={shown.margin_after} floor={shown.margin_floor} />
+        </div>
+        <div className="shrink-0 text-right">
+          <div className="text-[13px] text-ink-dim">At risk</div>
+          <div className={`${FIGURE} text-[28px] leading-tight ${below ? 'text-stop' : 'text-ink'}`}>{usd(shown.exposure_usd)}</div>
+        </div>
+      </div>
 
       <ul className="flex flex-col gap-1.5 rounded-sm bg-ground px-3.5 py-3">
         {changes.map((c) => (
-          <li key={c.material_id} className="flex justify-between gap-3">
-            <span>{materialLabel(c.material_id)}</span>
-            <span className="text-right">
-              {c.cost_when_quoted != null && c.cost_after != null
-                ? `$${c.cost_when_quoted.toFixed(2)} to $${c.cost_after.toFixed(2)}/lb`
-                : signedPct(c.pct_change)}
-              {c.effective_date ? `, ${shortDate(c.effective_date)}` : ''}
-            </span>
+          <li key={c.material_id}>
+            {materialLabel(c.material_id)},{' '}
+            {c.cost_when_quoted != null && c.cost_after != null
+              ? `$${c.cost_when_quoted.toFixed(2)} → $${c.cost_after.toFixed(2)}/lb`
+              : signedPct(c.pct_change)}
+            {c.effective_date ? `, ${shortDate(c.effective_date)}` : ''}
           </li>
         ))}
       </ul>
@@ -182,7 +182,6 @@ export function QuoteDetail({ p, bar, k = 1, onReview, onViewQuote }: {
           ) : null}
         </Section>
         <Section title="Line-by-line prices">
-          <MarginBar before={shown.margin_before} after={shown.margin_after} floor={shown.margin_floor} />
           <LinesTable f={f} />
           <button type="button" onClick={() => onViewQuote(f.quote_id)} className="text-[13px] text-go hover:text-go-soft">
             Open {f.quote_id} in shop data

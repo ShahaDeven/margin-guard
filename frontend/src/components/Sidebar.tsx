@@ -25,7 +25,7 @@ function Jump({ m, onShowCards }: { m: Email; onShowCards: (emailId: string, lan
   const link = 'text-[13px] font-medium underline-offset-2 hover:underline'
   if (m.outcome === 'needs_review' && m.review_status === 'pending') {
     return (
-      <button type="button" onClick={() => onShowCards(m.id, 'decide')} className={`${link} text-attn`}>Answer it</button>
+      <button type="button" onClick={() => onShowCards(m.id, 'decide')} className={`${link} text-go`}>Answer it</button>
     )
   }
   if (!m.quotes_checked) return null
@@ -37,32 +37,32 @@ function Jump({ m, onShowCards }: { m: Email; onShowCards: (emailId: string, lan
         </button>
       ) : null}
       {m.rule_pending ? (
-        <button type="button" onClick={() => onShowCards(m.id, 'rules')} className={`${link} text-ink-dim`}>
+        <button type="button" onClick={() => onShowCards(m.id, 'rules')} className={`${link} text-go`}>
           {m.rule_pending} settled by rules
         </button>
       ) : null}
       {!m.needs_you && !m.rule_pending ? (
-        <button type="button" onClick={() => onShowCards(m.id, 'done')} className={`${link} text-ink-dim`}>All done</button>
+        <button type="button" onClick={() => onShowCards(m.id, 'done')} className={`${link} text-go`}>All done</button>
       ) : null}
     </div>
   )
 }
 
 const OUTCOME: Record<string, { label: string; tone: string }> = {
-  detected: { label: 'Price change', tone: 'text-go' },
+  detected: { label: 'Price change', tone: 'text-ink-dim' },
   duplicate: { label: 'Already on file', tone: 'text-ink-dim' },
   needs_review: { label: 'Needs a look', tone: 'text-attn' },
   ignored: { label: 'Not a price change', tone: 'text-ink-dim' },
-  error: { label: 'Could not read', tone: 'text-stop' },
+  error: { label: 'Could not read', tone: 'text-attn' },
 }
 
 /** The label reflects where the email stands now, not only how it was first read. */
 function statusOf(m: Email): { label: string; tone: string } {
   // A failed read leaves no verdict, only status = 'error' (e.g. no API key).
   if (m.status === 'error') return OUTCOME.error
-  if (m.outcome === 'needs_review' && m.review_status === 'approved') return { label: 'Resolved', tone: 'text-go' }
+  if (m.outcome === 'needs_review' && m.review_status === 'approved') return { label: 'Resolved', tone: 'text-ink-dim' }
   if (m.outcome === 'needs_review' && m.review_status === 'rejected') return { label: 'Dismissed', tone: 'text-ink-dim' }
-  if (m.outcome === 'detected' && !m.quotes_checked && m.alt_supplier_notes.length) return { label: 'Alternate supplier', tone: 'text-ink' }
+  if (m.outcome === 'detected' && !m.quotes_checked && m.alt_supplier_notes.length) return { label: 'Alternate supplier', tone: 'text-ink-dim' }
   return OUTCOME[m.outcome ?? ''] ?? { label: m.status === 'new' ? 'Reading…' : m.status, tone: 'text-ink-dim' }
 }
 
@@ -111,7 +111,7 @@ export function InboxLane({ inbox, onShowCards }: {
 const FEED_TONE: Record<FeedItem['tone'], string> = {
   info: 'text-ink',
   claude: 'text-ink',
-  good: 'text-go',
+  good: 'text-ink',
   attention: 'text-attn',
   fault: 'text-stop',
 }
