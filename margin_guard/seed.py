@@ -10,6 +10,7 @@ import argparse
 import json
 import random
 from datetime import date, timedelta
+from decimal import ROUND_HALF_UP, Decimal
 from pathlib import Path
 
 from . import attachments, db
@@ -293,6 +294,55 @@ def _insert_quote(conn, rng, quote_id, customer_id, status, issued, valid_days, 
         )
 
 
+def _material_buy_dates(conn, rng_seed: int) -> None:
+    """Recent won orders whose material is bought when the job is scheduled, after today:
+    the backlog that absorbs any increase landing before then. Older orders keep the
+    default (bought on the order date), so leakage is unchanged. Its own generator."""
+    brng = random.Random(f"{rng_seed}:buy")
+    since = (AS_OF - timedelta(days=75)).isoformat()
+    for q in conn.execute("SELECT id, ordered_date FROM quotes WHERE status = 'won' AND ordered_date >= ?"
+                          " ORDER BY id", (since,)).fetchall():
+        buy = date.fromisoformat(q["ordered_date"]) + timedelta(days=brng.randint(30, 90))
+        if buy > AS_OF:
+            conn.execute("UPDATE quotes SET material_buy_date = ? WHERE id = ?", (buy.isoformat(), q["id"]))
+
+
+def _outcome_history(conn, rng_seed: int) -> None:
+    """How customers took price increases before Margin Guard: some closed quotes had an
+    increase asked for while open. Each customer has its own temperament, so the record on
+    a decision card says something. Its own generator, so nothing else in the shop moves."""
+    orng = random.Random(f"{rng_seed}:outcomes")
+    temperament = {c[0]: orng.uniform(0.1, 0.75) for c in CUSTOMERS}      # chance of pushing back
+    closed = conn.execute(
+        """SELECT q.id, q.customer_id, q.status, q.issued_date, q.valid_until, q.ordered_date,
+                  SUM(l.unit_price * l.qty) AS value
+           FROM quotes q JOIN quote_lines l ON l.quote_id = q.id
+           WHERE q.status IN ('won', 'lost') GROUP BY q.id ORDER BY q.id""").fetchall()
+    for q in closed:
+        if orng.random() >= 0.4:
+            continue                                            # no increase was asked on this quote
+        value = Decimal(repr(q["value"]))
+        ask = (value * Decimal(repr(orng.uniform(0.02, 0.07)))).quantize(Decimal("0.01"), ROUND_HALF_UP)
+        pushes = orng.random() < temperament[q["customer_id"]]
+        if q["status"] == "won":
+            outcome = "negotiated" if pushes else "accepted"
+            recovered = (ask * Decimal(repr(orng.uniform(0.35, 0.8)))).quantize(Decimal("0.01"), ROUND_HALF_UP)                 if pushes else ask
+            lost_revenue = Decimal(0)
+            last = date.fromisoformat(q["ordered_date"])
+        else:
+            if not pushes:
+                continue                                        # lost for reasons that weren't the increase
+            outcome, recovered, lost_revenue = "lost", Decimal(0), value.quantize(Decimal("0.01"), ROUND_HALF_UP)
+            last = min(date.fromisoformat(q["valid_until"]), AS_OF - timedelta(days=1))
+        first = date.fromisoformat(q["issued_date"])
+        on = first + timedelta(days=orng.randint(0, max(0, (last - first).days)))
+        conn.execute(
+            """INSERT INTO quote_outcomes (quote_id, customer_id, channel, outcome, asked_usd, recovered_usd,
+               lost_revenue_usd, outcome_date, source) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'history')""",
+            (q["id"], q["customer_id"], orng.choice(["email", "email", "call"]), outcome, ask, recovered,
+             lost_revenue, on.isoformat()))
+
+
 def build(conn, emails_path: Path = EMAILS_PATH, rng_seed: int = RNG_SEED) -> None:
     """`rng_seed` other than the default builds a different shop (same catalog,
     customers and inbox; different open quotes), e.g. for extra review sessions."""
@@ -372,6 +422,9 @@ def build(conn, emails_path: Path = EMAILS_PATH, rng_seed: int = RNG_SEED) -> No
         _insert_quote(conn, rng, f"Q-2026-{seq:04d}", rng.choice(customer_ids), status, issued, valid_days, costs,
                       ordered)
         seq += 1
+
+    _outcome_history(conn, rng_seed)
+    _material_buy_dates(conn, rng_seed)
 
     emails = json.loads(Path(emails_path).read_text(encoding="utf-8"))
     for e in emails:

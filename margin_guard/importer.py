@@ -178,7 +178,8 @@ TABLES = [
           ("id", "name"), key=("id",)),
     Table("quotes.csv", "quotes",
           {"id": text, "customer_id": text, "status": one_of("open", "won", "lost", "expired"),
-           "issued_date": iso_date, "valid_until": iso_date, "margin_floor": fraction, "ordered_date": optional_date},
+           "issued_date": iso_date, "valid_until": iso_date, "margin_floor": fraction, "ordered_date": optional_date,
+           "material_buy_date": optional_date},
           ("id", "customer_id", "status", "issued_date", "valid_until", "margin_floor"), key=("id",),
           refs={"customer_id": "customers.csv"}),
     Table("quote_lines.csv", "quote_lines",
@@ -280,6 +281,10 @@ def validate(folder: Path) -> tuple[dict[str, list[dict]], list[str]]:
             problems.append(f"quotes.csv row {r['_row']}: ordered_date is only for won quotes")
         if r["ordered_date"] and r["ordered_date"] < r["issued_date"]:
             problems.append(f"quotes.csv row {r['_row']}: ordered_date is before issued_date")
+        if r.get("material_buy_date") and r["status"] != "won":
+            problems.append(f"quotes.csv row {r['_row']}: material_buy_date is only for won quotes")
+        if r.get("material_buy_date") and r["ordered_date"] and r["material_buy_date"] < r["ordered_date"]:
+            problems.append(f"quotes.csv row {r['_row']}: material_buy_date is before ordered_date")
     quotes_with_lines = {r["quote_id"] for r in data["quote_lines.csv"]}
     for r in data["quotes.csv"]:
         if r["id"] not in quotes_with_lines:
@@ -356,8 +361,8 @@ EXPORTS = {
     "bom.csv": "SELECT part_id, material_id, lb_per_unit, scrap_rate FROM part_materials ORDER BY part_id, material_id",
     "customers.csv": ("SELECT id, name, tier, price_lock_until, contract_note, buyer_name, buyer_phone, buyer_email,"
                       " account_manager, account_manager_phone FROM customers ORDER BY id"),
-    "quotes.csv": ("SELECT id, customer_id, status, issued_date, valid_until, margin_floor, ordered_date"
-                   " FROM quotes ORDER BY id"),
+    "quotes.csv": ("SELECT id, customer_id, status, issued_date, valid_until, margin_floor, ordered_date,"
+                   " material_buy_date FROM quotes ORDER BY id"),
     "quote_lines.csv": ("SELECT quote_id, part_id, qty, unit_price, material_cost_basis, conversion_cost"
                         " FROM quote_lines ORDER BY quote_id, id"),
 }

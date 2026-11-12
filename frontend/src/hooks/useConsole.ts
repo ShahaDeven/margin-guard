@@ -56,7 +56,7 @@ function describe(kind: string, d: Msg): Omit<FeedItem, 'id' | 'at'> | null {
   }
 }
 
-const LANES: Lane[] = ['decide', 'rules', 'done', 'quote', 'leakage', 'data']
+const LANES: Lane[] = ['decide', 'rules', 'done', 'outcomes', 'quote', 'leakage', 'imports', 'data']
 const laneFromHash = (): Lane | null => {
   const h = window.location.hash.replace('#', '') as Lane
   return LANES.includes(h) ? h : null
@@ -103,7 +103,7 @@ export function useConsole() {
   const refresh = useCallback(async () => {
     try {
       const current = laneRef.current
-      const queueLane = current === 'data' || current === 'leakage' || current === 'quote' ? null : current
+      const queueLane = current === 'decide' || current === 'rules' || current === 'done' ? current : null
       const [ov, queue, mail, out, leak] = await Promise.all([
         api.overview(),
         queueLane ? api.queue(queueLane, filterRef.current) : Promise.resolve([] as Proposal[]),
@@ -162,7 +162,7 @@ export function useConsole() {
   useEffect(() => {
     const es = new EventSource('/api/stream')
     const kinds = ['hello', 'email.received', 'email.reading', 'email.processed', 'event.started', 'decision.started',
-      'event.processed', 'proposal.reviewed', 'rules.confirmed', 'job.started', 'job.finished', 'job.failed']
+      'event.processed', 'proposal.reviewed', 'rules.confirmed', 'outcome.recorded', 'backlog.changed', 'job.started', 'job.finished', 'job.failed']
     const handler = (ev: MessageEvent) => {
       const data = JSON.parse(ev.data) as Msg
       if (ev.type === 'job.started') setBusy(true)

@@ -106,6 +106,10 @@ export interface Proposal {
   final_body: string | null
   reviewer_note: string | null
   reviewed_at: string | null
+  /** Done lane: what the customer did after this decision went out. */
+  outcome?: Outcome | null
+  /** How this customer has taken price increases before (for people; the model never sees it). */
+  customer_record?: CustomerRecord | null
   event: {
     material_id: string | null
     effective_date: string | null
@@ -123,6 +127,8 @@ export interface Overview {
   needs_you_exposure: number
   rule_pending: number
   live_exposure: number
+  /** Approved reprices and calls with no customer response recorded yet. */
+  awaiting_reply: number
   done: number
   outbox: number
   /** Report only: judgment calls that clear the confidence bar the scenario eval found error-free. */
@@ -396,4 +402,168 @@ export interface QuoteCheck {
   pending_reviews: { proposal_id: number; email_id: string | null; kind: string | null; materials: string[]; reasons: string[] }[]
   suggestions: { kind: 'shorten' | 'reprice' | 'clause'; text: string; valid_days?: number; valid_until?: string; value_usd?: number }[]
   verdict: 'clear' | 'margin_erodes' | 'below_floor_after_change' | 'below_floor_now'
+}
+
+export interface Vendor { id: string; name: string }
+
+export interface ImportField { key: string; label: string; required: boolean }
+
+export interface StagedImport {
+  import_id: number
+  filename: string
+  headers: string[]
+  row_count: number
+  sample: string[][]
+  mapping: Record<string, string | null>
+  fields: ImportField[]
+}
+
+export interface ImportSummary {
+  lines: number
+  at_price: number
+  above: number
+  below: number
+  already_on_file: number
+  overpaid_usd: number
+  not_judged: number
+  drifts: { vendor_name: string; material_id: string; status: string; overpaid_usd: number }[]
+  cards_new: number
+  cards_merged: number
+  remembered?: string[]
+}
+
+export interface ImportLine {
+  row: number
+  invoice_no: string
+  line_no: number
+  date: string
+  vendor_id: string
+  item: string
+  material_id: string | null
+  status: string
+  billed_cost_per_lb: number | null
+  expected_cost_per_lb: number | null
+  pct?: number
+  note: string | null
+}
+
+export interface ImportPreview {
+  stage: 'mapping' | 'suppliers' | 'errors' | 'ready'
+  problems: string[]
+  suppliers: { text: string; auto: string | null; vendor_id: string | null }[] | null
+  items: { key: string; vendor_id: string; item: string; auto: string | null; method: string; candidates: string[];
+           chosen: string | null; options: { id: string; name: string }[] }[] | null
+  summary?: ImportSummary
+  lines?: ImportLine[]
+}
+
+export interface ImportResult { summary: ImportSummary; lines: ImportLine[] }
+
+export interface ImportHistoryRow {
+  id: number
+  kind: string
+  filename: string
+  status: 'staged' | 'committed' | 'discarded'
+  row_count: number
+  summary: ImportSummary | null
+  created_at: string
+  committed_at: string | null
+}
+
+export type OutcomeKind = 'accepted' | 'negotiated' | 'lost'
+
+export interface Outcome {
+  id: number
+  proposal_id: number | null
+  quote_id: string
+  customer_id: string
+  customer_name?: string
+  channel: 'email' | 'call'
+  outcome: OutcomeKind
+  asked_usd: number
+  recovered_usd: number
+  lost_revenue_usd: number
+  outcome_date: string
+  note: string | null
+  price_changes: { line_id: number; before: number; after: number }[]
+  source: 'console' | 'history'
+}
+
+export interface OutcomeTally {
+  requests: number
+  accepted: number
+  negotiated: number
+  lost: number
+  asked_usd: number
+  asked_kept_jobs_usd: number
+  recovered_usd: number
+  lost_revenue_usd: number
+  /** Share of the increase customers agreed to, on the jobs they stayed on. */
+  kept: number | null
+}
+
+export interface CustomerRecord extends OutcomeTally {
+  pattern: string
+  last: { outcome: OutcomeKind; date: string; quote_id: string }
+}
+
+export interface AwaitingReply {
+  proposal_id: number
+  quote_id: string
+  customer_id: string
+  customer_name: string
+  channel: 'email' | 'call'
+  asked_usd: number
+  quote_value_usd: number
+  reviewed_at: string | null
+  quote_status: string
+}
+
+export interface OutcomesSummary {
+  as_of: string
+  all: OutcomeTally
+  console: OutcomeTally
+  history: OutcomeTally
+  awaiting: AwaitingReply[]
+  customers: (CustomerRecord & { customer_id: string; customer_name: string })[]
+  recent: Outcome[]
+}
+
+export type OutcomeBody = { outcome: OutcomeKind; recovered_usd?: string; on?: string; note?: string }
+
+export interface BacklogOrder {
+  quote_id: string
+  customer_id: string
+  customer_name: string
+  ordered_date: string
+  material_buy_date: string
+  material_bought_on: string | null
+  revenue_usd: number
+  margin_floor: number
+  margin_as_ordered: number
+  margin_at_buy: number
+  absorbing_usd: number
+  buy_now_saves_usd: number
+  saved_usd: number
+  buy_before: string | null
+  below_floor: boolean
+  changes: { material_id: string; effective_date: string; cost_as_ordered: number; cost_at_buy: number;
+             absorbing_usd: number; after_today: boolean }[]
+  lines: { line_id: number; part_name: string; material_id: string; lb: number; cost_as_ordered: number;
+           cost_at_buy: number; cost_today: number; absorbing_usd: number }[]
+}
+
+export interface Backlog {
+  as_of: string
+  assumption: string
+  orders: BacklogOrder[]
+  waiting: number
+  bought_early: number
+  revenue_usd: number
+  absorbing_usd: number
+  gaining_usd: number
+  orders_absorbing: number
+  buy_now_saves_usd: number
+  below_floor: number
+  saved_by_buying_early_usd: number
 }

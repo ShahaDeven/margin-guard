@@ -113,6 +113,8 @@ def reopen(conn: sqlite3.Connection, proposal_id: int) -> dict:
     if p["status"] not in ("approved", "edited", "rejected"):
         raise ActionError(f"proposal {proposal_id} is {p['status']}, nothing to undo")
 
+    if conn.execute("SELECT 1 FROM quote_outcomes WHERE proposal_id = ?", (proposal_id,)).fetchone():
+        raise ActionError("the customer's response is recorded on this decision; undo that first")
     revisions = conn.execute(
         "SELECT * FROM quote_revisions WHERE proposal_id = ? ORDER BY id DESC", (proposal_id,)).fetchall()
     for rev in revisions:

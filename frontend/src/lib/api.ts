@@ -1,5 +1,6 @@
 import type {
-  DataCustomer, DataMaterial, DataQuote, DemoEmail, Email, Leakage, Material, Part, QuoteCheck, OutboxItem, Overview, Proposal, QuoteDetail,
+  Backlog, DataCustomer, DataMaterial, DataQuote, DemoEmail, Email, ImportHistoryRow, ImportPreview, ImportResult, Leakage, Material, Part,
+  OutcomeBody, OutcomesSummary, QuoteCheck, StagedImport, Vendor, OutboxItem, Overview, Proposal, QuoteDetail,
 } from './types'
 
 async function call<T>(path: string, init?: RequestInit): Promise<T> {
@@ -19,9 +20,16 @@ async function call<T>(path: string, init?: RequestInit): Promise<T> {
   return res.json()
 }
 
+export type ImportPlan = {
+  mapping: Record<string, string | null>
+  suppliers: Record<string, string>
+  matches: Record<string, string>
+  remember: boolean
+}
+
 const post = <T>(path: string, body: unknown = {}) => call<T>(path, { method: 'POST', body: JSON.stringify(body) })
 
-export type Lane = 'decide' | 'rules' | 'done' | 'quote' | 'leakage' | 'data'
+export type Lane = 'decide' | 'rules' | 'done' | 'outcomes' | 'quote' | 'leakage' | 'imports' | 'data'
 
 export const api = {
   overview: () => call<Overview>('/api/overview'),
@@ -30,6 +38,12 @@ export const api = {
   inbox: () => call<Email[]>('/api/inbox'),
   materials: () => call<Material[]>('/api/materials'),
   outbox: () => call<OutboxItem[]>('/api/outbox'),
+  outcomes: () => call<OutcomesSummary>('/api/outcomes'),
+  backlog: () => call<Backlog>('/api/backlog'),
+  buyNow: (quoteId: string) => post<unknown>(`/api/backlog/${encodeURIComponent(quoteId)}/buy-now`),
+  undoBuy: (quoteId: string) => post<unknown>(`/api/backlog/${encodeURIComponent(quoteId)}/undo-buy`),
+  recordOutcome: (proposalId: number, body: OutcomeBody) => post<unknown>(`/api/proposals/${proposalId}/outcome`, body),
+  undoOutcome: (outcomeId: number) => post<unknown>(`/api/outcomes/${outcomeId}/undo`),
   demoEmails: () => call<DemoEmail[]>('/api/demo-emails'),
   dataQuotes: () => call<DataQuote[]>('/api/data/quotes'),
   dataQuote: (id: string) => call<QuoteDetail>(`/api/data/quotes/${encodeURIComponent(id)}`),
@@ -37,6 +51,13 @@ export const api = {
   dataMaterials: () => call<DataMaterial[]>('/api/data/materials'),
   leakage: () => call<Leakage>('/api/leakage'),
   parts: () => call<Part[]>('/api/parts'),
+  vendors: () => call<Vendor[]>('/api/vendors'),
+  importHistory: () => call<ImportHistoryRow[]>('/api/imports'),
+  demoImport: (name: string) => call<{ filename: string; text: string }>(`/api/imports/demo/${encodeURIComponent(name)}`),
+  stageInvoices: (filename: string, text: string) => post<StagedImport>('/api/imports/invoices', { filename, text }),
+  previewImport: (id: number, plan: ImportPlan) => post<ImportPreview>(`/api/imports/${id}/preview`, plan),
+  commitImport: (id: number, plan: ImportPlan) => post<ImportResult>(`/api/imports/${id}/commit`, plan),
+  discardImport: (id: number) => post<{ status: string }>(`/api/imports/${id}/discard`),
   quoteCheck: (body: { customer_id: string; valid_days: number; margin_floor: number; lines: { part_id: string; qty: number; unit_price: number }[] }) =>
     post<QuoteCheck>('/api/quote-check', body),
 

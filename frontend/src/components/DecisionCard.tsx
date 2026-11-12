@@ -5,6 +5,7 @@ import type { Action, Proposal, QuoteFacts } from '../lib/types'
 import { whatIf } from '../lib/whatif'
 import { Button } from './Button'
 import { MarginBar, type Scale } from './MarginBar'
+import { CustomerRecordLine } from './Outcomes'
 import { Contact, CostChanges, LinesTable } from './QuoteParts'
 
 /** The queue's shared columns: customer and action | moved cost | margin vs floor | at risk. */
@@ -144,6 +145,7 @@ export function DecisionCard({ p, fresh, bar, scale, focused, k = 1, onReview, o
               ))}
             </div>
             <Contact f={f} action={action} />
+            <CustomerRecordLine r={p.customer_record} name={f.customer_name} />
             {needsDraft ? (
               <>
                 <input

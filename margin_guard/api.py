@@ -19,7 +19,7 @@ from fastapi import FastAPI, HTTPException, Response
 from pydantic import BaseModel
 from sse_starlette.sse import EventSourceResponse
 
-from . import actions, attachments, catalog, coordinator, db, ingest, leakage, quotecheck
+from . import actions, attachments, backlog, catalog, coordinator, db, imports, ingest, leakage, outcomes, quotecheck
 from .config import AS_OF, DB_PATH, MODEL, ROOT
 
 DEMO_EMAILS_PATH = ROOT / "data" / "demo_emails.json"
@@ -144,6 +144,9 @@ def overview() -> dict:
                                  " WHERE status = 'pending' AND kind = 'quote_action'"),
             "done": one("SELECT COUNT(*) FROM proposals WHERE status IN ('approved', 'edited', 'rejected')"),
             "outbox": one("SELECT COUNT(*) FROM outbox"),
+            "awaiting_reply": one("SELECT COUNT(*) FROM proposals p LEFT JOIN quote_outcomes o ON o.proposal_id = p.id"
+                                  " WHERE p.kind = 'quote_action' AND p.status IN ('approved', 'edited')"
+                                  " AND p.final_action IN ('reprice', 'contact_customer') AND o.id IS NULL"),
             "autonomy": _autonomy(c),
             # Data problems that make costing fail closed (no costing supplier, or more than one).
             "data_problems": catalog.costing_problems(c),
@@ -187,8 +190,16 @@ def queue(lane: str = "decide", email: str | None = None) -> list[dict]:
         args = (email,)
     order = "p.reviewed_at DESC LIMIT 300" if lane == "done" else "p.kind DESC, p.exposure_usd DESC, p.id"
     with _conn_lock:
-        rows = conn().execute(f"{_PROPOSAL_SELECT} WHERE {where} ORDER BY {order}", args).fetchall()
-        return [_with_event(r) for r in rows]
+        c = conn()
+        rows = [_with_event(r) for r in c.execute(f"{_PROPOSAL_SELECT} WHERE {where} ORDER BY {order}", args)]
+        # What the customer did, and how they've taken increases before: for people, not the model.
+        done = outcomes.for_proposals(c, [r["id"] for r in rows]) if lane == "done" else {}
+        records = outcomes.customer_records(c)
+        for r in rows:
+            if r["kind"] == "quote_action":
+                r["outcome"] = done.get(r["id"])
+                r["customer_record"] = records.get(r["facts"].get("customer_id"))
+        return rows
 
 
 @app.get("/api/inbox")
@@ -277,6 +288,139 @@ def quote_check(b: QuoteCheckBody) -> dict:
                                     margin_floor=b.margin_floor, lines=[ln.model_dump() for ln in b.lines])
         except quotecheck.CheckError as exc:
             raise HTTPException(400, str(exc)) from exc
+
+
+class StageBody(BaseModel):
+    filename: str
+    text: str
+
+
+class ImportPlanBody(BaseModel):
+    mapping: dict[str, str | None]
+    suppliers: dict[str, str] = {}
+    matches: dict[str, str] = {}        # "vendor_id|item" -> material id, or "" for "not an item we stock"
+    remember: bool = False
+
+
+DEMO_IMPORTS = {"invoices_ap_export.csv", "invoices_demo.csv"}
+
+
+def _imp(fn, *args, **kwargs):
+    with _conn_lock:
+        try:
+            return fn(conn(), *args, **kwargs)
+        except imports.ImportError_ as exc:
+            raise HTTPException(400, str(exc)) from exc
+
+
+@app.get("/api/imports")
+def import_history() -> list[dict]:
+    return _imp(imports.history)
+
+
+@app.get("/api/imports/demo/{name}")
+def demo_import_file(name: str) -> dict:
+    """Sample files for trying the import without one of your own."""
+    if name not in DEMO_IMPORTS:
+        raise HTTPException(404, f"no demo file {name!r}")
+    return {"filename": name, "text": (ROOT / "data" / name).read_text(encoding="utf-8")}
+
+
+@app.get("/api/vendors")
+def vendors() -> list[dict]:
+    with _conn_lock:
+        return [dict(r) for r in conn().execute("SELECT id, name FROM vendors ORDER BY name")]
+
+
+@app.post("/api/imports/invoices")
+def stage_invoices(b: StageBody) -> dict:
+    """Store an uploaded invoice export as-is and suggest a column for each field. Writes nothing else."""
+    return _imp(imports.stage, b.filename, b.text)
+
+
+@app.post("/api/imports/{import_id}/preview")
+def preview_import(import_id: int, b: ImportPlanBody) -> dict:
+    """Validate, match and dry-run the import; nothing is kept."""
+    return _imp(imports.preview, import_id, b.mapping, b.suppliers, b.matches)
+
+
+@app.post("/api/imports/{import_id}/commit")
+def commit_import(import_id: int, b: ImportPlanBody) -> dict:
+    """Write the import in one transaction, then put any drift cards in front of a person."""
+    _require_idle()
+    result = _imp(imports.commit, import_id, b.mapping, b.suppliers, b.matches, b.remember)
+    bus.publish("import.committed", {"import_id": import_id})
+    _run_job(f"import {import_id}", _coordinate)
+    return result
+
+
+@app.post("/api/imports/{import_id}/discard")
+def discard_import(import_id: int) -> dict:
+    _imp(imports.discard, import_id)
+    return {"import_id": import_id, "status": "discarded"}
+
+
+class OutcomeBody(BaseModel):
+    outcome: str
+    recovered_usd: str | float | None = None
+    on: str | None = None
+    note: str | None = None
+
+
+def _out(fn, *args, **kwargs):
+    with _conn_lock:
+        try:
+            return fn(conn(), *args, **kwargs)
+        except outcomes.OutcomeError as exc:
+            raise HTTPException(400, str(exc)) from exc
+
+
+@app.get("/api/outcomes")
+def outcomes_summary() -> dict:
+    """What customers did after increases went out: recovered of asked, lost, waiting, by customer."""
+    return _out(outcomes.summary)
+
+
+@app.post("/api/proposals/{proposal_id}/outcome")
+def record_outcome(proposal_id: int, b: OutcomeBody) -> dict:
+    result = _out(outcomes.record, proposal_id, b.outcome, recovered_usd=b.recovered_usd, on=b.on, note=b.note)
+    bus.publish("outcome.recorded", {"proposal_id": proposal_id, "outcome": b.outcome})
+    return result
+
+
+@app.post("/api/outcomes/{outcome_id}/undo")
+def undo_outcome(outcome_id: int) -> dict:
+    _out(outcomes.undo, outcome_id)
+    bus.publish("outcome.recorded", {"outcome_id": outcome_id, "outcome": None})
+    return {"outcome_id": outcome_id, "undone": True}
+
+
+def _bl(fn, *args):
+    with _conn_lock:
+        try:
+            return fn(conn(), *args)
+        except backlog.BacklogError as exc:
+            raise HTTPException(400, str(exc)) from exc
+
+
+@app.get("/api/backlog")
+def backlog_report() -> dict:
+    """Won orders whose material isn't bought yet: increases they'll absorb, what buying now saves."""
+    return _bl(backlog.analyze)
+
+
+@app.post("/api/backlog/{quote_id}/buy-now")
+def backlog_buy_now(quote_id: str) -> dict:
+    result = _bl(backlog.buy_now, quote_id)
+    bus.publish("backlog.changed", result)
+    return result
+
+
+@app.post("/api/backlog/{quote_id}/undo-buy")
+def backlog_undo_buy(quote_id: str) -> dict:
+    result = _bl(backlog.undo_buy, quote_id)
+    bus.publish("backlog.changed", result)
+    return result
 
 
 @app.get("/api/leakage")

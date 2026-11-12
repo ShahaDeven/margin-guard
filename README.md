@@ -35,10 +35,6 @@ python -m margin_guard.seed --reset
 python -m margin_guard.ingest --replay evals/results/extractions.json
 python -m margin_guard.coordinator --replay evals/results/decisions.json
 
-# Optional: check the demo invoice export; two drift cards join the queue.
-python -m margin_guard.invoices check data/invoices_demo.csv
-python -m margin_guard.coordinator
-
 # The console
 uvicorn margin_guard.api:app --port 8000
 cd frontend && npm install && npm run dev      # second terminal: http://localhost:5174
@@ -57,10 +53,24 @@ stop uvicorn, rebuild, start it again. Run the tests with `python -m pytest` (no
    agents check every open quote that uses it.
 3. **Quote check.** A 60-day quote for 2,500 HVAC duct boots at 30% margin. An increase on Nov 1
    lands inside it. Click **Use 16 days**, and the check comes back clear.
-4. **Leakage.** $6,151 already leaked on won jobs. Click **1018 cold-rolled steel**, then **Trace**
-   on a job: every line, the cost at quote and at order, and the price-history row behind each.
-5. **Invoice drift** (if you ran the optional step). Ridgeline billed carbon black at $1.14/lb
-   against $1.09 on file, with no price notice. **Apply** it as a price change, or **Dismiss** it.
+4. **Leakage.** At the top: 13 won orders whose material isn't bought yet will absorb $1,682 of
+   increases. Their prices are fixed, so nothing can be revised. Open **Q-2026-0351** (Prairie Ag):
+   the Nov 15 SBR 60 increase costs it $989, and **Buy now · save $1,059** records buying its
+   material before the increases land (undo is next to it). Below: $6,151 already leaked on won
+   jobs. Click **1018 cold-rolled steel**, then **Trace** on a job: every line, the cost at quote
+   and at order, and the price-history row behind each.
+5. **Imports.** Click **AP export (needs matching)**: a messy accounts-payable file with its own
+   column names, US dates and "LBS"/"CWT"/"TON" units. The columns are matched for you. Match "GLE"
+   to Great Lakes Elastomers and "EPM70 BLK" to EPDM 70, and mark Freight as not an item you stock.
+   The check shows what an import would do (4 lines at price, 3 billed above, $495.93 overpaid)
+   before anything is written. Press **Import**, then open the new cards in Decide: Ridgeline
+   billed carbon black at $1.14/lb against $1.09 on file, with no price notice. **Apply** it as a
+   price change, or **Dismiss** it.
+6. **Outcomes.** Approve a **Revise quote** card in Decide (each card now shows that customer's
+   record: "2 past increases: 1 accepted, 1 lost the job · has walked over increases"). In
+   **Done**, open it and record what the customer said: **Accepted**, **Negotiated** (type the
+   dollars they agreed to) or **Lost the job**. **Outcomes** shows recovered against asked, the
+   revenue walked away, and every customer's record.
 
 With an `ANTHROPIC_API_KEY` in `.env`, **Send test email** in the inbox reads a new email live
 (about a cent; D4 is a PDF price letter). Without a key it fails gracefully: the email shows
@@ -189,8 +199,83 @@ run; **Dismiss** changes nothing (a one-off, or an error to dispute). Items we d
 ambiguous items and suppliers with no price on file are listed, not guessed. The demo export:
 12 lines, two drifts (Ridgeline N550 on two invoices, Summit VMQ 50 by the bag), $728.21 overpaid.
 
+In the console, the **Imports** view takes the export as it comes out of the accounting system,
+in four steps:
+
+1. **Columns.** Each field gets a suggested column ("Doc No" becomes the invoice number, "UoM"
+   the unit), which you can change.
+2. **Suppliers.** Each supplier name in the file is matched to one on file by id, name or email
+   domain. A name it can't place, such as "GLE", is asked about rather than guessed.
+3. **Items.** An item the catalog can't place is matched by hand, or marked as not an item you
+   stock. Ticking **Remember** saves the match as an alias, so the next file matches by itself.
+4. **Check.** Every row is validated and the whole import runs as a dry run inside a rolled-back
+   savepoint. The screen shows exactly what pressing Import will write.
+
+**Import** then writes everything in one transaction: the invoice lines, the cards (or invoices
+added to cards already open), and the remembered matches. Every import, committed or
+discarded, is kept in the history with its mapping and summary. The command line runs the same
+code:
+
 ```bash
 python -m margin_guard.invoices check data/invoices_demo.csv
+python -m margin_guard.coordinator             # puts the drift cards in front of a person
+```
+
+### After the increase went out: what the customer did
+
+Approving a reprice or a call is not the end of it; the customer answers. In **Done**, every
+approved reprice email and call asks for that answer: **accepted**, **negotiated** (the dollars
+they agreed to), or **lost the job**. The quote follows what was agreed, so the next price change
+is checked against real prices. Accepting a call writes the revised prices. A negotiation moves
+each line by the same share of its increase. A lost job takes the quote out of the open quotes.
+Every response can be undone, and undoing a decision waits until its response is undone.
+
+The **Outcomes** view answers the owner's question, "does repricing work?":
+
+- dollars recovered against dollars asked on the jobs the customer stayed on;
+- the revenue lost when one walked;
+- what is still waiting for an answer;
+- each customer's record ("usually pushes back", "has walked over increases").
+
+That record also sits on every decision card in Decide, so the person approving a reprice sees
+how this customer took the last ones.
+
+It is shown to people and never given to the model: no decision prompt changed, so every cached
+decision and eval still holds. Whether a customer's record *should* change the decision is a
+policy change, and it would go through the promotion gate like any other.
+
+The demo shop ships with 43 responses from before Margin Guard (synthetic, like the rest of the
+data): $20,797 recovered of $24,407 asked on the jobs kept (85%), and 6 jobs lost, worth $165,490.
+
+```bash
+python -m margin_guard.outcomes             # the summary in the terminal; also /api/outcomes
+```
+
+### Won, but the material isn't bought yet
+
+A won order's price is fixed by the customer's purchase order. If its material is bought when the
+job is scheduled, every increase that takes effect before then comes out of its margin, and
+nothing in the queue asks about it: impact looks at open quotes, and leakage at the gap between
+quote and order.
+
+So a won order can carry a planned **material buy date**. For each one, the costing supplier's
+price is compared at three dates: as ordered, today, and at the buy date. The increases already
+on file move the buy-date cost the day they're processed. On the demo shop, after the inbox:
+
+- **13 won orders** ($212,027) are waiting for material, and 7 of them will absorb **$1,682**;
+- one drops below its margin floor;
+- decreases give $789 back on two others.
+
+The only lever left is timing. **Buy now** records the order's material as bought today, at
+today's cost; on the demo that keeps **$1,657**. It is suggested only when an increase still to
+come lands before the buy date, never ahead of a decrease. Whether the cash and the storage are
+worth it stays a person's call, and every early buy can be undone.
+
+An order with no buy date counts as bought on its order date, the same assumption as leakage and
+impact, so neither figure moves. In `quotes.csv` it is an optional `material_buy_date` column.
+
+```bash
+python -m margin_guard.backlog              # the backlog in the terminal; also /api/backlog
 ```
 
 ### After the job shipped: margin leakage
@@ -231,9 +316,15 @@ settled by rules, and margin already leaked.
   and an editable draft. Above it: emails and invoices the system wouldn't guess on, the what-if
   control, and J / K.
 - **Settled by rules:** honor and absorb decisions grouped by price change, confirmed in bulk.
-- **Done:** what each person decided next to what was proposed, the outbox, and undo.
-- **Quote check**, **Leakage** and **Data** (quotes, customers, materials, so any number can be
-  checked).
+- **Done:** what each person decided next to what was proposed, the outbox, undo, and the
+  customer's response to every reprice and call.
+- **Outcomes:** recovered against asked, revenue lost, what is waiting for an answer, and each
+  customer's record.
+- **Quote check**, and **Leakage**: won orders still to buy material for (with **Buy now**), then
+  margin already lost on won jobs.
+- **Imports:** an invoice export matched, checked as a dry run, then written in one step, with
+  the history of earlier imports.
+- **Data:** quotes, customers and materials, so any number can be checked.
 - **Supplier inbox** beside the queue: each email's status and what it led to ("26 quotes
   checked · 2 need you"), its attachments (each opens the original file), and any price-list rows
   it left out. **Send test email** drops in a new one, and the activity feed streams the agents.
@@ -333,13 +424,13 @@ cache their model calls, and `--replay` rescores for free.
 The offline test suite (`python -m pytest`) makes no API calls. It covers unit conversion and
 Decimal money, catalog matching, supplier-specific costing, the event log, impact maths,
 superseding and restatement, every reviewer action including undo, attachments, invoice drift,
-the quote check, the leakage report and its trace, the CSV import, the API, and the eval
-machinery itself.
+the quote check, the leakage report and its trace, the CSV import, the console invoice import,
+customer outcomes, the won-order backlog, the API, and the eval machinery itself.
 
 ## Bring your own data
 
 A shop is nine CSV files (suppliers, materials, which supplier each material is costed at, price
-history, parts, BOMs, customers, quotes, quote lines). [`data/shop_csv/`](data/shop_csv/) is the
+history, parts, BOMs, customers, quotes with an optional material buy date, quote lines). [`data/shop_csv/`](data/shop_csv/) is the
 demo shop exported in that format, so it doubles as the template.
 
 ```bash
@@ -375,20 +466,22 @@ import reproduces the demo shop exactly.
 - **A debatable policy edge.** On "key account + prefers email for routine changes, call over
   $10k" at $8k, Sonnet chose a call three times out of three, at 0.55 – 0.60 confidence. The
   written policy says the note wins. The console marks these cards as below the bar.
-- **Replacement cost, USD only.** Exposure assumes material is bought when the order is placed;
-  stock on hand isn't modelled. Money is exact (Decimal, half-up), but there is no FX conversion.
-- **Synthetic history and data.** The year of price history, the won jobs' order dates and
-  customers' price locks (current lock only; no lock history) are generated. The methods are the
+- **Replacement cost, USD only.** Exposure assumes material is bought when the order is placed,
+  or on a won order's planned buy date; stock on hand isn't modelled. Money is exact (Decimal, half-up), but there is no FX conversion.
+- **Synthetic history and data.** The year of price history, the won jobs' order dates,
+  customers' price locks (current lock only; no lock history), their responses to past
+  increases and the won orders' material buy dates are generated. The methods are the
   point; the dollar figures are only as real as the data. The confidence bar comes from 90 runs;
   real quotes and reviews would re-set it, which is what `eval_approvals` is for.
 
 ## What I would build next
 
-- **Outcome tracking:** what the customer did after a reprice (accepted, negotiated, lost the job),
-  fed into the correction ledger as evidence that a change is *wanted*.
-- **Won-but-unshipped orders** in exposure: they can't be repriced, but logging them makes the
-  leakage numbers complete.
+- **Customer outcomes as policy evidence:** a candidate rule such as "don't reprice customers who
+  have walked over increases" scored against recorded outcomes, then sent through the promotion
+  gate. Today outcomes are only read by people.
 - **OCR for scanned price sheets,** behind the same "unreadable goes to a person" rule.
+- **Shop data through the console:** the nine-CSV onboarding on the same match → check → commit
+  flow as invoice imports (today it is command line only).
 - **A real inbox and quoting system** (Gmail or Outlook, an ERP connector) in place of the demo
   inbox and the CSV import.
 

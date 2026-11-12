@@ -1,9 +1,12 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 
+import { BacklogSection } from './components/BacklogSection'
 import { DataLane } from './components/DataLane'
 import { DecisionCard, QUEUE_COLS } from './components/DecisionCard'
 import { DoneLane } from './components/DoneLane'
+import { ImportsLane } from './components/ImportsLane'
 import { LeakageLane } from './components/LeakageLane'
+import { OutcomesLane } from './components/Outcomes'
 import { QuoteCheckLane } from './components/QuoteCheckLane'
 import { sharedScale } from './components/MarginBar'
 import { ReviewCard } from './components/ReviewCard'
@@ -167,10 +170,21 @@ function App() {
                 <RulesLane cards={quoteCards} onConfirm={(eventId) => c.run(() => api.confirmRules(eventId))} />
               ) : null}
               {c.lane === 'done' ? (
-                <DoneLane cards={c.cards} outbox={c.outbox} onReopen={(id) => c.run(() => api.reopen(id))} onViewQuote={c.focusQuote} />
+                <DoneLane cards={c.cards} outbox={c.outbox} onReopen={(id) => c.run(() => api.reopen(id))} onViewQuote={c.focusQuote}
+                  onRecord={(id, body) => c.run(() => api.recordOutcome(id, body))} onUndoOutcome={(id) => c.run(() => api.undoOutcome(id))} />
               ) : null}
+              {c.lane === 'outcomes' ? (
+                <OutcomesLane version={c.version} onViewQuote={c.focusQuote}
+                  onRecord={(id, body) => c.run(() => api.recordOutcome(id, body))} onUndo={(id) => c.run(() => api.undoOutcome(id))} />
+              ) : null}
+              {c.lane === 'imports' ? <ImportsLane onOpenDecide={() => c.setLane('decide')} /> : null}
               {c.lane === 'quote' ? <QuoteCheckLane onAnswer={() => c.setLane('decide')} /> : null}
-              {c.lane === 'leakage' ? <LeakageLane r={c.leakage} onViewQuote={c.focusQuote} /> : null}
+              {c.lane === 'leakage' ? (
+                <div className="space-y-6">
+                  <BacklogSection version={c.version} onViewQuote={c.focusQuote} run={c.run} />
+                  <LeakageLane r={c.leakage} onViewQuote={c.focusQuote} />
+                </div>
+              ) : null}
               {c.lane === 'data' && ov ? (
                 <DataLane
                   asOf={ov.as_of}
@@ -196,8 +210,10 @@ const VIEWS: { id: Lane; label: string; short?: string; count?: (ov: Overview, l
   { id: 'decide', label: 'Decide', count: (ov) => ov.needs_you },
   { id: 'rules', label: 'Settled by rules', short: 'Rules', count: (ov) => ov.rule_pending },
   { id: 'done', label: 'Done', count: (ov) => ov.done },
+  { id: 'outcomes', label: 'Outcomes', count: (ov) => ov.awaiting_reply || null },
   { id: 'quote', label: 'Quote check', short: 'Quote' },
   { id: 'leakage', label: 'Leakage', count: (_ov, leak) => leak?.jobs_leaked ?? null },
+  { id: 'imports', label: 'Imports' },
   { id: 'data', label: 'Data' },
 ]
 
@@ -289,8 +305,10 @@ function ViewHeading({ lane, ov }: { lane: Lane; ov: Overview | null }) {
     decide: ['Needs your decision', 'Judgment calls Claude made and supplier emails it would not guess on, largest dollars first.'],
     rules: ['Settled by rules', 'Honor and absorb decisions the policy settles by itself, grouped by price change.'],
     done: ['Done', 'What each person decided next to what was proposed, and the outbox. Every decision can be undone.'],
+    outcomes: ['Outcomes', 'What customers did after an increase went out: what was kept, what was negotiated away, which jobs walked.'],
     quote: ['Quote check', 'Before a quote goes out: will a price change already on file land while it is still valid?'],
-    leakage: ['Leakage', 'Margin won jobs already lost because costs moved between quote and order.'],
+    leakage: ['Leakage', 'Margin won jobs are about to absorb, and margin they already lost, because costs moved after the quote.'],
+    imports: ['Imports', 'Bring in an invoice export: match it, check it, then write it in one step.'],
     data: ['Data', `Quotes, customers and materials behind every number${ov ? `, as of ${shortDate(ov.as_of)}` : ''}.`],
   }
   const [title, sub] = text[lane]

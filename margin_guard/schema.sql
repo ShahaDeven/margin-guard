@@ -76,7 +76,10 @@ CREATE TABLE IF NOT EXISTS quotes (
     issued_date  TEXT NOT NULL,
     valid_until  TEXT NOT NULL,
     margin_floor REAL NOT NULL,                  -- lowest gross margin we accept on this quote
-    ordered_date TEXT                            -- won quotes: when the customer placed the order
+    ordered_date TEXT,                           -- won quotes: when the customer placed the order
+    material_buy_date  TEXT,                     -- won quotes: when material is planned to be bought;
+                                                 -- NULL = bought on the order date
+    material_bought_on TEXT                      -- set when a person records buying it early
 );
 
 CREATE TABLE IF NOT EXISTS quote_lines (
@@ -137,6 +140,22 @@ CREATE TABLE IF NOT EXISTS invoice_lines (
     status                TEXT CHECK (status IN ('at_price', 'above', 'below', 'not_judged')),
     note                  TEXT,
     UNIQUE (invoice_no, line_no)
+);
+
+-- Files imported from the console (imports.py): staged as uploaded, then committed in
+-- one transaction or discarded. The history of what each import wrote.
+CREATE TABLE IF NOT EXISTS imports (
+    id            INTEGER PRIMARY KEY AUTOINCREMENT,
+    kind          TEXT NOT NULL CHECK (kind IN ('invoices')),
+    filename      TEXT NOT NULL,
+    status        TEXT NOT NULL CHECK (status IN ('staged', 'committed', 'discarded')),
+    csv_text      TEXT NOT NULL,
+    headers       TEXT NOT NULL,               -- JSON list
+    row_count     INTEGER NOT NULL,
+    mapping       TEXT,                        -- JSON: columns, suppliers and item matches used
+    summary       TEXT,                        -- JSON: what the commit wrote
+    created_at    TEXT NOT NULL DEFAULT (datetime('now')),
+    committed_at  TEXT
 );
 
 -- Append-only event log. The coordinator routes on event_type; idempotency_key
@@ -208,6 +227,29 @@ CREATE TABLE IF NOT EXISTS quote_revisions (
     new_price    REAL NOT NULL,
     created_at   TEXT NOT NULL DEFAULT (datetime('now'))
 );
+
+-- What the customer did after a price increase went out: accepted it, negotiated part of it,
+-- or walked. Recorded by a person against an approved reprice or call; rows with no
+-- proposal are the shop's history from before this system. Shown to people, never to the model.
+CREATE TABLE IF NOT EXISTS quote_outcomes (
+    id               INTEGER PRIMARY KEY AUTOINCREMENT,
+    proposal_id      INTEGER UNIQUE REFERENCES proposals(id),
+    quote_id         TEXT NOT NULL REFERENCES quotes(id),
+    customer_id      TEXT NOT NULL REFERENCES customers(id),
+    channel          TEXT NOT NULL CHECK (channel IN ('email', 'call')),
+    outcome          TEXT NOT NULL CHECK (outcome IN ('accepted', 'negotiated', 'lost')),
+    asked_usd        REAL NOT NULL,              -- the increase asked for, over the whole quote
+    recovered_usd    REAL NOT NULL DEFAULT 0,    -- the part of it the customer agreed to
+    lost_revenue_usd REAL NOT NULL DEFAULT 0,    -- the quote's value, when the job was lost
+    outcome_date     TEXT NOT NULL,
+    note             TEXT,
+    price_changes    TEXT,                       -- JSON [{line_id, before, after}] this outcome wrote, for undo
+    prior_status     TEXT,                       -- the quote's status before a lost outcome, for undo
+    source           TEXT NOT NULL DEFAULT 'console' CHECK (source IN ('console', 'history')),
+    created_at       TEXT NOT NULL DEFAULT (datetime('now'))
+);
+
+CREATE INDEX IF NOT EXISTS idx_outcomes_customer ON quote_outcomes(customer_id);
 
 CREATE INDEX IF NOT EXISTS idx_events_status ON events(status, event_type);
 CREATE INDEX IF NOT EXISTS idx_quote_lines_quote ON quote_lines(quote_id);

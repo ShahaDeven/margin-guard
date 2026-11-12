@@ -1,9 +1,10 @@
 import { useState } from 'react'
 
 import { ACTION_TEXT, usd } from '../lib/format'
-import type { OutboxItem, Proposal, QuoteFacts, ReviewFacts } from '../lib/types'
+import type { OutboxItem, OutcomeBody, Proposal, QuoteFacts, ReviewFacts } from '../lib/types'
 import { Button } from './Button'
 import { MarginBar } from './MarginBar'
+import { askedFor, CustomerRecordLine, OutcomeBadge, OutcomeControl } from './Outcomes'
 import { Contact, CostChanges, LinesTable } from './QuoteParts'
 import { Empty } from './RulesLane'
 
@@ -15,11 +16,13 @@ const STATUS_TONE: Record<string, string> = {
 
 /** The record: what each person decided next to what was proposed, plus what
  *  went out. Any row opens to the full detail and can be undone. */
-export function DoneLane({ cards, outbox, onReopen, onViewQuote }: {
+export function DoneLane({ cards, outbox, onReopen, onViewQuote, onRecord, onUndoOutcome }: {
   cards: Proposal[]
   outbox: OutboxItem[]
   onReopen: (id: number) => void
   onViewQuote: (quoteId: string) => void
+  onRecord: (proposalId: number, body: OutcomeBody) => void
+  onUndoOutcome: (outcomeId: number) => void
 }) {
   const [openId, setOpenId] = useState<number | null>(null)
   const [openMail, setOpenMail] = useState<number | null>(null)
@@ -31,7 +34,7 @@ export function DoneLane({ cards, outbox, onReopen, onViewQuote }: {
         {cards.length ? (
           <ul className="divide-y divide-rule rounded-sm border border-rule bg-sheet">
             {cards.map((p) => (
-              <DoneRow key={p.id} p={p} open={openId === p.id} onToggle={() => setOpenId(openId === p.id ? null : p.id)} onReopen={() => onReopen(p.id)} onViewQuote={onViewQuote} />
+              <DoneRow key={p.id} p={p} open={openId === p.id} onToggle={() => setOpenId(openId === p.id ? null : p.id)} onReopen={() => onReopen(p.id)} onViewQuote={onViewQuote} onRecord={onRecord} onUndoOutcome={onUndoOutcome} />
             ))}
           </ul>
         ) : <Empty text="Nothing decided yet." />}
@@ -63,12 +66,14 @@ export function DoneLane({ cards, outbox, onReopen, onViewQuote }: {
   )
 }
 
-function DoneRow({ p, open, onToggle, onReopen, onViewQuote }: {
+function DoneRow({ p, open, onToggle, onReopen, onViewQuote, onRecord, onUndoOutcome }: {
   p: Proposal
   open: boolean
   onToggle: () => void
   onReopen: () => void
   onViewQuote: (quoteId: string) => void
+  onRecord: (proposalId: number, body: OutcomeBody) => void
+  onUndoOutcome: (outcomeId: number) => void
 }) {
   const isQuote = p.kind === 'quote_action'
   const f = p.facts as QuoteFacts
@@ -78,6 +83,9 @@ function DoneRow({ p, open, onToggle, onReopen, onViewQuote }: {
   const body = p.final_body ?? p.draft_body
   const subject = p.final_subject ?? p.draft_subject
   const rewrote = p.status === 'edited' && (p.final_body !== p.draft_body || p.final_subject !== p.draft_subject)
+  // A reprice or a call asks the customer for money, so it has a response to record.
+  const asksCustomer = isQuote && p.status !== 'rejected' && (final === 'reprice' || final === 'contact_customer')
+  const awaiting = asksCustomer && !p.outcome
 
   return (
     <li>
@@ -89,6 +97,7 @@ function DoneRow({ p, open, onToggle, onReopen, onViewQuote }: {
             ? <>proposed {ACTION_TEXT[p.action].short} → <span className="font-semibold text-ink-bright">{ACTION_TEXT[p.final_action!].short}</span></>
             : ACTION_TEXT[final].short}
         </span>
+        {p.outcome ? <OutcomeBadge o={p.outcome} /> : awaiting ? <span className="font-label text-[12px] text-attn">waiting for the customer</span> : null}
         <span className="ml-auto font-label text-[12px] text-ink-dim">{p.decided_by === 'rule' ? 'rule' : p.decided_by === 'llm' ? 'Claude' : ''}</span>
         {p.reviewer_note ? <span className="w-full text-xs italic text-ink-dim">“{p.reviewer_note}”</span> : null}
       </button>
@@ -108,8 +117,18 @@ function DoneRow({ p, open, onToggle, onReopen, onViewQuote }: {
                 </span>
                 {p.rationale}
               </p>
+              {asksCustomer ? (
+                <div className="space-y-2">
+                  <OutcomeControl proposalId={p.id} asked={askedFor(f)} quoteId={f.quote_id} channel={final === 'reprice' ? 'email' : 'call'}
+                    outcome={p.outcome} onRecord={onRecord} onUndo={onUndoOutcome} />
+                  <CustomerRecordLine r={p.customer_record} name={f.customer_name} />
+                </div>
+              ) : null}
               <Contact f={f} action={final} />
-              <LinesTable f={f} revisedLabel={final === 'reprice' && p.status !== 'rejected' ? 'Now' : 'Revised'} />
+              <LinesTable f={f} revisedLabel={
+                // After a negotiation the quote holds the agreed prices, not these; the response box lists them.
+                p.outcome?.outcome === 'negotiated' ? 'Asked'
+                  : p.status !== 'rejected' && (final === 'reprice' || p.outcome?.outcome === 'accepted') ? 'Now' : 'Revised'} />
               {body ? (
                 <div className="rounded border border-rule bg-sheet px-3 py-2">
                   <p className="font-label text-[12px] uppercase tracking-wider text-ink-dim">
@@ -126,10 +145,12 @@ function DoneRow({ p, open, onToggle, onReopen, onViewQuote }: {
                 </details>
               ) : null}
               <div className="flex items-center gap-3">
-                <Button tone="attn" small onClick={onReopen}>UNDO &amp; REVIEW AGAIN</Button>
+                <Button tone="attn" small disabled={Boolean(p.outcome)} onClick={onReopen}>UNDO &amp; REVIEW AGAIN</Button>
                 <Button small onClick={() => onViewQuote(f.quote_id)}>VIEW QUOTE</Button>
                 <span className="font-label text-[12px] text-ink-dim">
-                  {final === 'reprice' && p.status !== 'rejected'
+                  {p.outcome
+                    ? 'Undo the customer response first.'
+                    : final === 'reprice' && p.status !== 'rejected'
                     ? 'Restores the original quote prices and withdraws the email.'
                     : 'Puts the card back in the queue.'}
                 </span>

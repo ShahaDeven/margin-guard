@@ -48,51 +48,72 @@ COLUMNS = {
 REQUIRED = ("invoice_no", "line_no", "invoice_date", "vendor_id", "item", "qty", "unit", "unit_price")
 
 
-def read(conn: sqlite3.Connection, path: Path) -> list[dict]:
-    """Parse and validate an invoices CSV. Raises ImportFailed listing every problem."""
+def parse_rows(conn: sqlite3.Connection, raw_rows: list[tuple[int, dict]]) -> list[dict]:
+    """Validate invoice rows given as (row number, {column: text}). Raises ImportFailed
+    listing every problem; a file with any bad row loads nothing."""
     problems: list[str] = []
     vendors = {r[0] for r in conn.execute("SELECT id FROM vendors")}
     rows: list[dict] = []
+    seen = set()
+    for n, raw in raw_rows:
+        if not any((v or "").strip() for v in raw.values()):
+            continue
+        row, ok = {"_row": n}, True
+        for col, parse in COLUMNS.items():
+            try:
+                row[col] = parse(raw.get(col) or "") if col in raw or col in REQUIRED else None
+            except ValueError as exc:
+                problems.append(f"row {n}, {col}: {exc}")
+                ok = False
+        if not ok:
+            continue
+        row["unit"] = row["unit"].lower()
+        if row["unit"] not in LB_PER_UNIT:
+            problems.append(f"row {n}, unit: {row['unit']!r} must be one of {', '.join(LB_PER_UNIT)}")
+        if row["vendor_id"] not in vendors:
+            problems.append(f"row {n}, vendor_id: {row['vendor_id']!r} is not a supplier on file")
+        key = (row["invoice_no"], row["line_no"])
+        if key in seen:
+            problems.append(f"row {n}: duplicate invoice line {key[0]}/{key[1]}")
+        seen.add(key)
+        rows.append(row)
+    if problems:
+        raise ImportFailed(problems)
+    return rows
+
+
+def read(conn: sqlite3.Connection, path: Path) -> list[dict]:
+    """Parse and validate an invoices CSV (columns named as above). Raises ImportFailed."""
     with Path(path).open(newline="", encoding="utf-8-sig") as f:
         reader = csv.DictReader(f)
         header = [h.strip() for h in (reader.fieldnames or [])]
         missing = [c for c in REQUIRED if c not in header]
         if missing:
             raise ImportFailed([f"{Path(path).name}: missing column(s) {', '.join(missing)}"])
-        seen = set()
-        for n, raw in enumerate(reader, start=2):
-            raw = {(k or "").strip(): (v or "") for k, v in raw.items()}
-            if not any(v.strip() for v in raw.values()):
-                continue
-            row, ok = {"_row": n}, True
-            for col, parse in COLUMNS.items():
-                try:
-                    row[col] = parse(raw.get(col, "")) if col in raw or col in REQUIRED else None
-                except ValueError as exc:
-                    problems.append(f"row {n}, {col}: {exc}")
-                    ok = False
-            if not ok:
-                continue
-            row["unit"] = row["unit"].lower()
-            if row["unit"] not in LB_PER_UNIT:
-                problems.append(f"row {n}, unit: {row['unit']!r} must be one of {', '.join(LB_PER_UNIT)}")
-            if row["vendor_id"] not in vendors:
-                problems.append(f"row {n}, vendor_id: {row['vendor_id']!r} is not a supplier on file")
-            key = (row["invoice_no"], row["line_no"])
-            if key in seen:
-                problems.append(f"row {n}: duplicate invoice line {key[0]}/{key[1]}")
-            seen.add(key)
-            rows.append(row)
-    if problems:
-        raise ImportFailed(problems)
-    return rows
+        raw = [(n, {(k or "").strip(): (v or "") for k, v in r.items()}) for n, r in enumerate(reader, start=2)]
+    return parse_rows(conn, raw)
 
 
 def check(conn: sqlite3.Connection, path: Path) -> dict:
     """Load an invoices CSV, judge every line, and raise a card per drift. Returns the report."""
-    rows = read(conn, path)
+    return check_rows(conn, read(conn, path), source=Path(path).name)
+
+
+NOT_STOCKED = ""   # an override meaning "a person says this item is not one we stock"
+
+
+def check_rows(conn: sqlite3.Connection, rows: list[dict], source: str,
+               overrides: dict[tuple[str, str], str] | None = None, commit: bool = True) -> dict:
+    """Judge validated invoice rows, store them, and raise or merge a card per drift.
+
+    `overrides` maps (vendor_id, item as written, lowercased) to a material id a
+    person matched it to on the import screen, or NOT_STOCKED. With commit=False
+    nothing is committed: the import preview runs this inside a savepoint and rolls
+    it back, so the preview is exactly what the commit will do.
+    """
+    overrides = overrides or {}
     report = {"lines": len(rows), "at_price": 0, "above": 0, "below": 0, "not_judged": [], "drifts": [],
-              "overpaid_usd": 0.0, "already_on_file": 0}
+              "overpaid_usd": 0.0, "already_on_file": 0, "line_results": []}
     overpaid = money.ZERO
     drifts: dict[tuple, dict] = {}
 
@@ -104,28 +125,43 @@ def check(conn: sqlite3.Connection, path: Path) -> dict:
             (r["invoice_no"], r["line_no"], r["invoice_date"], r["vendor_id"], r["item"], r["qty"], r["unit"],
              r["unit_price"], r["pack_qty"]),
         )
+        result = {"row": r["_row"], "invoice_no": r["invoice_no"], "line_no": r["line_no"], "date": r["invoice_date"],
+                  "vendor_id": r["vendor_id"], "item": r["item"], "material_id": None, "status": None,
+                  "billed_cost_per_lb": None, "expected_cost_per_lb": None, "note": None}
+        report["line_results"].append(result)
         if not cur.rowcount:
             report["already_on_file"] += 1
+            result.update(status="already_on_file", note="this invoice line was checked in an earlier import")
             continue
         line_id = cur.lastrowid
-        match = catalog.resolve_material(conn, r["item"], r["vendor_id"])
+        key_item = (r["vendor_id"], r["item"].strip().lower())
+        if key_item in overrides:
+            chosen = overrides[key_item]
+            match = catalog.MatchResult(chosen or None, "person" if chosen else "not stocked")
+        else:
+            match = catalog.resolve_material(conn, r["item"], r["vendor_id"])
         if match.material_id is None:
             _mark(conn, line_id, "not_judged", None, None, None, f"item '{r['item']}' is {match.method}")
-            why = (f"could be {' or '.join(match.candidates)}; can't tell which" if match.method == "ambiguous"
+            why = ("marked as not an item we stock" if match.method == "not stocked" else
+                   f"could be {' or '.join(match.candidates)}; can't tell which" if match.method == "ambiguous"
                    else "is not an item we stock from this supplier")
             report["not_judged"].append(f"{r['invoice_no']}/{r['line_no']}: '{r['item']}' {why}")
+            result.update(status="not_judged", note=f"'{r['item']}' {why}")
             continue
         m = match.material_id
         billed = to_cost_per_lb(r["unit_price"], r["unit"], r["pack_qty"])
         expected = impact.supplier_cost(conn, m, r["vendor_id"], r["invoice_date"])
+        result.update(material_id=m, billed_cost_per_lb=out(billed))
         if expected is None:
             _mark(conn, line_id, "not_judged", m, billed, None, "no price on file for this supplier")
             report["not_judged"].append(f"{r['invoice_no']}/{r['line_no']}: no {r['vendor_id']} price on file for {m}")
+            result.update(status="not_judged", note="no price on file for this supplier")
             continue
         pct = money.pct((billed - D(expected)) / D(expected))
         status = "above" if pct > DRIFT_TOLERANCE else "below" if pct < -DRIFT_TOLERANCE else "at_price"
         _mark(conn, line_id, status, m, billed, expected, None)
         report[status] += 1
+        result.update(status=status, expected_cost_per_lb=expected, pct=out(pct))
         if status != "above":
             continue
 
@@ -147,14 +183,15 @@ def check(conn: sqlite3.Connection, path: Path) -> dict:
     names = dict(conn.execute("SELECT id, name FROM vendors").fetchall())
     for d in drifts.values():
         key = f"drift:{d['vendor_id']}:{d['material_id']}:{out(d['billed']):.4f}"
-        status = _raise_or_merge(conn, key, d, names, source_ref=f"invoices:{Path(path).name}")
+        status = _raise_or_merge(conn, key, d, names, source_ref=f"invoices:{source}")
         report["drifts"].append({
             "vendor_name": names.get(d["vendor_id"], d["vendor_id"]), "material_id": d["material_id"],
             "material_text": d["item"], "old_cost_per_lb": d["expected"], "new_cost_per_lb": out(d["billed"]),
             "pct_change": out(d["pct"]), "effective_date": d["first_date"],
             "overpaid_usd": out(money.cents(d["overpaid"])), "invoices": len(d["invoices"]),
             "new": status == "new", "status": status})
-    conn.commit()
+    if commit:
+        conn.commit()
     report["above"] = sum(len(d["invoices"]) for d in drifts.values())
     report["overpaid_usd"] = out(money.cents(overpaid))
     return report
