@@ -1,0 +1,38 @@
+# A local Odoo 19 Community for the ERP connector (margin_guard/erp).
+#
+#   docker compose -f docker-compose.odoo.yml up -d     # or: python -m margin_guard.erp setup
+#   open http://localhost:8069   (login admin / admin; demo only, never expose this port)
+#
+# Self-hosted Community has no app limit and full external-API access; Odoo's hosted
+# free plans don't allow the external API at all.
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: odoo
+      POSTGRES_PASSWORD: odoo
+      POSTGRES_DB: postgres
+    volumes:
+      - odoo-db:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U odoo"]
+      interval: 3s
+      retries: 20
+
+  odoo:
+    image: odoo:19
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      HOST: db
+      USER: odoo
+      PASSWORD: odoo
+    ports:
+      - "127.0.0.1:8069:8069"
+    volumes:
+      - odoo-data:/var/lib/odoo
+
+volumes:
+  odoo-db:
+  odoo-data:
