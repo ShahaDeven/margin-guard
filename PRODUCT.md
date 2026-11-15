@@ -37,9 +37,9 @@ The LLM reads; code does every number. Claude extracts what an email says and ma
 - Stack: FastAPI-style Python backend (`margin_guard/`), SQLite, LangGraph coordinator; React 19 + Vite + Tailwind 4 console (`frontend/`).
 - A person approves everything; nothing is approved automatically. Every decision can be undone.
 - Exposure is replacement-cost exposure (material bought when the order is placed); inventory-aware costing is out of scope.
-- Built (2026-11): supplier-specific costing, Decimal money with cents and currency, restatement when changes arrive out of date order, CSV import, the margin-leakage report with line-level traces and price-lock split, PDF/Excel/CSV price-list attachments, invoice price drift, the quote check, the owner-facing Leakage view, the console invoice import, customer outcomes after a reprice, and the won-order backlog (won orders whose material isn't bought yet).
+- Built (2026-11): supplier-specific costing, Decimal money with cents and currency, restatement when changes arrive out of date order, CSV import, the margin-leakage report with line-level traces and price-lock split, PDF/Excel/CSV price-list attachments, invoice price drift, the quote check, the owner-facing Leakage view, the console invoice import, customer outcomes after a reprice, the won-order backlog (won orders whose material isn't bought yet), and an Odoo 19 connector (read sync, and write-back of approved decisions only, checked against Odoo first).
 - Still open: OCR for scanned price sheets, shop-data onboarding through the console (the nine CSVs are command line only).
-- Out of scope for the proof: Gmail/Outlook OAuth, ERP connectors, multi-tenant/RBAC.
+- Out of scope for the proof: Gmail/Outlook OAuth, ERPs other than Odoo, multi-tenant/RBAC.
 - Terminology: quote, quote line, BOM, margin floor, exposure / dollars at risk, honor / absorb / reprice / contact customer, decision ("card" in code), superseded, costing vendor.
 
 ## Brand Commitments

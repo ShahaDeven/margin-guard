@@ -695,6 +695,97 @@ async def stream():
     return EventSourceResponse(gen(), ping=15)
 
 
+# ------------------------------------------------------------------ ERP connection (margin_guard/erp)
+
+ERP_KINDS = [("supplier", "Suppliers"), ("customer", "Customers"), ("material", "Materials"), ("part", "Parts"),
+             ("supplier_price", "Supplier prices"), ("bom", "BOMs"), ("quote", "Quotes"), ("quote_line", "Quote lines"),
+             ("bill_line", "Vendor bill lines")]
+
+
+def _erp_label(kind: str, p: dict, names: dict, vendors: dict) -> str:
+    if kind == "quote_prices":
+        return f"{'Restored' if p.get('undoes') else 'Revised'} prices on {p['quote_id']}"
+    if kind == "call_task":
+        return f"Call task on {p['quote_id']}"
+    cost = float(p["cost_per_lb"])
+    price = f"{cost:.2f}" if round(cost, 2) == cost else f"{cost:.4f}".rstrip("0")      # $1.70, $1.8425
+    day = datetime.fromisoformat(p["effective_date"])
+    return (f"{names.get(p['material_id'], p['material_id'])} from {vendors.get(p['vendor_id'], p['vendor_id'])}: "
+            f"${price}/lb from {day:%b} {day.day}, {day.year}")
+
+
+@app.get("/api/erp")
+def erp_status() -> dict:
+    """The ERP connection: can Margin Guard reach Odoo, what is linked, what was synced and written."""
+    from .erp.odoo import OdooClient, OdooError, settings
+    url, dbname, key = settings()
+    reachable, problem = False, None
+    if not key:
+        problem = "not set up"
+    else:
+        try:
+            OdooClient(timeout=4).call("res.users", "search_count", domain=[])
+            reachable = True
+        except OdooError as exc:
+            problem = str(exc)
+    with _conn_lock:
+        c = conn()
+        db.init_schema(c)
+        links = dict(c.execute("SELECT kind, COUNT(*) FROM erp_links WHERE system = 'odoo' GROUP BY kind").fetchall())
+        syncs = [dict(r) | {"summary": json.loads(r["summary"] or "{}")} for r in c.execute(
+            "SELECT * FROM erp_syncs WHERE system = 'odoo' ORDER BY id DESC LIMIT 8")]
+        names = dict(c.execute("SELECT id, name FROM materials").fetchall())
+        vendors = dict(c.execute("SELECT id, name FROM vendors").fetchall())
+        writes = [{"id": r["id"], "kind": r["kind"], "status": r["status"], "detail": r["detail"], "created_at": r["created_at"],
+                   "sent_at": r["sent_at"], "label": _erp_label(r["kind"], json.loads(r["payload"]), names, vendors)}
+                  for r in c.execute("SELECT * FROM erp_outbox WHERE system = 'odoo' ORDER BY id DESC LIMIT 60")]
+        counts = dict(c.execute("SELECT status, COUNT(*) FROM erp_outbox WHERE system = 'odoo' GROUP BY status").fetchall())
+    return {"system": "odoo", "url": url, "database": dbname, "configured": bool(key), "reachable": reachable, "problem": problem,
+            "linked": [{"kind": k, "label": label, "count": links.get(k, 0)} for k, label in ERP_KINDS],
+            "syncs": syncs, "writes": writes, "write_counts": counts, "agents_busy": _job_lock.locked()}
+
+
+def _erp_sync(job_conn) -> None:
+    from .erp.odoo_adapter import OdooAdapter
+    from .erp.sync import sync
+    s = sync(job_conn, OdooAdapter())
+    bus.publish("erp.synced", {"events": len(s["events"]), "conflicts": len(s["conflicts"])})
+    if s["events"]:
+        _coordinate(job_conn)            # new supplier prices: the agents work out the impact, as for an email
+
+
+def _erp_push(force_id: int | None):
+    def work(job_conn) -> None:
+        from .erp.odoo import OdooClient
+        from .erp.odoo_writer import push
+        r = push(job_conn, OdooClient(), force_id=force_id)
+        bus.publish("erp.pushed", {k: len(v) for k, v in r.items()})
+    return work
+
+
+@app.post("/api/erp/sync")
+def erp_sync() -> dict:
+    _run_job("erp sync", _erp_sync)
+    return {"started": True}
+
+
+@app.post("/api/erp/push")
+def erp_push() -> dict:
+    _run_job("erp push", _erp_push(None))
+    return {"started": True}
+
+
+@app.post("/api/erp/outbox/{outbox_id}/force")
+def erp_force(outbox_id: int) -> dict:
+    """A person looked at a refused write and wants it written anyway."""
+    with _conn_lock:
+        row = conn().execute("SELECT status FROM erp_outbox WHERE id = ?", (outbox_id,)).fetchone()
+    if row is None or row["status"] != "conflict":
+        raise HTTPException(400, "only a write Odoo refused can be forced")
+    _run_job("erp push", _erp_push(outbox_id))
+    return {"started": True}
+
+
 @app.get("/api/health")
 def health() -> dict:
     return {"ok": True, "db": str(Path(DB_PATH))}

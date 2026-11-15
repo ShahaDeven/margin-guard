@@ -49,6 +49,10 @@ function describe(kind: string, d: Msg): Omit<FeedItem, 'id' | 'at'> | null {
     }
     case 'rules.confirmed':
       return { tone: 'good', text: `Confirmed ${d.count} rule decisions` }
+    case 'erp.synced':
+      return { tone: 'good', text: `Synced from Odoo${Number(d.events) ? `: ${d.events} new supplier price${Number(d.events) === 1 ? '' : 's'} for the agents` : ''}${Number(d.conflicts) ? `, ${d.conflicts} conflict${Number(d.conflicts) === 1 ? '' : 's'}` : ''}` }
+    case 'erp.pushed':
+      return { tone: Number(d.conflict) ? 'attention' : 'good', text: `Odoo: ${d.sent} written${Number(d.conflict) ? `, ${d.conflict} stopped for a look` : ''}${Number(d.failed) ? `, ${d.failed} failed` : ''}` }
     case 'job.failed':
       return { tone: 'fault', text: `Agents stopped: ${d.error}` }
     default:
@@ -56,7 +60,7 @@ function describe(kind: string, d: Msg): Omit<FeedItem, 'id' | 'at'> | null {
   }
 }
 
-const LANES: Lane[] = ['home', 'decide', 'rules', 'done', 'quote', 'leakage', 'outcomes', 'inbox', 'imports', 'data']
+const LANES: Lane[] = ['home', 'decide', 'rules', 'done', 'quote', 'leakage', 'outcomes', 'inbox', 'imports', 'erp', 'data']
 const laneFromHash = (): Lane | null => {
   const h = window.location.hash.replace('#', '') as Lane
   return LANES.includes(h) ? h : null
@@ -162,7 +166,7 @@ export function useConsole() {
   useEffect(() => {
     const es = new EventSource('/api/stream')
     const kinds = ['hello', 'email.received', 'email.reading', 'email.processed', 'event.started', 'decision.started',
-      'event.processed', 'proposal.reviewed', 'rules.confirmed', 'outcome.recorded', 'backlog.changed', 'job.started', 'job.finished', 'job.failed']
+      'event.processed', 'proposal.reviewed', 'rules.confirmed', 'outcome.recorded', 'backlog.changed', 'erp.synced', 'erp.pushed', 'job.started', 'job.finished', 'job.failed']
     const handler = (ev: MessageEvent) => {
       const data = JSON.parse(ev.data) as Msg
       if (ev.type === 'job.started') setBusy(true)

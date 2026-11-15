@@ -17,6 +17,7 @@ import json
 import sqlite3
 
 from . import events, money
+from .erp import outbox as erp_outbox
 from .money import D, out
 from .parser import EventDraft, price_change_key
 
@@ -89,6 +90,7 @@ def review(conn: sqlite3.Connection, proposal_id: int, verdict: str, *, action: 
 
     changed = (final_action, final_subject, final_body) != (p["action"], p["draft_subject"], p["draft_body"])
     _apply(conn, p, final_action, final_subject, final_body)
+    erp_outbox.approved(conn, p, final_action, final_subject, final_body)      # same transaction
     conn.execute(
         """UPDATE proposals SET status = ?, final_action = ?, final_subject = ?, final_body = ?,
            reviewer_note = ?, reviewed_at = datetime('now') WHERE id = ?""",
@@ -125,6 +127,7 @@ def reopen(conn: sqlite3.Connection, proposal_id: int) -> dict:
         conn.execute("UPDATE quote_lines SET unit_price = ? WHERE id = ?", (rev["old_price"], rev["line_id"]))
     conn.execute("DELETE FROM quote_revisions WHERE proposal_id = ?", (proposal_id,))
     conn.execute("DELETE FROM outbox WHERE proposal_id = ?", (proposal_id,))
+    erp_outbox.reopened(conn, proposal_id)
     conn.execute(
         """UPDATE proposals SET status = 'pending', final_action = NULL, final_subject = NULL, final_body = NULL,
            reviewer_note = NULL, reviewed_at = NULL WHERE id = ?""",
@@ -141,6 +144,8 @@ def confirm_rules(conn: sqlite3.Connection, event_id: int) -> int:
            WHERE event_id = ? AND kind = 'quote_action' AND decided_by = 'rule' AND status = 'pending'""",
         (event_id,),
     )
+    if cur.rowcount:
+        erp_outbox.supplier_price(conn, event_id)
     conn.commit()
     return cur.rowcount
 
@@ -177,6 +182,7 @@ def resolve_review(conn: sqlite3.Connection, proposal_id: int, material_id: str,
     )
     if event_id is None:
         raise ActionError("that price change is already on file")
+    erp_outbox.supplier_price(conn, event_id)          # a person stated this price
     conn.execute(
         """UPDATE proposals SET status = 'approved', final_action = 'resolve_event', reviewer_note = ?,
            reviewed_at = datetime('now') WHERE id = ?""",

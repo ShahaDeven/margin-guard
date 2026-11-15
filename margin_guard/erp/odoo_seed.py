@@ -87,8 +87,12 @@ def _load(c: OdooClient, shop, say) -> dict:
 
     key_tag = c.create("res.partner.category", [{"name": "Key account"}])[0]
     customers = shop.execute("SELECT * FROM customers ORDER BY id").fetchall()
+    managers = sorted({(x["account_manager"], x["account_manager_phone"]) for x in customers if x["account_manager"]})
+    uids = c.create("res.users", [{"name": n, "login": f"{_slug(n)}@shop.example", "phone": p} for n, p in managers])
+    user_id = {n: i for (n, _), i in zip(managers, uids)}
     cids = c.create("res.partner", [{
         "name": x["name"], "ref": x["id"], "is_company": True, "customer_rank": 1,
+        "user_id": user_id.get(x["account_manager"]) or False,
         "category_id": [[6, 0, [key_tag]]] if x["tier"] == "key" else [],
         "comment": "<br/>".join(filter(None, [
             f"Price lock until {x['price_lock_until']}." if x["price_lock_until"] else "",
@@ -99,9 +103,6 @@ def _load(c: OdooClient, shop, say) -> dict:
                               "function": "Buyer", "email": x["buyer_email"], "phone": x["buyer_phone"]}
                              for x in customers if x["buyer_name"]])
 
-    managers = sorted({(x["account_manager"], x["account_manager_phone"]) for x in customers if x["account_manager"]})
-    uids = c.create("res.users", [{"name": n, "login": f"{_slug(n)}@shop.example", "phone": p} for n, p in managers])
-    user_id = {n: i for (n, _), i in zip(managers, uids)}
     manager_of = {x["id"]: user_id.get(x["account_manager"]) for x in customers}
     counts.update(suppliers=len(vids), customers=len(cids), account_managers=len(uids))
     say(f"  partners: {len(vids)} suppliers, {len(cids)} customers with buyers, {len(uids)} account managers")

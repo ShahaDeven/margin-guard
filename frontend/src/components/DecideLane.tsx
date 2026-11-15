@@ -69,6 +69,9 @@ function reviewRow(p: Proposal, inbox: Email[]) {
     return { name: f.customer_name ?? 'A decision you approved', sub: `${f.quote_id}, missed a later price change`,
       risk: f.revised ? usd(f.revised.exposure_usd) : '' }
   }
+  if (f.kind === 'erp_conflict') {
+    return { name: 'Odoo', sub: f.quote_id ? `${f.summary ?? 'A write was refused'}, ${f.quote_id}` : f.summary ?? 'A write was refused', risk: '' }
+  }
   if (f.kind === 'invoice_drift') {
     return { name: f.vendor_name ?? 'Supplier invoice', sub: 'Invoice billed above the price on file',
       risk: f.overpaid_usd != null ? usd(f.overpaid_usd) : '' }
@@ -79,7 +82,7 @@ function reviewRow(p: Proposal, inbox: Email[]) {
 
 /** The estimator's screen: every decision waiting, one row each, and the selected one in
  *  full beside it. Supplier questions sit at the top of the same table. */
-export function DecideLane({ cards, inbox, materials, arrived, bar, notice, filter, setFilter, onReview, onResolve, onDismiss, onRedecide, onViewQuote }: {
+export function DecideLane({ cards, inbox, materials, arrived, bar, notice, filter, setFilter, onReview, onResolve, onDismiss, onRedecide, onForceErp, onViewQuote }: {
   cards: Proposal[]
   inbox: Email[]
   materials: Material[]
@@ -93,6 +96,7 @@ export function DecideLane({ cards, inbox, materials, arrived, bar, notice, filt
   onResolve: (id: number, materialId: string) => void
   onDismiss: (id: number, note?: string) => void
   onRedecide: (id: number) => void
+  onForceErp: (outboxId: number) => void
   onViewQuote: (quoteId: string) => void
 }) {
   const [k, setK] = useState(1)
@@ -264,6 +268,7 @@ export function DecideLane({ cards, inbox, materials, arrived, bar, notice, filt
                   onResolve={(mat) => onResolve(selected.id, mat)}
                   onDismiss={(note) => onDismiss(selected.id, note)}
                   onRedecide={() => onRedecide(selected.id)}
+                  onForceErp={onForceErp}
                 />
               )}
             </aside>

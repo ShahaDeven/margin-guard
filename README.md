@@ -330,7 +330,9 @@ A left sidebar groups the views, each with its own URL (`#home`, `#decide`, `#le
 - **Setup. Supplier inbox**: each email's status and what it led to ("26 quotes checked, 2 need
   you"), its attachments (each opens the original file), and any price-list rows it left out.
   **Imports**: an invoice export matched, checked as a dry run, then written in one step, with
-  earlier imports. **Shop data**: quotes, customers and materials, so any number can be checked.
+  earlier imports. **ERP connection**: Odoo's status, what is linked, each sync and every write
+  back, with **Sync now** and **Send approved writes**. **Shop data**: quotes, customers and
+  materials, so any number can be checked.
 
 The demo controls (a test supplier email and the agents' live activity) are in a drawer behind
 **Open demo controls**, out of the working layout.
@@ -431,7 +433,8 @@ The offline test suite (`python -m pytest`) makes no API calls. It covers unit c
 Decimal money, catalog matching, supplier-specific costing, the event log, impact maths,
 superseding and restatement, every reviewer action including undo, attachments, invoice drift,
 the quote check, the leakage report and its trace, the CSV import, the console invoice import,
-customer outcomes, the won-order backlog, the API, and the eval machinery itself.
+customer outcomes, the won-order backlog, the Odoo connector (sync and write-back against a fake
+Odoo), the API, and the eval machinery itself.
 
 ## Bring your own data
 
@@ -451,6 +454,72 @@ duplicates, exactly one costing supplier per material, a won quote needs an orde
 anything is wrong nothing is written and each problem is listed by file, row and column. A blank
 `material_cost_basis` is computed from the BOM and price history at the quote date. Export then
 import reproduces the demo shop exactly.
+
+## Connect a real ERP: Odoo
+
+A shop's quotes, BOMs and supplier prices already live in its ERP, so Margin Guard reads them from
+there and writes its approved decisions back. The connector targets **Odoo 19 Community**
+(open source, self-hosted), through Odoo's JSON-2 API with an API key. XML-RPC is on its way out of
+Odoo, and hosted Odoo only opens its API on the Custom plan, so the demo runs Odoo locally in Docker.
+
+```bash
+python -m margin_guard.erp setup     # Odoo + Postgres in Docker, apps, API key, the demo shop loaded
+python -m margin_guard.erp status    # reachable? what is linked, what is waiting to be written
+python -m margin_guard.erp sync      # Odoo's changes into Margin Guard (read only)
+python -m margin_guard.erp push      # send approved writes; --force ID writes a refused one anyway
+```
+
+Odoo is then at http://localhost:8069 (admin / admin, local demo only). The key is kept in
+`.odoo/api_key`, which git ignores. The same controls are in the console under **Setup → ERP
+connection**: whether Odoo is reachable, what is linked, each sync, and every write with its status.
+
+![ERP connection: Odoo reachable, Sync now and Send approved writes, linked record counts, the syncs, and the writes: one stopped because Odoo changed first, with Write it anyway](docs/screenshots/erp-connection.png)
+
+**What is read.** One adapter ([`erp/odoo_adapter.py`](margin_guard/erp/odoo_adapter.py)) turns Odoo
+records into Margin Guard's terms. The sync behind it ([`erp/sync.py`](margin_guard/erp/sync.py))
+knows nothing about Odoo, so another ERP needs only a new adapter.
+
+| Margin Guard | Odoo |
+|---|---|
+| Suppliers, customers (account manager, key account tag) | `res.partner`, `res.users`, `res.partner.category` |
+| Materials and parts | `product.product` / `product.template` |
+| Supplier prices, dated, and the costing supplier | `product.supplierinfo` (lowest sequence costs the material, as Odoo buys) |
+| BOMs, scrap folded into gross pounds | `mrp.bom`, `mrp.bom.line` |
+| Quotes and lines: open, won, lost | `sale.order` (draft/sent, sale, cancel), `sale.order.line` |
+| Vendor bill lines, for invoice drift | posted `account.move` / `account.move.line` |
+
+- **Three-way reconcile.** Each linked record keeps a snapshot of what Odoo said last time. A
+  change in Odoo is applied; a change made in Margin Guard is kept; both changed is a conflict,
+  Margin Guard's version is kept and the sync lists it. Quotes a person already decided or recorded
+  an outcome for are never overwritten.
+- **Incremental and atomic.** Each kind is pulled from its last `write_date`, and a sync commits in
+  one transaction or not at all.
+- **Units and money are converted, never guessed.** kg, tonnes and cwt become pounds and $/lb. A
+  price in another currency, a quantity break or an unknown unit is skipped and listed in the
+  sync's notes.
+- **A new supplier price in Odoo is a price change.** It goes to the agents exactly like a
+  supplier email. New vendor bill lines go through the invoice-drift check.
+
+**What is written back: only what a person approved.** Approving a decision queues the write in
+the same transaction ([`erp/outbox.py`](margin_guard/erp/outbox.py)); **Send approved writes**
+sends it ([`erp/odoo_writer.py`](margin_guard/erp/odoo_writer.py)).
+
+| Approved in Margin Guard | Written to Odoo |
+|---|---|
+| Reprice | The quotation's line prices, and a note in its chatter saying why |
+| Contact the customer | A Call activity for the quote's salesperson, due the next day |
+| A supplier's new price (email or attachment) | A dated vendor price line; the previous one is closed the day before |
+
+- **Checked before every write.** The writer reads the record first. If someone changed it in Odoo
+  (a line price, a confirmed order, a different price on that date), nothing is written, and the
+  write becomes a question in To decide: **Write it anyway** or **Keep Odoo's version**.
+- **Idempotent.** A write that already landed (its response lost) isn't made twice, and a price
+  that came from Odoo is never written back to it.
+- **Undo reaches Odoo.** Undoing a decision cancels its queued write, or queues the reverse of one
+  already sent.
+
+Limits: one company, USD only, base prices only (no quantity breaks), and Odoo API keys expire
+after at most three months (`setup --new-key` makes a new one).
 
 ## Known limitations
 
@@ -488,9 +557,9 @@ import reproduces the demo shop exactly.
 - **OCR for scanned price sheets,** behind the same "unreadable goes to a person" rule.
 - **Shop data through the console:** the nine-CSV onboarding on the same match → check → commit
   flow as invoice imports (today it is command line only).
-- **A real inbox and quoting system** (Gmail or Outlook, an ERP connector) in place of the demo
-  inbox and the CSV import.
+- **A real inbox** (Gmail or Outlook) in place of the demo inbox, and a second ERP adapter
+  (ERPNext) behind the same sync.
 
-Stack: Python 3.11, LangGraph, FastAPI + SSE, SQLite (WAL), openpyxl and pypdf for attachments,
+Stack: Python 3.11, LangGraph, FastAPI + SSE, SQLite (WAL), Odoo 19 Community through its JSON-2 API (httpx), openpyxl and pypdf for attachments,
 React 19 + Vite + Tailwind 4 with self-hosted Inter and Archivo Narrow, and Claude Sonnet 5.5 through the
 Anthropic SDK with structured outputs.

@@ -1,6 +1,7 @@
 import { useState } from 'react'
 
 import { DataLane } from './components/DataLane'
+import { ErpLane } from './components/ErpLane'
 import { DecideLane, type DecideFilter } from './components/DecideLane'
 import { DoneLane } from './components/DoneLane'
 import { ImportsLane } from './components/ImportsLane'
@@ -88,6 +89,7 @@ function App() {
                   onResolve={(id, mat) => c.run(() => api.resolve(id, mat))}
                   onDismiss={(id, note) => c.run(() => api.dismiss(id, note))}
                   onRedecide={(id) => c.run(() => api.redecide(id))}
+                  onForceErp={(outboxId) => c.run(() => api.erpForce(outboxId))}
                   onViewQuote={c.focusQuote}
                 />
               ) : null}
@@ -105,6 +107,7 @@ function App() {
                 <OutcomesLane version={c.version} onViewQuote={c.focusQuote}
                   onRecord={(id, body) => c.run(() => api.recordOutcome(id, body))} onUndo={(id) => c.run(() => api.undoOutcome(id))} />
               ) : null}
+              {c.lane === 'erp' ? <ErpLane version={c.version} busy={c.busy} run={c.run} /> : null}
               {c.lane === 'imports' ? <ImportsLane onOpenDecide={() => c.setLane('decide')} /> : null}
               {c.lane === 'quote' ? <QuoteCheckLane inbox={c.inbox} onAnswer={() => go({ lane: 'decide', filter: 'questions' })} /> : null}
               {c.lane === 'leakage' ? (
@@ -139,6 +142,7 @@ function ViewHeading({ lane, ov }: { lane: Lane; ov: Overview | null }) {
     rules: ['Settled by rules', 'Honor and absorb decisions the policy settles by itself, grouped by price change.'],
     done: ['Done', 'What each person decided next to what was proposed, and the outbox. Every decision can be undone.'],
     home: ['Home', ''],
+    erp: ['ERP connection', 'The shop in Odoo, read and written through its API. Margin Guard writes back only what a person approved.'],
     inbox: ['Supplier inbox', 'Every supplier email, how the agents read it, and what it led to.'],
     outcomes: ['Outcomes', 'What customers did after an increase went out: what was kept, what was negotiated away, which jobs walked.'],
     quote: ['Quote check', 'Before a quote goes out: will a price change already on file land while it is still valid?'],

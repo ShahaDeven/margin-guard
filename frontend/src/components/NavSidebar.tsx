@@ -27,6 +27,7 @@ const GROUPS: { label: string; items: Item[] }[] = [
     items: [
       { id: 'inbox', label: 'Supplier inbox' },
       { id: 'imports', label: 'Imports' },
+      { id: 'erp', label: 'ERP connection' },
       { id: 'data', label: 'Shop data' },
     ],
   },

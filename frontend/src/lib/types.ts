@@ -55,7 +55,10 @@ export interface CostChange {
 export interface ReviewFacts {
   /** 'invoice_drift': from an invoice. 'correction': an approved decision a later change affects.
    *  'incomplete_attachment': a supplier file that wasn't read in full. */
-  kind?: 'invoice_drift' | 'correction' | 'incomplete_attachment'
+  kind?: 'invoice_drift' | 'correction' | 'incomplete_attachment' | 'erp_conflict'
+  /** erp_conflict: the queued write Odoo refused, and which kind it was. */
+  outbox_id?: number
+  write?: 'quote_prices' | 'call_task' | 'supplier_price'
   quote_id?: string
   customer_name?: string
   corrects?: number
@@ -566,4 +569,26 @@ export interface Backlog {
   buy_now_saves_usd: number
   below_floor: number
   saved_by_buying_early_usd: number
+}
+
+type SyncCounts = Partial<Record<'pulled' | 'added' | 'applied' | 'linked' | 'unchanged' | 'conflict' | 'line_applied' | 'line_added', number>>
+
+export interface ErpStatus {
+  system: string
+  url: string
+  database: string
+  configured: boolean
+  reachable: boolean
+  problem: string | null
+  linked: { kind: string; label: string; count: number }[]
+  syncs: {
+    id: number
+    started_at: string
+    finished_at: string | null
+    summary: { kinds?: Record<string, SyncCounts>; conflicts?: string[]; notes?: string[]; events?: number[];
+               invoice?: { lines: number; above: number; drifts: number; overpaid_usd: number } | null }
+  }[]
+  writes: { id: number; kind: string; status: string; detail: string | null; created_at: string; sent_at: string | null; label: string }[]
+  write_counts: Record<string, number>
+  agents_busy: boolean
 }

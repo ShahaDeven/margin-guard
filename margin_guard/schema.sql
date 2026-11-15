@@ -251,6 +251,53 @@ CREATE TABLE IF NOT EXISTS quote_outcomes (
 
 CREATE INDEX IF NOT EXISTS idx_outcomes_customer ON quote_outcomes(customer_id);
 
+-- ERP connector (margin_guard/erp). A link ties a local row to its ERP record and keeps the
+-- ERP's values as of the last sync, so a later sync can tell "changed in the ERP" from
+-- "changed here" from "changed in both".
+CREATE TABLE IF NOT EXISTS erp_links (
+    system     TEXT NOT NULL,                    -- 'odoo'
+    kind       TEXT NOT NULL,                    -- supplier | customer | material | part | supplier_price | bom | quote | quote_line | bill_line
+    erp_id     INTEGER NOT NULL,
+    local_id   TEXT NOT NULL,
+    snapshot   TEXT NOT NULL,                    -- JSON: the ERP's values at the last sync
+    synced_at  TEXT NOT NULL DEFAULT (datetime('now')),
+    PRIMARY KEY (system, kind, erp_id)
+);
+CREATE INDEX IF NOT EXISTS idx_erp_links_local ON erp_links(system, kind, local_id);
+
+CREATE TABLE IF NOT EXISTS erp_cursors (
+    system  TEXT NOT NULL,
+    kind    TEXT NOT NULL,
+    cursor  TEXT NOT NULL,                       -- the ERP's own write_date of the newest record seen
+    PRIMARY KEY (system, kind)
+);
+
+-- Writes to the ERP, queued in the same transaction as the approval that causes them and sent
+-- by `python -m margin_guard.erp push`. Approving never waits on the ERP, and a write that
+-- fails is retried, not lost.
+CREATE TABLE IF NOT EXISTS erp_outbox (
+    id               INTEGER PRIMARY KEY AUTOINCREMENT,
+    system           TEXT NOT NULL,
+    kind             TEXT NOT NULL CHECK (kind IN ('quote_prices', 'call_task', 'supplier_price')),
+    idempotency_key  TEXT NOT NULL UNIQUE,
+    payload          TEXT NOT NULL,              -- JSON: what to write, and what the ERP should hold first
+    status           TEXT NOT NULL DEFAULT 'pending'
+                     CHECK (status IN ('pending', 'sent', 'conflict', 'failed', 'cancelled')),
+    detail           TEXT,                       -- the ERP record written, or why it stopped
+    proposal_id      INTEGER REFERENCES proposals(id),
+    created_at       TEXT NOT NULL DEFAULT (datetime('now')),
+    sent_at          TEXT
+);
+CREATE INDEX IF NOT EXISTS idx_erp_outbox_status ON erp_outbox(status);
+
+CREATE TABLE IF NOT EXISTS erp_syncs (
+    id           INTEGER PRIMARY KEY AUTOINCREMENT,
+    system       TEXT NOT NULL,
+    started_at   TEXT NOT NULL,
+    finished_at  TEXT,
+    summary      TEXT                            -- JSON: counts, conflicts and skips per kind
+);
+
 CREATE INDEX IF NOT EXISTS idx_events_status ON events(status, event_type);
 CREATE INDEX IF NOT EXISTS idx_quote_lines_quote ON quote_lines(quote_id);
 CREATE INDEX IF NOT EXISTS idx_price_history_lookup ON material_price_history(material_id, vendor_id, effective_date);

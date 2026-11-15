@@ -1,5 +1,5 @@
 import type {
-  Backlog, DataCustomer, DataMaterial, DataQuote, DemoEmail, Email, ImportHistoryRow, ImportPreview, ImportResult, Leakage, Material, Part,
+  Backlog, ErpStatus, DataCustomer, DataMaterial, DataQuote, DemoEmail, Email, ImportHistoryRow, ImportPreview, ImportResult, Leakage, Material, Part,
   OutcomeBody, OutcomesSummary, QuoteCheck, StagedImport, Vendor, OutboxItem, Overview, Proposal, QuoteDetail,
 } from './types'
 
@@ -29,7 +29,7 @@ export type ImportPlan = {
 
 const post = <T>(path: string, body: unknown = {}) => call<T>(path, { method: 'POST', body: JSON.stringify(body) })
 
-export type Lane = 'home' | 'decide' | 'rules' | 'done' | 'quote' | 'leakage' | 'outcomes' | 'inbox' | 'imports' | 'data'
+export type Lane = 'home' | 'decide' | 'rules' | 'done' | 'quote' | 'leakage' | 'outcomes' | 'inbox' | 'imports' | 'erp' | 'data'
 
 export const api = {
   overview: () => call<Overview>('/api/overview'),
@@ -68,5 +68,9 @@ export const api = {
   resolve: (id: number, materialId: string) => post<{ event_id: number }>(`/api/proposals/${id}/resolve`, { material_id: materialId }),
   dismiss: (id: number, note?: string) => post<Proposal>(`/api/proposals/${id}/dismiss`, { note }),
   redecide: (id: number) => post<{ event_id: number }>(`/api/proposals/${id}/redecide`),
+  erp: () => call<ErpStatus>('/api/erp'),
+  erpSync: () => post<{ started: boolean }>('/api/erp/sync'),
+  erpPush: () => post<{ started: boolean }>('/api/erp/push'),
+  erpForce: (outboxId: number) => post<{ started: boolean }>(`/api/erp/outbox/${outboxId}/force`),
   sendDemoEmail: (demoId: string) => post<{ email_id: string }>('/api/inbox', { demo_id: demoId }),
 }

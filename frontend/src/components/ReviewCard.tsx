@@ -8,7 +8,7 @@ import { Button } from './Button'
 /** A supplier email the system would not guess on. The person answers the one
  *  question it couldn't (which material?), or dismisses it. */
 export function ReviewCard({
-  p, email, materials, onResolve, onDismiss, onRedecide,
+  p, email, materials, onResolve, onDismiss, onRedecide, onForceErp,
 }: {
   p: Proposal
   email?: Email
@@ -16,6 +16,7 @@ export function ReviewCard({
   onResolve: (materialId: string) => void
   onDismiss: (note?: string) => void
   onRedecide: () => void
+  onForceErp?: (outboxId: number) => void
 }) {
   const f = p.facts as ReviewFacts
   const [sending, setSending] = useState(false)
@@ -26,6 +27,27 @@ export function ReviewCard({
   if (f.kind === 'correction') {
     return <CorrectionCard f={f} sending={sending} onRedecide={() => { setSending(true); onRedecide() }}
       onKeep={() => { setSending(true); onDismiss('Kept the original decision') }} />
+  }
+  if (f.kind === 'erp_conflict') {
+    return (
+      <article className="space-y-4">
+        <h2 className="text-xl font-bold text-ink">
+          <span className="mb-1 block text-[13px] font-medium text-attn">Needs a look</span>
+          {f.summary ?? 'Odoo refused a write'}{f.quote_id ? `, ${f.quote_id}` : ''}
+        </h2>
+        <p className="text-ink">{f.review_reasons?.[0]}</p>
+        <p className="text-[13px] text-ink-dim">
+          Margin Guard checks what Odoo holds before every write, and stopped because it had changed. Look at the record in
+          Odoo: if Margin Guard's version is right, write it anyway; otherwise keep Odoo's, and the next sync brings it in.
+        </p>
+        <div className="flex flex-wrap gap-2">
+          {onForceErp && f.outbox_id ? (
+            <Button disabled={sending} onClick={() => { setSending(true); onForceErp(f.outbox_id!) }}>Write it anyway</Button>
+          ) : null}
+          <Button disabled={sending} onClick={() => { setSending(true); onDismiss('Kept what Odoo has') }}>Keep Odoo's version</Button>
+        </div>
+      </article>
+    )
   }
   if (f.kind === 'invoice_drift') {
     return <DriftCard f={f} name={name} sending={sending} onApply={() => { setSending(true); onResolve(f.material_id!) }}

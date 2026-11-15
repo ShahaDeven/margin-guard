@@ -3,6 +3,8 @@
     python -m margin_guard.erp setup [--new-key]   # local Odoo in Docker, apps, API key, demo shop
     python -m margin_guard.erp load                # load the demo shop into a running Odoo
     python -m margin_guard.erp status              # is Odoo reachable, and what is in it
+    python -m margin_guard.erp sync [--db PATH]    # Odoo's changes into Margin Guard (read only)
+    python -m margin_guard.erp push [--db PATH] [--force ID]   # send approved writes to Odoo
 
 `setup` is safe to run again: each step checks whether it has already been done.
 """
@@ -15,9 +17,14 @@ import time
 
 import httpx
 
+from .. import db
 from ..config import ROOT
 from .odoo import KEY_FILE, OdooClient, OdooError, ensure_key_dir, settings
+from .odoo_adapter import OdooAdapter
+from .odoo_writer import push
+from .outbox import summary as outbox_summary
 from .odoo_seed import already_loaded, load
+from .sync import report_text, sync
 
 COMPOSE = ["docker", "compose", "-f", str(ROOT / "docker-compose.odoo.yml")]
 BOOTSTRAP = ROOT / "margin_guard" / "erp" / "odoo_bootstrap.py"
@@ -106,12 +113,41 @@ def main() -> None:
     s.add_argument("--new-key", action="store_true", help="make a fresh API key")
     sub.add_parser("load", help="load the demo shop into a running Odoo")
     sub.add_parser("status", help="check the connection")
+    y = sub.add_parser("sync", help="pull Odoo's changes into Margin Guard")
+    y.add_argument("--db", help="Margin Guard database (default: the demo database)")
+    w = sub.add_parser("push", help="send what a person approved to Odoo")
+    w.add_argument("--db", help="Margin Guard database (default: the demo database)")
+    w.add_argument("--force", type=int, metavar="ID", help="write a queued write that stopped as a conflict, anyway")
     args = ap.parse_args()
     os.chdir(ROOT)
     if args.cmd == "setup":
         setup(args.new_key)
     elif args.cmd == "load":
         load(OdooClient())
+    elif args.cmd == "sync":
+        conn = db.connect(args.db)
+        try:
+            print(report_text(sync(conn, OdooAdapter())))
+        except OdooError as exc:
+            sys.exit(str(exc))
+        waiting = outbox_summary(conn)
+        if waiting.get("pending") or waiting.get("failed"):
+            print(f"\n{waiting.get('pending', 0) + waiting.get('failed', 0)} approved write(s) waiting: "
+                  "run `python -m margin_guard.erp push`.")
+    elif args.cmd == "push":
+        conn = db.connect(args.db)
+        db.init_schema(conn)
+        try:
+            r = push(conn, OdooClient(), force_id=args.force)
+        except OdooError as exc:
+            sys.exit(str(exc))
+        if not any(r.values()):
+            print("Nothing waiting to be written to Odoo.")
+        for title, key in (("Written to Odoo", "sent"), ("Stopped: Odoo changed first (now a question in To decide)", "conflict"),
+                           ("Failed, still queued", "failed")):
+            if r[key]:
+                print(f"{title}:")
+                print("\n".join(f"  {x}" for x in r[key]))
     else:
         status()
 
