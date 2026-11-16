@@ -4,6 +4,7 @@
     python -m evals.eval_extraction --set holdout   # 10 harder emails nothing was tuned against
     python -m evals.eval_extraction --set fresh     # 7 cents / currency / pack emails (regression set)
     python -m evals.eval_extraction --set attachments  # 4 emails with .xlsx / .pdf price sheets
+    python -m evals.eval_extraction --set ocr       # 3 scanned price sheets read by OCR (Tesseract)
     python -m evals.eval_extraction --replay        # rescore cached extractions, no API calls
 
 Builds a throwaway database each run so results never depend on local state.
@@ -29,6 +30,10 @@ SETS = {
     # Price lists and letters as .xlsx / .pdf attachments, incl. a scan with no text (Nov 2026).
     "attachments": (ROOT / "data" / "vendor_emails_attachments.json", RESULTS_DIR / "extractions_attachments.json",
                     "_attachments"),
+    # Scans with no text layer, read by OCR (Nov 2026). Every OCR price goes to a person,
+    # so the gold outcome is needs_review, and the changes are scored on the review items:
+    # what the person is shown to check.
+    "ocr": (ROOT / "data" / "vendor_emails_ocr.json", RESULTS_DIR / "extractions_ocr.json", "_ocr"),
 }
 PRICE_TOLERANCE = 0.005   # 0.5%
 
@@ -78,10 +83,15 @@ def main() -> None:
 
         per_email = []
         for email_id, g in gold.items():
-            predicted = [json.loads(r["payload"]) for r in conn.execute(
-                "SELECT payload FROM events WHERE source_ref = ? AND event_type = 'price_change.detected'",
-                (f"email:{email_id}",))]
-            gold_changes = g["gold"]["changes"] if g["gold"]["outcome"] == "detected" else []
+            # Changes are scored on detected events; for an email whose prices must go to a
+            # person (OCR), on the review items that carry them.
+            scored = "price_change.detected"
+            if g["gold"]["outcome"] == "needs_review" and g["gold"]["changes"]:
+                scored = "price_change.needs_review"
+            predicted = [p for p in (json.loads(r["payload"]) for r in conn.execute(
+                "SELECT payload FROM events WHERE source_ref = ? AND event_type = ?", (f"email:{email_id}", scored)))
+                if p.get("material_id")]
+            gold_changes = g["gold"]["changes"] if g["gold"]["outcome"] == "detected" or scored != "price_change.detected" else []
             changes, extra = _score_changes(gold_changes, predicted)
             per_email.append({
                 "id": email_id, "trap": g["gold"]["trap"],

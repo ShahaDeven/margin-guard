@@ -86,7 +86,7 @@ function App() {
                   filter={decideFilter}
                   setFilter={setDecideFilter}
                   onReview={(id) => (body) => c.run(() => api.review(id, body))}
-                  onResolve={(id, mat) => c.run(() => api.resolve(id, mat))}
+                  onResolve={(id, mat, fix) => c.run(() => api.resolve(id, mat, fix))}
                   onDismiss={(id, note) => c.run(() => api.dismiss(id, note))}
                   onRedecide={(id) => c.run(() => api.redecide(id))}
                   onForceErp={(outboxId) => c.run(() => api.erpForce(outboxId))}
@@ -100,15 +100,16 @@ function App() {
                   onConfirmAll={(ids) => c.run(async () => { for (const id of ids) await api.confirmRules(id) })} />
               ) : null}
               {c.lane === 'done' ? (
-                <DoneLane cards={c.cards} outbox={c.outbox} onReopen={(id) => c.run(() => api.reopen(id))} onViewQuote={c.focusQuote}
+                <DoneLane cards={c.cards} inbox={c.inbox} outbox={c.outbox} onReopen={(id) => c.run(() => api.reopen(id))} onViewQuote={c.focusQuote}
                   onRecord={(id, body) => c.run(() => api.recordOutcome(id, body))} onUndoOutcome={(id) => c.run(() => api.undoOutcome(id))} />
               ) : null}
               {c.lane === 'outcomes' ? (
                 <OutcomesLane version={c.version} onViewQuote={c.focusQuote}
                   onRecord={(id, body) => c.run(() => api.recordOutcome(id, body))} onUndo={(id) => c.run(() => api.undoOutcome(id))} />
               ) : null}
-              {c.lane === 'erp' ? <ErpLane version={c.version} busy={c.busy} run={c.run} /> : null}
-              {c.lane === 'imports' ? <ImportsLane onOpenDecide={() => c.setLane('decide')} /> : null}
+              {c.lane === 'erp' ? <ErpLane version={c.version} busy={c.busy} run={c.run} onViewQuote={c.focusQuote}
+                onOpenLane={(lane, material) => (lane === 'decide' ? go({ lane, filter: material ? `material:${material}` : undefined }) : c.setLane(lane))} /> : null}
+              {c.lane === 'imports' ? <ImportsLane onOpenDecide={() => c.setLane('decide')} asOf={ov?.as_of ?? null} /> : null}
               {c.lane === 'quote' ? <QuoteCheckLane inbox={c.inbox} onAnswer={() => go({ lane: 'decide', filter: 'questions' })} /> : null}
               {c.lane === 'leakage' ? (
                 <LeakagePage tab={leakTab} setTab={(t) => { setLeakTab(t); setLeakFocus({}) }} r={c.leakage} version={c.version}
@@ -129,7 +130,7 @@ function App() {
 
       <footer className="border-t border-rule px-6 py-4 text-center text-xs text-ink-dim">
         Rules decide the clear cases. Claude decides the judgment calls and drafts the message. Code does every number.
-        A person approves everything. All shop data is synthetic.
+        A person approves everything. The sample shop is synthetic.
       </footer>
       </div>
     </div>
@@ -140,14 +141,14 @@ function ViewHeading({ lane, ov }: { lane: Lane; ov: Overview | null }) {
   const text: Record<Lane, [string, string]> = {
     decide: ['To decide', 'Judgment calls Claude made and supplier emails it would not guess on, largest dollars first.'],
     rules: ['Settled by rules', 'Honor and absorb decisions the policy settles by itself, grouped by price change.'],
-    done: ['Done', 'What each person decided next to what was proposed, and the outbox. Every decision can be undone.'],
+    done: ['Done', 'What each person decided next to what was proposed, and the outbox. Every quote decision can be undone.'],
     home: ['Home', ''],
     erp: ['ERP connection', 'The shop in Odoo, read and written through its API. Margin Guard writes back only what a person approved.'],
     inbox: ['Supplier inbox', 'Every supplier email, how the agents read it, and what it led to.'],
     outcomes: ['Outcomes', 'What customers did after an increase went out: what was kept, what was negotiated away, which jobs walked.'],
     quote: ['Quote check', 'Before a quote goes out: will a price change already on file land while it is still valid?'],
     leakage: ['Leakage', 'Margin won jobs are about to absorb, and margin they have already lost, because costs moved after the quote.'],
-    imports: ['Imports', 'Bring in an invoice export from your accounts-payable system. Nothing is written until you press Import.'],
+    imports: ['Imports', 'An invoice export from your accounts-payable system, or a whole shop as nine CSV files. Nothing is written until you say so.'],
     data: ['Shop data', `Quotes, customers and materials behind every number${ov ? `, as of ${shortDate(ov.as_of)}` : ''}.`],
   }
   const [title, sub] = text[lane]

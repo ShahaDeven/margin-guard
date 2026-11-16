@@ -13,7 +13,7 @@ export function ReviewCard({
   p: Proposal
   email?: Email
   materials: Material[]
-  onResolve: (materialId: string) => void
+  onResolve: (materialId: string, fix?: { price?: number; effective_date?: string }) => void
   onDismiss: (note?: string) => void
   onRedecide: () => void
   onForceErp?: (outboxId: number) => void
@@ -48,6 +48,10 @@ export function ReviewCard({
         </div>
       </article>
     )
+  }
+  if (f.ocr) {
+    return <OcrCard f={f} email={email} materials={materials} name={name} sending={sending}
+      onApply={(mat, fix) => { setSending(true); onResolve(mat, fix) }} onDismiss={() => { setSending(true); onDismiss('Not a price change') }} />
   }
   if (f.kind === 'invoice_drift') {
     return <DriftCard f={f} name={name} sending={sending} onApply={() => { setSending(true); onResolve(f.material_id!) }}
@@ -229,6 +233,89 @@ function CorrectionCard({ f, sending, onRedecide, onKeep }: {
           </p>
         </div>
       </div>
+    </article>
+  )
+}
+
+const UNIT_WORD: Record<string, string> = { lb: 'lb', kg: 'kg', cwt: 'cwt (100 lb)', short_ton: 'short ton', metric_ton: 'metric ton' }
+const fieldCls = 'w-full rounded-sm border border-rule-bright bg-sheet px-3 py-2 text-sm text-ink outline-none focus:border-go'
+
+/** A price read off a scan by OCR. The person checks it against the original (one click
+ *  away), corrects what the OCR misread, and applies it; nothing moves a quote before that. */
+function OcrCard({ f, email, materials, name, sending, onApply, onDismiss }: {
+  f: ReviewFacts
+  email?: Email
+  materials: Material[]
+  name: (id: string) => string
+  sending: boolean
+  onApply: (materialId: string, fix: { price?: number; effective_date?: string }) => void
+  onDismiss: () => void
+}) {
+  const q = f.quoted
+  const quotedUnit = q?.price != null && q.unit && UNIT_WORD[q.unit] ? q.unit : 'lb'
+  const read = q?.price != null && quotedUnit === q.unit ? q.price : f.new_cost_per_lb
+  const [material, setMaterial] = useState(f.material_id ?? '')
+  const money = (n: number) => (Number.isInteger(n * 100) ? n.toFixed(2) : String(n))     // 33.5 -> 33.50, 1.8425 stays
+  const [price, setPrice] = useState(read != null ? money(read) : '')
+  const [day, setDay] = useState(f.effective_date ?? '')
+  const value = Number(price)
+  const ok = !!material && price.trim() !== '' && value > 0 && /^\d{4}-\d{2}-\d{2}$/.test(day)
+  const changed = read == null || value !== read || day !== f.effective_date || material !== f.material_id
+  const others = (f.review_reasons ?? []).filter((r) => !r.startsWith('read by OCR'))
+  const choices = f.match_candidates?.length ? f.match_candidates : materials.map((m) => m.id)
+  const per = q?.pack_qty && quotedUnit === q.unit ? `${q.pack_qty} ${UNIT_WORD[quotedUnit]} pack` : UNIT_WORD[quotedUnit]
+
+  return (
+    <article className="space-y-4">
+      <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+        <h2 className="text-xl font-bold text-ink">
+          <span className="mb-1 block text-[13px] font-medium text-attn">Check a price read from a scan</span>
+          {f.material_id ? name(f.material_id) : `"${f.material_text}"`}
+        </h2>
+        <span className="text-[13px] text-ink-dim">From {email?.vendor_name ?? email?.from_addr ?? 'an unknown sender'}</span>
+      </div>
+      <p className="text-sm text-ink">
+        {(f.ocr?.files ?? []).join(', ')} has no text, so it was read by OCR
+        {f.ocr?.notes?.[0] ? <span className="text-ink-dim"> ({f.ocr.notes[0].replace(/^read by OCR, /, '')})</span> : null}.
+        OCR can misread a digit, so check the figures against the original before they move any quote.
+      </p>
+      {others.length ? (
+        <ul className="list-disc space-y-0.5 pl-5 text-sm text-ink marker:text-attn">
+          {others.map((r) => <li key={r}>{r.charAt(0).toUpperCase() + r.slice(1)}.</li>)}
+        </ul>
+      ) : null}
+      {email ? <Attachments files={email.attachments} /> : null}
+
+      <div className="grid grid-cols-2 gap-3">
+        <label className="col-span-2 block">
+          <span className="mb-1 block text-[13px] text-ink-dim">Material</span>
+          <select value={material} onChange={(e) => setMaterial(e.target.value)} className={fieldCls} disabled={sending}>
+            {f.material_id ? null : <option value="">Which material?</option>}
+            {choices.map((id) => <option key={id} value={id}>{name(id)}</option>)}
+          </select>
+        </label>
+        <label className="block">
+          <span className="mb-1 block text-[13px] text-ink-dim">New price, $ per {per}</span>
+          <input value={price} onChange={(e) => setPrice(e.target.value)} inputMode="decimal" className={fieldCls} disabled={sending} />
+        </label>
+        <label className="block">
+          <span className="mb-1 block text-[13px] text-ink-dim">From</span>
+          <input type="date" value={day} onChange={(e) => setDay(e.target.value)} className={fieldCls} disabled={sending} />
+        </label>
+      </div>
+      <p className="text-[13px] text-ink-dim">
+        Read as {read != null ? `$${money(read)} per ${per}` : 'no price'}
+        {f.new_cost_per_lb != null && quotedUnit !== 'lb' ? ` ($${f.new_cost_per_lb.toFixed(2)}/lb)` : ''}
+        {f.effective_date ? `, from ${shortDate(f.effective_date)}` : ''}
+        {f.old_cost_per_lb != null ? `. The price on file is $${f.old_cost_per_lb.toFixed(2)}/lb.` : '.'}
+      </p>
+      <div className="flex flex-wrap items-center gap-2">
+        <Button disabled={sending || !ok} onClick={() => onApply(material, { price: value, effective_date: day })}>
+          {changed ? 'Apply my corrected figures' : 'Figures match the original: apply'}
+        </Button>
+        <Button disabled={sending} onClick={onDismiss}>Not a price change, dismiss</Button>
+      </div>
+      <p className="text-[12px] text-ink-dim">Applying makes it a price change, and the agents check every open quote that uses it.</p>
     </article>
   )
 }

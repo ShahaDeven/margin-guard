@@ -1,0 +1,76 @@
+{
+  "summary": {
+    "set": "ocr",
+    "model": "replay",
+    "emails": 3,
+    "outcome_accuracy": 1.0,
+    "gold_changes": 4,
+    "change_recall": 1.0,
+    "price_accuracy": 1.0,
+    "date_accuracy": 1.0,
+    "unexpected_changes": 0
+  },
+  "emails": [
+    {
+      "id": "O01",
+      "trap": "faxed scan, no text layer, speckle: OCR reads it; three of ours change, SBR 60 unchanged, EPDM 80 not ours; every price goes to a person to check",
+      "gold_outcome": "needs_review",
+      "outcome": "needs_review",
+      "outcome_ok": true,
+      "changes": [
+        {
+          "material_id": "MAT-EPDM-50",
+          "found": true,
+          "price_ok": true,
+          "date_ok": true,
+          "predicted_cost": 2.04,
+          "gold_cost": 2.04
+        },
+        {
+          "material_id": "MAT-EPDM-60",
+          "found": true,
+          "price_ok": true,
+          "date_ok": true,
+          "predicted_cost": 2.15,
+          "gold_cost": 2.15
+        },
+        {
+          "material_id": "MAT-NR-40",
+          "found": true,
+          "price_ok": true,
+          "date_ok": true,
+          "predicted_cost": 1.97,
+          "gold_cost": 1.97
+        }
+      ],
+      "unexpected_changes": []
+    },
+    {
+      "id": "O02",
+      "trap": "phone photo of a letter, tilted and unevenly lit, priced per kg: OCR reads it, the price goes to a person to check",
+      "gold_outcome": "needs_review",
+      "outcome": "needs_review",
+      "outcome_ok": true,
+      "changes": [
+        {
+          "material_id": "MAT-FKM-75",
+          "found": true,
+          "price_ok": true,
+          "date_ok": true,
+          "predicted_cost": 15.195344,
+          "gold_cost": 15.195344
+        }
+      ],
+      "unexpected_changes": []
+    },
+    {
+      "id": "O03",
+      "trap": "a scan with nothing OCR can read: no price invented, a person reads the original",
+      "gold_outcome": "needs_review",
+      "outcome": "needs_review",
+      "outcome_ok": true,
+      "changes": [],
+      "unexpected_changes": []
+    }
+  ]
+}

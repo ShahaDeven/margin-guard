@@ -15,10 +15,12 @@ the original proposal; that pair is the training signal for the eval loop.
 
 import json
 import sqlite3
+from datetime import date
 
 from . import events, money
 from .erp import outbox as erp_outbox
 from .money import D, out
+from .units import LB_PER_UNIT, to_cost_per_lb
 from .parser import EventDraft, price_change_key
 
 QUOTE_ACTIONS = {"honor", "absorb", "reprice", "contact_customer"}
@@ -150,15 +152,38 @@ def confirm_rules(conn: sqlite3.Connection, event_id: int) -> int:
     return cur.rowcount
 
 
-def resolve_review(conn: sqlite3.Connection, proposal_id: int, material_id: str, note: str | None = None) -> int:
+def resolve_review(conn: sqlite3.Connection, proposal_id: int, material_id: str, note: str | None = None,
+                   price: float | None = None, effective_date: str | None = None) -> int:
     """Turn a review item into the price change it describes. Returns the new event id.
 
+    `price` and `effective_date` are a person's corrections, for a price read off a scan:
+    the price in the unit the supplier quoted (per kg, per 25 kg bag, ...), converted here.
     The caller then runs the coordinator to work out the impact.
     """
     p = _pending(conn, proposal_id)
     if p["kind"] != "event_review":
         raise ActionError("only review items can be resolved")
     payload = json.loads(p["facts"])
+    corrected = {}
+    if price is not None:
+        if price <= 0:
+            raise ActionError("the price must be more than zero")
+        q = payload.get("quoted") or {}
+        unit = q.get("unit") if q.get("price") is not None and q.get("unit") in LB_PER_UNIT else "lb"
+        pack = q.get("pack_qty") if unit == q.get("unit") else None
+        new = out(to_cost_per_lb(price, unit, pack))
+        if new != payload.get("new_cost_per_lb"):
+            corrected["price"] = {"was": payload.get("new_cost_per_lb"), "now": new, "quoted": price, "unit": unit}
+        payload["new_cost_per_lb"] = new
+        payload["quoted"] = {**q, "price": price, "unit": unit, "in_cents": False, "pct_change": None}
+    if effective_date is not None:
+        try:
+            day = date.fromisoformat(effective_date).isoformat()
+        except ValueError:
+            raise ActionError(f"not a date: {effective_date!r}") from None
+        if day != payload.get("effective_date"):
+            corrected["effective_date"] = {"was": payload.get("effective_date"), "now": day}
+        payload["effective_date"] = day
     if payload.get("new_cost_per_lb") is None or not payload.get("effective_date"):
         raise ActionError("this email has no exact price and date to apply; dismiss it instead")
     mat = conn.execute("SELECT name, cost_per_lb FROM materials WHERE id = ?", (material_id,)).fetchone()
@@ -173,6 +198,8 @@ def resolve_review(conn: sqlite3.Connection, proposal_id: int, material_id: str,
         "old_cost_per_lb": mat["cost_per_lb"],
         "pct_change": out(money.pct((D(new_cost) - D(mat["cost_per_lb"])) / D(mat["cost_per_lb"]))),
     }
+    if corrected:
+        resolved["corrected_by_person"] = corrected
     event_id = events.append(
         conn,
         EventDraft("price_change.detected",
@@ -186,7 +213,8 @@ def resolve_review(conn: sqlite3.Connection, proposal_id: int, material_id: str,
     conn.execute(
         """UPDATE proposals SET status = 'approved', final_action = 'resolve_event', reviewer_note = ?,
            reviewed_at = datetime('now') WHERE id = ?""",
-        (note or f"Material confirmed as {mat['name']}", proposal_id),
+        (note or (f"Corrected the figures read from the scan: {mat['name']}" if corrected
+                  else f"Material confirmed as {mat['name']}"), proposal_id),
     )
     conn.commit()
     return event_id

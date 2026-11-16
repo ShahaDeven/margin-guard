@@ -29,5 +29,15 @@
     "attachments": [
       "attachments/ridgeline_price_notice_jan2027.pdf"
     ]
+  },
+  {
+    "id": "D5",
+    "label": "Faxed price sheet, read by OCR (a person checks each price)",
+    "from": "pricing@midwestpolymer.com",
+    "subject": "Fwd: January price sheet (faxed copy)",
+    "body": "Hi,\n\nOur fax machine sent this over this morning; scanned copy of the January sheet attached.\n\nTom Reyes\nMidwest Polymer Supply",
+    "attachments": [
+      "attachments/midwest_price_sheet_fax_jan2027.pdf"
+    ]
   }
 ]

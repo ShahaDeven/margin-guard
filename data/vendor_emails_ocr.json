@@ -1,0 +1,45 @@
+[
+  {
+    "id": "O01",
+    "from": "pricing@midwestpolymer.com",
+    "subject": "Fwd: January price sheet (faxed copy)",
+    "received_at": "2026-11-02T09:10:00",
+    "body": "Hi,\n\nOur fax machine sent this over this morning; scanned copy of the January sheet attached.\n\nTom Reyes\nMidwest Polymer Supply",
+    "attachments": ["attachments/midwest_price_sheet_fax_jan2027.pdf"],
+    "gold": {
+      "outcome": "needs_review",
+      "changes": [
+        {"material_id": "MAT-EPDM-50", "new_cost_per_lb": 2.04, "effective_date": "2027-01-01"},
+        {"material_id": "MAT-EPDM-60", "new_cost_per_lb": 2.15, "effective_date": "2027-01-01"},
+        {"material_id": "MAT-NR-40", "new_cost_per_lb": 1.97, "effective_date": "2027-01-01"}
+      ],
+      "trap": "faxed scan, no text layer, speckle: OCR reads it; three of ours change, SBR 60 unchanged, EPDM 80 not ours; every price goes to a person to check"
+    }
+  },
+  {
+    "id": "O02",
+    "from": "dana.whitfield@fluorotechmaterials.com",
+    "subject": "Price letter",
+    "received_at": "2026-11-02T10:20:00",
+    "body": "Hello,\n\nPhoto of the letter we mailed last week is attached, in case it did not reach purchasing.\n\nDana",
+    "attachments": ["attachments/fluorotech_letter_photo.jpg"],
+    "gold": {
+      "outcome": "needs_review",
+      "changes": [{"material_id": "MAT-FKM-75", "new_cost_per_lb": 15.195344, "effective_date": "2027-02-01"}],
+      "trap": "phone photo of a letter, tilted and unevenly lit, priced per kg: OCR reads it, the price goes to a person to check"
+    }
+  },
+  {
+    "id": "O03",
+    "from": "orders@summitsilicones.com",
+    "subject": "Updated silicone price sheet",
+    "received_at": "2026-11-02T11:00:00",
+    "body": "Hello,\n\nPlease see our updated silicone price sheet, attached. Contact us with any questions.\n\nSummit Silicones",
+    "attachments": ["attachments/summit_price_sheet_scan.pdf"],
+    "gold": {
+      "outcome": "needs_review",
+      "changes": [],
+      "trap": "a scan with nothing OCR can read: no price invented, a person reads the original"
+    }
+  }
+]

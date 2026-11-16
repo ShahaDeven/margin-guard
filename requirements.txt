@@ -9,4 +9,5 @@ uvicorn==0.49.0
 sse-starlette==3.4.4
 openpyxl==3.1.5
 pypdf==6.21.1
+pillow==12.2.0         # OCR: reading scans (Tesseract itself is a separate install; see README)
 httpx==0.28.1

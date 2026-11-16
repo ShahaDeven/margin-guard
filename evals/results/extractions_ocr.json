@@ -1,0 +1,82 @@
+{
+  "O01": {
+    "email_kind": "price_change",
+    "changes": [
+      {
+        "material_text": "EPDM 50",
+        "new_price": 2.04,
+        "price_unit": "lb",
+        "price_in_cents": false,
+        "currency": "USD",
+        "pack_qty": null,
+        "old_price": 1.95,
+        "pct_change": null,
+        "effective_date": "2027-01-01",
+        "source": "attachment"
+      },
+      {
+        "material_text": "EPDM 60",
+        "new_price": 2.15,
+        "price_unit": "lb",
+        "price_in_cents": false,
+        "currency": "USD",
+        "pack_qty": null,
+        "old_price": 2.05,
+        "pct_change": null,
+        "effective_date": "2027-01-01",
+        "source": "attachment"
+      },
+      {
+        "material_text": "EPDM 80",
+        "new_price": 2.42,
+        "price_unit": "lb",
+        "price_in_cents": false,
+        "currency": "USD",
+        "pack_qty": null,
+        "old_price": 2.31,
+        "pct_change": null,
+        "effective_date": "2027-01-01",
+        "source": "attachment"
+      },
+      {
+        "material_text": "NR 40",
+        "new_price": 1.97,
+        "price_unit": "lb",
+        "price_in_cents": false,
+        "currency": "USD",
+        "pack_qty": null,
+        "old_price": 1.88,
+        "pct_change": null,
+        "effective_date": "2027-01-01",
+        "source": "attachment"
+      }
+    ],
+    "confidence": 0.85,
+    "rationale": "Forwarded faxed price sheet (OCR) lists new USD/lb prices effective 2027-01-01; SBR 60 is unchanged so omitted, and the OCR flagged '40' in NR 40 as uncertain but it is reported as scanned."
+  },
+  "O02": {
+    "email_kind": "price_change",
+    "changes": [
+      {
+        "material_text": "FKM 75 fluoroelastomer compound",
+        "new_price": 33.5,
+        "price_unit": "kg",
+        "price_in_cents": false,
+        "currency": "USD",
+        "pack_qty": null,
+        "old_price": 32.63,
+        "pct_change": null,
+        "effective_date": "2027-02-01",
+        "source": "attachment"
+      }
+    ],
+    "confidence": 0.93,
+    "rationale": "The email forwards a photo of a price letter; the OCR text states FKM 75 compound changing from $32.63/kg to $33.50/kg effective 2027-02-01, extracted as written."
+  },
+  "O03": {
+    "email_kind": "other",
+    "changes": [],
+    "confidence": 0.3,
+    "rationale": "The email only refers to an attached updated price sheet, and the attachment (summit_price_sheet_scan.pdf) could not be read because it has no text layer or scanned image, so no prices were extracted and a person needs to review it."
+  }
+}

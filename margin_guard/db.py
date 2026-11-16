@@ -24,4 +24,26 @@ def connect(path: Path | str | None = None) -> sqlite3.Connection:
 
 
 def init_schema(conn: sqlite3.Connection) -> None:
+    _before(conn)
     conn.executescript(SCHEMA_PATH.read_text(encoding="utf-8"))
+    _after(conn)
+
+
+# Changes to a table that already exists in a database built before them. SQLite can't
+# alter a CHECK, so the table is renamed, rebuilt by the schema, and its rows copied back.
+
+def _needs_ocr_state(conn: sqlite3.Connection) -> bool:
+    row = conn.execute("SELECT sql FROM sqlite_master WHERE type = 'table' AND name = 'email_attachments'").fetchone()
+    return bool(row) and "'OCR'" not in row[0]
+
+
+def _before(conn: sqlite3.Connection) -> None:
+    if _needs_ocr_state(conn):              # Nov 2026: attachments read by OCR
+        conn.executescript("DROP INDEX IF EXISTS idx_attachments_email;"
+                           "ALTER TABLE email_attachments RENAME TO email_attachments_pre_ocr;")
+
+
+def _after(conn: sqlite3.Connection) -> None:
+    if conn.execute("SELECT 1 FROM sqlite_master WHERE name = 'email_attachments_pre_ocr'").fetchone():
+        conn.executescript("INSERT INTO email_attachments SELECT * FROM email_attachments_pre_ocr;"
+                           "DROP TABLE email_attachments_pre_ocr;")

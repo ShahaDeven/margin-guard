@@ -3,6 +3,8 @@ import { useEffect, useState } from 'react'
 import { api } from '../lib/api'
 import { ACTION_TEXT, materialLabel, pct, shortDate, unitPrice, usd } from '../lib/format'
 import type { DataCustomer, DataMaterial, DataQuote, QuoteDetail } from '../lib/types'
+import { Segmented } from './Segmented'
+import { ChangeList } from './SyncChanges'
 
 type View = 'quotes' | 'customers' | 'materials'
 type Status = 'open' | 'won' | 'lost' | 'all'
@@ -18,21 +20,6 @@ const STATUS_WORD: Record<string, string> = { open: 'Open', won: 'Won', lost: 'L
 const head = 'border-b border-rule px-4 py-2.5 text-[13px] font-medium text-ink-dim'
 const cell = 'border-b border-rule-soft px-4 py-2.5 align-top'
 const panel = 'rounded-md border border-rule bg-sheet'
-
-function Segmented<T extends string>({ items, value, onChange, label }: {
-  items: { id: T; label: string }[]; value: T; onChange: (v: T) => void; label: string
-}) {
-  return (
-    <div className="inline-flex rounded-sm border border-rule-bright p-0.5" role="group" aria-label={label}>
-      {items.map((x) => (
-        <button key={x.id} type="button" aria-pressed={value === x.id} onClick={() => onChange(x.id)}
-          className={`rounded-[4px] px-3 py-1.5 text-sm transition-colors ${value === x.id ? 'bg-nav-active font-semibold text-go-soft' : 'text-ink hover:text-go-soft'}`}>
-          {x.label}
-        </button>
-      ))}
-    </div>
-  )
-}
 
 /** Read-only view of the shop behind every figure, so any number can be checked. */
 export function DataLane({ asOf, version, focusedQuote, onFocusHandled }: {
@@ -246,6 +233,20 @@ function QuoteRow({ x, cols, showStatus, open, onToggle, version }: {
                     <li key={r.id}>{r.part_name}: {unitPrice(r.old_price)} to {unitPrice(r.new_price)}</li>
                   ))}
                 </ul>
+              </div>
+            ) : null}
+
+            {detail.erp_changes?.length ? (
+              <div>
+                <p className="text-[13px] font-medium text-ink">Changes from Odoo</p>
+                <div className="mt-1 max-w-3xl space-y-3">
+                  {detail.erp_changes.map((ch) => (
+                    <div key={`${ch.sync_id}`}>
+                      <p className="text-[13px] text-ink-dim">Sync of {shortDate(ch.synced_at?.slice(0, 10))}</p>
+                      <ChangeList changes={[ch]} showRecord={false} />
+                    </div>
+                  ))}
+                </div>
               </div>
             ) : null}
 

@@ -23,7 +23,8 @@ materials fits.*
 ## Quick start
 
 Python 3.11+ and Node 20.19+. No API key needed: the commands below replay Claude's answers,
-which are cached in `evals/results/`.
+which are cached in `evals/results/`. [Tesseract](#when-the-price-sheet-is-a-scan-ocr) is optional:
+without it, scanned price sheets go to a person unread.
 
 ```bash
 python -m venv .venv
@@ -114,10 +115,12 @@ quotes the computed prices.
 Violet is Claude, orange is a person, green is the record everything else reads, grey is code.
 Top to bottom:
 
-1. **What comes in:** supplier emails with any attached price list (.xlsx, .csv, .pdf), an
-   accounts-payable invoice export, and the shop's own data (nine CSVs, or the demo seed).
+1. **What comes in:** supplier emails with any attached price list (.xlsx, .csv, .pdf, or a
+   scan or photo), an accounts-payable invoice export, and the shop's own data (nine CSVs, or the
+   demo seed).
 2. **Read, the first AI step:** code turns attachments into text (every sheet's rows; a PDF's
-   text layer). Claude reads the email and that text and reports only what is written.
+   text layer; OCR for a scan). Claude reads the email and that text and reports only what is
+   written.
 3. **Normalize, no AI:** catalog matching, units to $/lb, cents and currency, the sanity bound,
    and the costing supplier. Anything doubtful goes to a person as a one-click question.
 4. **The record:** an append-only event log and the price history, in SQLite. Everything after
@@ -137,9 +140,10 @@ The diagram's source is [`docs/architecture.mmd`](docs/architecture.mmd) (Mermai
 - **Doubt goes to a person, not into a margin.** An ambiguous material ("Black 70" from a
   distributor selling two), a move over 30% (usually a unit slip), a missing date, a price in a
   foreign currency, or low extraction confidence becomes a question, never a guess. Every
-  attachment is marked complete, truncated, unreadable or failed; anything but complete always
-  raises a review, even when the email body gave a valid change, so a partial read is never
-  presented as the whole file.
+  attachment is marked complete, read by OCR, truncated, unreadable or failed; anything but
+  complete always raises a review, even when the email body gave a valid change, so a partial
+  read is never presented as the whole file, and a price read off a scan is never applied
+  unchecked.
 - **Exactly one costing supplier per material, and it fails closed.** A shop can buy EPDM 70
   from two suppliers, but quotes are costed at one price. Every supplier's prices are recorded; only
   the costing supplier's move margins. A distributor's pass-through increase shows as "alternate
@@ -223,6 +227,33 @@ code:
 python -m margin_guard.invoices check data/invoices_demo.csv
 python -m margin_guard.coordinator             # puts the drift cards in front of a person
 ```
+
+### When the price sheet is a scan: OCR
+
+Suppliers still fax price sheets and send phone photos of letters. A scanned PDF (no text layer)
+or an image (.png, .jpg, .tif) is read by OCR: [Tesseract](https://github.com/tesseract-ocr/tesseract),
+run as a program from [`margin_guard/ocr.py`](margin_guard/ocr.py), with a despeckle pass for fax
+noise. Tesseract reports how sure it is of every word, and both go with the text:
+
+- **A reading or nothing.** A scan whose words average under 60% confidence is not a reading;
+  it is marked unreadable and goes to a person, as before. So does every scan when Tesseract
+  isn't installed.
+- **Every price read off a scan is checked by a person** before it moves a quote, whatever part
+  of the email the model says it came from: a misread digit is a wrong price. The demo fax
+  showed why: before the despeckle pass, "1.62" read as "4.62" and "1.97" as "197".
+- **The check is one card per price**: the original one click away, the figures as read in the
+  supplier's own unit ($33.50 per kg), editable, and the price on file beside them. A correction
+  is converted to $/lb in code and recorded next to what OCR read.
+- **A scan that gave no price is read by a person** rather than taken as "nothing to do".
+
+```bash
+# Windows: winget install UB-Mannheim.TesseractOCR    macOS: brew install tesseract    Debian: apt install tesseract-ocr
+python -m evals.eval_extraction --set ocr     # 3 scans: a faxed sheet, a phone photo, a blank scan
+```
+
+On the 3-scan set (a faxed sheet with speckle, a tilted phone photo priced per kg, and a scan
+with nothing to read), Claude and the rules put **4 / 4** prices in front of a person correct to
+the cent with the right dates, and invented nothing from the blank scan.
 
 ### After the increase went out: what the customer did
 
@@ -329,7 +360,8 @@ A left sidebar groups the views, each with its own URL (`#home`, `#decide`, `#le
   lost, and each customer's record.
 - **Setup. Supplier inbox**: each email's status and what it led to ("26 quotes checked, 2 need
   you"), its attachments (each opens the original file), and any price-list rows it left out.
-  **Imports**: an invoice export matched, checked as a dry run, then written in one step, with
+  **Imports**: an invoice export, or a whole shop as nine CSVs, matched, checked as a dry run,
+  then written in one step, with
   earlier imports. **ERP connection**: Odoo's status, what is linked, each sync and every write
   back, with **Sync now** and **Send approved writes**. **Shop data**: quotes, customers and
   materials, so any number can be checked.
@@ -345,6 +377,7 @@ The demo controls (a test supplier email and the agents' live activity) are in a
 | Supplier emails read correctly: 10 harder ones nothing was tuned against | **9 / 10**; the miss was sent to a person, no wrong price got through |
 | Cents, currency and pack emails (regression set, written with the fix) | **7 / 7**: 121¢/lb, 88.5 cents, $ with old price in cents, $/cwt, 50 lb bag; CAD and EUR sent to a person |
 | Price lists and letters as attachments (.xlsx and .pdf; regression set written with the feature) | **4 / 4** changes right (per kg, per cwt, per short ton; grades we don't buy left out). The live run scored 3 / 4 outcomes: Claude called the scanned PDF "other", so a rule now sends any unreadable supplier attachment to a person; 4 / 4 is that same Claude output rescored |
+| Scanned price sheets read by OCR (a faxed sheet, a phone photo, a blank scan; written with the feature) | **4 / 4** prices right to the cent with their dates, each sent to a person to check; nothing invented from the blank scan |
 | Quote decisions on the full shop, vs. an independent copy of the policy | **282 / 282**: 246 settled by rules, 36 judgment calls by Claude, every draft quoting the computed prices |
 | Cards stale because an earlier-dated change arrived later (the demo inbox is out of date order) | **50** restated and re-decided; live cards identical across arrival, date, reverse and random orders |
 | 30 hand-built judgment calls x 3 runs (Claude Sonnet 5.5) | **87 / 90** right, same answer every run, every draft passes its checks |
@@ -416,7 +449,7 @@ Message Batches API).
 
 | Eval | Command | What it checks |
 |---|---|---|
-| Extraction | `python -m evals.eval_extraction [--set holdout\|fresh\|attachments]` | outcome, material, $/lb within 0.5%, date |
+| Extraction | `python -m evals.eval_extraction [--set holdout\|fresh\|attachments\|ocr]` | outcome, material, $/lb within 0.5%, date |
 | Decisions on the shop | `python -m evals.eval_decisions [--replay\|--fill]` | every quote decision vs. the reference policy, and that drafts quote the computed prices |
 | Scenario suite | `python -m evals.eval_scenarios` | 30 edge cases x 3 runs x 2 models: accuracy, consistency, draft checks, cost, calibration, the confidence bar |
 | Reviews | `python -m evals.eval_approvals` | reviewer agreement by confidence; disagreements become regression cases or policy signals |
@@ -431,7 +464,7 @@ cache their model calls, and `--replay` rescores for free.
 
 The offline test suite (`python -m pytest`) makes no API calls. It covers unit conversion and
 Decimal money, catalog matching, supplier-specific costing, the event log, impact maths,
-superseding and restatement, every reviewer action including undo, attachments, invoice drift,
+superseding and restatement, every reviewer action including undo, attachments, OCR, invoice drift,
 the quote check, the leakage report and its trace, the CSV import, the console invoice import,
 customer outcomes, the won-order backlog, the Odoo connector (sync and write-back against a fake
 Odoo), the API, and the eval machinery itself.
@@ -441,6 +474,23 @@ Odoo), the API, and the eval machinery itself.
 A shop is nine CSV files (suppliers, materials, which supplier each material is costed at, price
 history, parts, BOMs, customers, quotes with an optional material buy date, quote lines). [`data/shop_csv/`](data/shop_csv/) is the
 demo shop exported in that format, so it doubles as the template.
+
+In the console, **Imports → A whole shop** takes all nine files at once:
+
+1. **The files.** Each is matched to its kind by name ("Suppliers.csv" fills vendors.csv,
+   "Bill of Materials.csv" fills bom.csv), and any can be pointed at another file by hand.
+2. **Check every row.** The importer's own validation, run as a dry run: each problem listed once
+   by file, row and column (a bad customer row isn't repeated for each of its quotes), or a
+   summary of what would load.
+3. **Load as a new shop.** Into a database of its own in `data/shops/`, all or nothing; the console
+   switches to it, and the sidebar switches back. The sample shop is never written over.
+
+**Try it with** the sample shop's own files, or the same files with four mistakes in them (a
+US-format date, an unknown part, a tier that doesn't exist, a material with no costing supplier).
+
+![Imports, a whole shop: the nine files matched to their kinds, and the check listing four problems by file, row and column](docs/screenshots/shop-import.png)
+
+The command line does the same:
 
 ```bash
 python -m margin_guard.importer check data/shop_csv            # validate only
@@ -528,8 +578,12 @@ after at most three months (`setup --new-key` makes a new one).
   `price_in_cents` and `currency`. The 9 / 10 holdout score is the pre-fix, blind result, kept as
   is; the fix is measured on the separate 7-email set, which was written with the fix and so is
   not blind.
-- **Attachments: text only.** Scanned PDFs, images and legacy .xls files aren't read (no OCR);
-  they're flagged and sent to a person. The 4-email attachment set was written with the feature.
+- **Attachments: no legacy .xls, and OCR in English only.** Scans and photos are read by OCR
+  (Tesseract, English), and every price from them is checked by a person; legacy .xls files
+  aren't read and go to a person. The attachment and OCR sets were written with the features.
+- **An imported shop runs on the console's date.** The demo calendar is fixed (`MG_AS_OF`,
+  Oct 15, 2026); a shop loaded from CSVs is judged as of that date until `MG_AS_OF` is set to
+  today.
 - **Approved decisions are corrected, not reversed.** Pending cards are restated when an
   earlier-dated change lands. A card a person already approved is never changed (prices it wrote
   and messages it queued stay on record). Instead a linked correction card shows the decision's
@@ -554,12 +608,9 @@ after at most three months (`setup --new-key` makes a new one).
 - **Customer outcomes as policy evidence:** a candidate rule such as "don't reprice customers who
   have walked over increases" scored against recorded outcomes, then sent through the promotion
   gate. Today outcomes are only read by people.
-- **OCR for scanned price sheets,** behind the same "unreadable goes to a person" rule.
-- **Shop data through the console:** the nine-CSV onboarding on the same match → check → commit
-  flow as invoice imports (today it is command line only).
 - **A real inbox** (Gmail or Outlook) in place of the demo inbox, and a second ERP adapter
   (ERPNext) behind the same sync.
 
-Stack: Python 3.11, LangGraph, FastAPI + SSE, SQLite (WAL), Odoo 19 Community through its JSON-2 API (httpx), openpyxl and pypdf for attachments,
+Stack: Python 3.11, LangGraph, FastAPI + SSE, SQLite (WAL), Odoo 19 Community through its JSON-2 API (httpx), openpyxl, pypdf and Tesseract OCR for attachments,
 React 19 + Vite + Tailwind 4 with self-hosted Inter and Archivo Narrow, and Claude Sonnet 5.5 through the
 Anthropic SDK with structured outputs.

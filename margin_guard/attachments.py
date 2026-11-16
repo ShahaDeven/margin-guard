@@ -5,16 +5,20 @@ in the email body. Code turns each attachment into text deterministically:
 
     .xlsx / .xlsm   every non-empty row of every sheet, cells joined with " | "
     .csv            as written
-    .pdf            the PDF's text layer, page by page
+    .pdf            the PDF's text layer, page by page; a scan (no text layer) is read by OCR
+    .png .jpg .tif  a photo or scan of a price sheet, read by OCR (see ocr.py)
 
 Claude then reads the email body plus these texts with the same extraction schema,
 so unit conversion, catalog matching and the sanity checks stay in code.
 
-Every attachment carries a state, and only COMPLETE counts as the whole file:
+Every attachment carries a state, and only COMPLETE counts as a reading to trust:
 
     COMPLETE     read in full
+    OCR          read in full from an image by OCR; every price taken from it is shown to
+                 a person to check against the original before it moves a quote
     TRUNCATED    cut at MAX_ROWS rows or MAX_CHARS characters; the rest was not read
-    UNREADABLE   nothing to read: a scan with no text layer, an empty file, or a type we don't read
+    UNREADABLE   nothing to read: a scan OCR couldn't read (or OCR isn't installed), an
+                 empty file, or a type we don't read
     FAILED       the file could not be opened (corrupt, wrong format)
 
 Any state but COMPLETE always puts the email in front of a person, even when other
@@ -27,18 +31,26 @@ from dataclasses import dataclass
 from datetime import date, datetime
 from pathlib import PurePath
 
+from . import ocr
+
 MAX_ROWS = 400            # a price list longer than this is cut, and says so
 MAX_CHARS = 30_000        # per attachment, to keep one email inside one model call
 MIN_PDF_TEXT = 20         # fewer characters than this means "no text layer"
 
-COMPLETE, TRUNCATED, UNREADABLE, FAILED = "COMPLETE", "TRUNCATED", "UNREADABLE", "FAILED"
+COMPLETE, OCR, TRUNCATED, UNREADABLE, FAILED = "COMPLETE", "OCR", "TRUNCATED", "UNREADABLE", "FAILED"
 
 CONTENT_TYPES = {
     ".xlsx": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
     ".xlsm": "application/vnd.ms-excel.sheet.macroEnabled.12",
     ".csv": "text/csv",
     ".pdf": "application/pdf",
+    ".png": "image/png",
+    ".jpg": "image/jpeg",
+    ".jpeg": "image/jpeg",
+    ".tif": "image/tiff",
+    ".tiff": "image/tiff",
 }
+IMAGES = (".png", ".jpg", ".jpeg", ".tif", ".tiff")
 
 
 @dataclass
@@ -108,8 +120,36 @@ def _pdf(data: bytes) -> Rendered:
     pages = [(p.extract_text() or "").strip() for p in reader.pages]
     text = "\n\n".join(f"[page {i}]\n{t}" for i, t in enumerate(pages, start=1) if t)
     if sum(len(t) for t in pages) < MIN_PDF_TEXT:
-        return Rendered("", "PDF has no text layer (looks scanned); it needs a person to read it", UNREADABLE)
+        images = ocr.pdf_images(reader)
+        if not images:
+            return Rendered("", "PDF has no text layer and no scanned image to read; it needs a person", UNREADABLE)
+        return _ocr(images, "PDF has no text layer (a scan)")
     return Rendered(text, None, COMPLETE)
+
+
+def _image(data: bytes) -> Rendered:
+    from PIL import Image
+
+    img = Image.open(io.BytesIO(data))
+    frames = []
+    for i in range(getattr(img, "n_frames", 1)):          # a multi-page TIFF is one scan per page
+        img.seek(i)
+        frames.append(img.copy())
+    return _ocr(frames, "A photo or scan")
+
+
+def _ocr(images: list, what: str) -> Rendered:
+    """An image's text by OCR; UNREADABLE when there's no OCR, or it found nothing it was sure of."""
+    if ocr.tesseract() is None:
+        return Rendered("", f"{what}, and OCR (Tesseract) isn't installed; it needs a person to read it", UNREADABLE)
+    r = ocr.read_images(images)
+    if r.words == 0 or len(r.text) < MIN_PDF_TEXT or r.mean_confidence < ocr.MIN_MEAN:
+        return Rendered("", f"{what} that OCR couldn't read (mean word confidence {r.mean_confidence:.0f}%); "
+                            "it needs a person to read it", UNREADABLE)
+    note = f"read by OCR, mean word confidence {r.mean_confidence:.0f}%"
+    if r.uncertain:
+        note += "; numbers it was unsure of: " + ", ".join(r.uncertain[:8])
+    return Rendered(r.text, note, OCR)
 
 
 def render(filename: str, data: bytes) -> Rendered:
@@ -122,6 +162,8 @@ def render(filename: str, data: bytes) -> Rendered:
             r = _csv(data)
         elif suffix == ".pdf":
             r = _pdf(data)
+        elif suffix in IMAGES:
+            r = _image(data)
         else:
             return Rendered("", f"{suffix or 'this'} attachments are not read", UNREADABLE)
     except Exception as exc:  # a corrupt file must not stop the inbox
@@ -143,6 +185,9 @@ def for_prompt(items: list[tuple[str, Rendered]]) -> str:
             blocks.append(f"{head}\n[could not be read: {r.note}]")
         elif r.state == TRUNCATED:
             blocks.append(f"{head}\n{r.text}\n[INCOMPLETE: {r.note}; the rest of the file was not read]")
+        elif r.state == OCR:
+            blocks.append(f"{head}\n{r.text}\n[This text was {r.note}, from a scanned image: a character may be "
+                          "misread. Report what the scan shows; do not correct it.]")
         else:
             blocks.append(f"{head}\n{r.text}" + (f"\n[note: {r.note}]" if r.note else ""))
     return "\n\n".join(blocks)

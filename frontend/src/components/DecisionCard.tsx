@@ -41,7 +41,7 @@ function whatHappened(f: QuoteFacts, shown: { margin_after: number; margin_floor
 /** The detail panel for one quote Claude made a judgment call on: what happened, the three
  *  numbers that matter, the costs that moved, then the decision. Reasoning, line prices, the
  *  draft and the customer's record are one click away. */
-export function QuoteDetail({ p, bar, k = 1, onReview, onViewQuote }: {
+export function QuoteDetail({ p, bar, k = 1, onReview, onViewQuote, focusMaterial = null }: {
   p: Proposal & { facts: QuoteFacts }
   /** Confidence bar from the scenario eval; report only, never acts. */
   bar: number | null
@@ -49,6 +49,8 @@ export function QuoteDetail({ p, bar, k = 1, onReview, onViewQuote }: {
   k?: number
   onReview: Review
   onViewQuote: (quoteId: string) => void
+  /** The table is filtered to this material: its change is marked, the others say they're also here. */
+  focusMaterial?: string | null
 }) {
   const f = p.facts
   const shown = whatIf(f, k)
@@ -100,12 +102,13 @@ export function QuoteDetail({ p, bar, k = 1, onReview, onViewQuote }: {
 
       <ul className="flex flex-col gap-1.5 rounded-sm bg-ground px-3.5 py-3">
         {changes.map((c) => (
-          <li key={c.material_id}>
+          <li key={c.material_id} className={focusMaterial && changes.length > 1 ? (c.material_id === focusMaterial ? 'font-medium text-ink' : 'text-ink-dim') : ''}>
             {materialLabel(c.material_id)},{' '}
             {c.cost_when_quoted != null && c.cost_after != null
               ? `$${c.cost_when_quoted.toFixed(2)} → $${c.cost_after.toFixed(2)}/lb`
               : signedPct(c.pct_change)}
             {c.effective_date ? `, ${shortDate(c.effective_date)}` : ''}
+            {focusMaterial && changes.length > 1 && c.material_id !== focusMaterial ? ' (also on this quote)' : ''}
           </li>
         ))}
       </ul>

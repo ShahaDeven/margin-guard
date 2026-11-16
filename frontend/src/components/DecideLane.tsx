@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState, type KeyboardEvent as RowKeyEvent, type ReactNode } from 'react'
 
-import { ACTION_TEXT, pct, usd } from '../lib/format'
-import type { Email, Material, Proposal, QuoteFacts, ReviewFacts } from '../lib/types'
+import { ACTION_TEXT, materialLabel, pct, shortDate, usd } from '../lib/format'
+import type { CostChange, Email, Material, Proposal, QuoteFacts, ReviewFacts } from '../lib/types'
 import { isQuote } from '../lib/types'
 import { whatIf } from '../lib/whatif'
 import { QuoteDetail, type Review } from './DecisionCard'
@@ -10,8 +10,16 @@ import { ReviewCard } from './ReviewCard'
 const WHAT_IF = [1, 1.25, 1.5, 2]
 
 type Basic = 'all' | 'below' | 'contact_customer' | 'reprice' | 'questions'
-/** What the table shows; `customer:{id}` comes from a Home link. */
-export type DecideFilter = Basic | `customer:${string}`
+/** What the table shows; `customer:{id}` comes from a Home link, `material:{id}` from the
+ *  filter or from a price change the ERP sync brought in. */
+export type DecideFilter = Basic | `customer:${string}` | `material:${string}`
+
+/** Every material whose cost moved on this card, the one that triggered it first. */
+const movedOn = (f: QuoteFacts) => (f.cost_changes?.length ? f.cost_changes.map((c) => c.material_id) : [f.material_id])
+
+/** Does the card concern this material: a quote it moved, or a supplier question about it? */
+const concerns = (p: Proposal, m: string) =>
+  isQuote(p) ? movedOn(p.facts).includes(m) : (p.facts as ReviewFacts).material_id === m
 const FILTERS: { id: Basic; label: string }[] = [
   { id: 'all', label: 'Everything' },
   { id: 'below', label: 'Under the floor' },
@@ -23,7 +31,9 @@ const FILTERS: { id: Basic; label: string }[] = [
 const plural = (n: number, one: string, many = `${one}s`) => `${n} ${n === 1 ? one : many}`
 
 /** An outline button that opens a small panel under it; closes on outside click or Escape. */
-function Popover({ label, active, children }: { label: string; active?: boolean; children: (close: () => void) => ReactNode }) {
+function Popover({ label, active, wide, children }: {
+  label: string; active?: boolean; wide?: boolean; children: (close: () => void) => ReactNode
+}) {
   const [open, setOpen] = useState(false)
   const ref = useRef<HTMLDivElement>(null)
   useEffect(() => {
@@ -42,7 +52,7 @@ function Popover({ label, active, children }: { label: string; active?: boolean;
         {label}
       </button>
       {open ? (
-        <div className="absolute right-0 z-30 mt-2 w-72 rounded-md border border-rule bg-sheet p-2 shadow-[0_12px_32px_rgba(0,0,0,0.35)]">
+        <div className={`absolute right-0 z-30 mt-2 max-h-[75vh] overflow-y-auto rounded-md border border-rule bg-sheet p-2 shadow-[0_12px_32px_rgba(0,0,0,0.35)] ${wide ? 'w-[22rem] max-w-[calc(100vw-2rem)]' : 'w-72'}`}>
           {children(() => setOpen(false))}
         </div>
       ) : null}
@@ -77,7 +87,9 @@ function reviewRow(p: Proposal, inbox: Email[]) {
       risk: f.overpaid_usd != null ? usd(f.overpaid_usd) : '' }
   }
   return { name: email?.vendor_name ?? f.vendor_name ?? email?.from_addr ?? 'Supplier email',
-    sub: email?.subject ?? p.event.email_subject ?? `Email ${f.email_id}`, risk: '' }
+    // One row per price read off a scan, so each says which price it is.
+    sub: f.ocr && f.material_text ? `Price read from a scan: ${f.material_text}`
+      : email?.subject ?? p.event.email_subject ?? `Email ${f.email_id}`, risk: '' }
 }
 
 /** The estimator's screen: every decision waiting, one row each, and the selected one in
@@ -93,7 +105,7 @@ export function DecideLane({ cards, inbox, materials, arrived, bar, notice, filt
   filter: DecideFilter
   setFilter: (f: DecideFilter) => void
   onReview: (id: number) => Review
-  onResolve: (id: number, materialId: string) => void
+  onResolve: (id: number, materialId: string, fix?: { price?: number; effective_date?: string }) => void
   onDismiss: (id: number, note?: string) => void
   onRedecide: (id: number) => void
   onForceErp: (outboxId: number) => void
@@ -110,6 +122,7 @@ export function DecideLane({ cards, inbox, materials, arrived, bar, notice, filt
       if (filter === 'all') return true
       if (filter === 'questions') return p.kind === 'event_review'
       if (filter.startsWith('customer:')) return isQuote(p) && p.facts.customer_id === filter.slice(9)
+      if (filter.startsWith('material:')) return concerns(p, filter.slice(9))
       if (!isQuote(p)) return false
       if (filter === 'below') return p.facts.margin_after < p.facts.margin_floor
       return p.action === filter
@@ -146,9 +159,28 @@ export function DecideLane({ cards, inbox, materials, arrived, bar, notice, filt
   }, [rows, selected])
 
   const below = quotes.filter((p) => p.facts.margin_after < p.facts.margin_floor).length
+  const focusMaterial = filter.startsWith('material:') ? filter.slice(9) : null
+  // The price changes behind the open cards, the way Settled by rules groups them: one entry per
+  // material, with its move and how many cards it is on.
+  const byMaterial = useMemo(() => {
+    const seen = new Map<string, { id: string; n: number; move: string }>()
+    for (const p of quotes) {
+      for (const c of p.facts.cost_changes?.length ? p.facts.cost_changes : [{ material_id: p.facts.material_id } as CostChange]) {
+        const e = seen.get(c.material_id) ?? { id: c.material_id, n: 0, move: '' }
+        e.n += 1
+        // Each quote was costed on its own date, so only the new price and its date are shared.
+        if (!e.move && c.cost_after != null) {
+          e.move = `to $${c.cost_after.toFixed(2)}/lb${c.effective_date ? ` from ${shortDate(c.effective_date)}` : ''}`
+        }
+        seen.set(c.material_id, e)
+      }
+    }
+    return [...seen.values()].sort((a, b) => b.n - a.n)
+  }, [quotes])
   const filterLabel = filter.startsWith('customer:')
     ? quotes.find((p) => p.facts.customer_id === filter.slice(9))?.facts.customer_name ?? 'one customer'
-    : FILTERS.find((x) => x.id === filter)?.label.toLowerCase() ?? ''
+    : focusMaterial ? materialLabel(focusMaterial)
+      : FILTERS.find((x) => x.id === filter)?.label.toLowerCase() ?? ''
   const atRisk = quotes.reduce((s, p) => s + p.facts.exposure_usd, 0)
   const summary = [
     quotes.length === below
@@ -172,12 +204,25 @@ export function DecideLane({ cards, inbox, materials, arrived, bar, notice, filt
           ) : null}
         </div>
         <div className="flex gap-2">
-          <Popover label={filter === 'all' ? 'Filter' : `Filter: ${filterLabel}`} active={filter !== 'all'}>
+          <Popover label={filter === 'all' ? 'Filter' : `Filter: ${filterLabel}`} active={filter !== 'all'} wide>
             {(close) => (
               <div role="menu" aria-label="Show">
                 {FILTERS.map((x) => (
                   <Choice key={x.id} on={filter === x.id} onClick={() => { setFilter(x.id); close() }}>{x.label}</Choice>
                 ))}
+                {byMaterial.length ? (
+                  <>
+                    <p className="mt-1.5 border-t border-rule px-2.5 pb-1 pt-2 text-[13px] text-ink-dim">By price change</p>
+                    {byMaterial.map((m) => (
+                      <Choice key={m.id} on={focusMaterial === m.id} onClick={() => { setFilter(`material:${m.id}`); close() }}>
+                        <span className="flex justify-between gap-4">
+                          <span>{materialLabel(m.id)}<span className="text-ink-dim">{m.move ? `, ${m.move}` : ''}</span></span>
+                          <span className="text-ink-dim">{m.n}</span>
+                        </span>
+                      </Choice>
+                    ))}
+                  </>
+                ) : null}
               </div>
             )}
           </Popover>
@@ -234,6 +279,11 @@ export function DecideLane({ cards, inbox, materials, arrived, bar, notice, filt
                       <td className="border-b border-rule-soft px-4 py-3.5">
                         <div className="font-semibold">{f.customer_name}</div>
                         <div className="text-[13px] text-ink-dim">{f.quote_id}, {usd(f.quote_value_usd)}</div>
+                        {focusMaterial && movedOn(f).length > 1 ? (
+                          <div className="text-[13px] text-ink-dim">
+                            Also on this quote: {movedOn(f).filter((m) => m !== focusMaterial).map(materialLabel).join(', ')}
+                          </div>
+                        ) : null}
                       </td>
                       <td className="border-b border-rule-soft px-4 py-3.5">
                         <div>{pct(s.margin_after)}</div>
@@ -258,14 +308,14 @@ export function DecideLane({ cards, inbox, materials, arrived, bar, notice, filt
             <aside ref={panel} aria-label="Selected decision"
               className="min-w-0 flex-[2_1_340px] scroll-mt-4 rounded-md border border-rule bg-sheet p-[22px] lg:sticky lg:top-4 lg:max-h-[calc(100vh-2rem)] lg:overflow-y-auto">
               {isQuote(selected) ? (
-                <QuoteDetail key={selected.id} p={selected} bar={bar} k={k} onReview={onReview(selected.id)} onViewQuote={onViewQuote} />
+                <QuoteDetail key={selected.id} p={selected} bar={bar} k={k} onReview={onReview(selected.id)} onViewQuote={onViewQuote} focusMaterial={focusMaterial} />
               ) : (
                 <ReviewCard
                   key={selected.id}
                   p={selected}
                   email={inbox.find((m) => m.id === (selected.facts as ReviewFacts).email_id)}
                   materials={materials}
-                  onResolve={(mat) => onResolve(selected.id, mat)}
+                  onResolve={(mat, fix) => onResolve(selected.id, mat, fix)}
                   onDismiss={(note) => onDismiss(selected.id, note)}
                   onRedecide={() => onRedecide(selected.id)}
                   onForceErp={onForceErp}

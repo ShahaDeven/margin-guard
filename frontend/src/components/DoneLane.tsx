@@ -1,7 +1,8 @@
 import { useState } from 'react'
 
-import { ACTION_TEXT, pct, usd } from '../lib/format'
-import type { OutboxItem, OutcomeBody, Proposal, QuoteFacts, ReviewFacts } from '../lib/types'
+import { ACTION_TEXT, materialLabel, pct, shortDate, usd } from '../lib/format'
+import type { Email, OutboxItem, OutcomeBody, Proposal, QuoteFacts, ReviewFacts } from '../lib/types'
+import { Attachments } from './Attachments'
 import { Button } from './Button'
 import { askedFor, CustomerRecordLine, OutcomeBadge, OutcomeControl } from './Outcomes'
 import { Contact, CostChanges, LinesTable } from './QuoteParts'
@@ -15,8 +16,9 @@ const STATUS_TONE: Record<string, string> = {
 
 /** The record: what each person decided next to what was proposed, plus what
  *  went out. Any row opens to the full detail and can be undone. */
-export function DoneLane({ cards, outbox, onReopen, onViewQuote, onRecord, onUndoOutcome }: {
+export function DoneLane({ cards, inbox = [], outbox, onReopen, onViewQuote, onRecord, onUndoOutcome }: {
   cards: Proposal[]
+  inbox?: Email[]
   outbox: OutboxItem[]
   onReopen: (id: number) => void
   onViewQuote: (quoteId: string) => void
@@ -33,7 +35,7 @@ export function DoneLane({ cards, outbox, onReopen, onViewQuote, onRecord, onUnd
         {cards.length ? (
           <ul className="divide-y divide-rule rounded-sm border border-rule bg-sheet">
             {cards.map((p) => (
-              <DoneRow key={p.id} p={p} open={openId === p.id} onToggle={() => setOpenId(openId === p.id ? null : p.id)} onReopen={() => onReopen(p.id)} onViewQuote={onViewQuote} onRecord={onRecord} onUndoOutcome={onUndoOutcome} />
+              <DoneRow key={p.id} p={p} email={inbox.find((m) => m.id === (p.facts as ReviewFacts).email_id)} open={openId === p.id} onToggle={() => setOpenId(openId === p.id ? null : p.id)} onReopen={() => onReopen(p.id)} onViewQuote={onViewQuote} onRecord={onRecord} onUndoOutcome={onUndoOutcome} />
             ))}
           </ul>
         ) : <Empty text="Nothing decided yet." />}
@@ -65,8 +67,9 @@ export function DoneLane({ cards, outbox, onReopen, onViewQuote, onRecord, onUnd
   )
 }
 
-function DoneRow({ p, open, onToggle, onReopen, onViewQuote, onRecord, onUndoOutcome }: {
+function DoneRow({ p, email, open, onToggle, onReopen, onViewQuote, onRecord, onUndoOutcome }: {
   p: Proposal
+  email?: Email
   open: boolean
   onToggle: () => void
   onReopen: () => void
@@ -76,7 +79,7 @@ function DoneRow({ p, open, onToggle, onReopen, onViewQuote, onRecord, onUndoOut
 }) {
   const isQuote = p.kind === 'quote_action'
   const f = p.facts as QuoteFacts
-  const label = isQuote ? `${p.quote_id} · ${f.customer_name}` : `Supplier email ${(p.facts as ReviewFacts).email_id}`
+  const label = isQuote ? `${p.quote_id} · ${f.customer_name}` : reviewLabel(p, email)
   const final = p.final_action ?? p.action
   const changedAction = p.final_action && p.final_action !== p.action
   const body = p.final_body ?? p.draft_body
@@ -92,13 +95,14 @@ function DoneRow({ p, open, onToggle, onReopen, onViewQuote, onRecord, onUndoOut
         <span className={`rounded border px-1.5 py-px font-label text-[12px] uppercase tracking-wider ${STATUS_TONE[p.status] ?? ''}`}>{p.status}</span>
         <span className="text-ink">{label}</span>
         <span className="text-ink-dim">
-          {changedAction
+          {!isQuote ? reviewVerdict(p)
+            : changedAction
             ? <>proposed {ACTION_TEXT[p.action].short} → <span className="font-semibold text-ink-bright">{ACTION_TEXT[p.final_action!].short}</span></>
             : ACTION_TEXT[final].short}
         </span>
         {p.outcome ? <OutcomeBadge o={p.outcome} /> : awaiting ? <span className="font-label text-[12px] text-attn">waiting for the customer</span> : null}
-        <span className="ml-auto font-label text-[12px] text-ink-dim">{p.decided_by === 'rule' ? 'rule' : p.decided_by === 'llm' ? 'Claude' : ''}</span>
-        {p.reviewer_note ? <span className="w-full text-xs italic text-ink-dim">“{p.reviewer_note}”</span> : null}
+        <span className="ml-auto font-label text-[12px] text-ink-dim">{!isQuote ? 'a person' : p.decided_by === 'rule' ? 'rule' : p.decided_by === 'llm' ? 'Claude' : ''}</span>
+        {p.reviewer_note && isQuote ? <span className="w-full text-xs italic text-ink-dim">“{p.reviewer_note}”</span> : null}
       </button>
 
       {open ? (
@@ -158,11 +162,76 @@ function DoneRow({ p, open, onToggle, onReopen, onViewQuote, onRecord, onUndoOut
                 </span>
               </div>
             </>
-          ) : (
-            <p className="text-sm text-ink">{p.rationale}</p>
-          )}
+          ) : <ReviewDone p={p} email={email} />}
         </div>
       ) : null}
     </li>
+  )
+}
+
+/** What a supplier question was about, in a row: who sent it and what it asked. */
+function reviewLabel(p: Proposal, email?: Email): string {
+  const f = p.facts as ReviewFacts
+  const who = email?.vendor_name ?? f.vendor_name ?? email?.from_addr
+  if (f.kind === 'erp_conflict') return `Odoo · ${f.quote_id ? `${f.quote_id}: ` : ''}${(f.summary ?? 'a refused write').replace(/^Odoo /, '')}`
+  if (f.kind === 'invoice_drift') return `${who ?? 'Supplier invoice'} · invoice billed above the price on file`
+  if (f.kind === 'correction') return `${f.quote_id ?? 'A decision'} · missed a later price change`
+  if (f.ocr) return `${who ?? 'Supplier'} · price read from a scan: ${f.material_text ?? materialLabel(f.material_id)}`
+  return `${who ?? 'Supplier email'} · ${email?.subject ?? p.event?.email_subject ?? 'a supplier email'}`
+}
+
+/** What the person did with it, in words. */
+function reviewVerdict(p: Proposal): string {
+  const f = p.facts as ReviewFacts
+  const r = p.resolved
+  if (p.status === 'rejected') return 'Dismissed'
+  if (f.kind === 'erp_conflict') return p.reviewer_note === 'Kept what Odoo has' ? "Kept Odoo's version" : 'Written to Odoo anyway'
+  if (!r) return p.reviewer_note === 'Kept the original decision' ? 'Kept the decision' : 'Closed'
+  return r.corrected_by_person ? 'Applied with corrections' : 'Applied as a price change'
+}
+
+const lb = (v: number | null | undefined) => (v == null ? 'no price' : `$${v.toFixed(v < 10 ? 4 : 2)}/lb`)
+
+/** A supplier question after a person answered it: the question, the file it came from, what
+ *  was read, and what was applied, with any correction next to the original reading. */
+function ReviewDone({ p, email }: { p: Proposal; email?: Email }) {
+  const f = p.facts as ReviewFacts
+  const r = p.resolved
+  const fixed = r?.corrected_by_person
+  return (
+    <div className="space-y-3 text-sm">
+      <ul className="list-disc space-y-0.5 pl-5 text-ink marker:text-attn">
+        {(f.review_reasons ?? [p.rationale]).map((x) => <li key={x}>{x.charAt(0).toUpperCase() + x.slice(1)}.</li>)}
+      </ul>
+      {email ? (
+        <div className="space-y-1.5">
+          <p className="text-[13px] text-ink-dim">From {email.vendor_name ?? email.from_addr}: “{email.subject}”</p>
+          <Attachments files={email.attachments} />
+        </div>
+      ) : null}
+      {f.new_cost_per_lb != null || f.effective_date ? (
+        <p className="text-ink-dim">
+          {f.ocr ? 'Read from the scan' : 'Read from the email'}: {f.material_text ? `"${f.material_text}", ` : ''}{lb(f.new_cost_per_lb)}
+          {f.effective_date ? ` from ${shortDate(f.effective_date)}` : ''}
+        </p>
+      ) : null}
+      {r ? (
+        <p className="text-ink">
+          Applied: {materialLabel(r.material_id)}, {lb(r.old_cost_per_lb)} → <span className="font-semibold text-ink-bright">{lb(r.new_cost_per_lb)}</span>
+          {r.effective_date ? ` from ${shortDate(r.effective_date)}` : ''}, as price change #{r.event_id}.
+        </p>
+      ) : null}
+      {fixed?.price || fixed?.effective_date ? (
+        <ul className="space-y-0.5 text-[13px] text-attn">
+          {fixed.price ? <li>Price corrected by the reviewer: {lb(fixed.price.was)} as read → {lb(fixed.price.now)} (${fixed.price.quoted} per {fixed.price.unit})</li> : null}
+          {fixed.effective_date ? <li>Date corrected by the reviewer: {shortDate(fixed.effective_date.was)} as read → {shortDate(fixed.effective_date.now)}</li> : null}
+        </ul>
+      ) : null}
+      {r ? (
+        <p className="font-label text-[12px] text-ink-dim">
+          A price change that has run can't be taken back here; a later price notice from the supplier replaces it.
+        </p>
+      ) : null}
+    </div>
   )
 }

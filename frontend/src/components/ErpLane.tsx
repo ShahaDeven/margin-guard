@@ -4,6 +4,7 @@ import { api } from '../lib/api'
 import type { ErpStatus } from '../lib/types'
 import { Button } from './Button'
 import { Empty } from './RulesLane'
+import { ChangeList } from './SyncChanges'
 
 const head = 'border-b border-rule px-4 py-2.5 text-[13px] font-medium text-ink-dim'
 const cell = 'border-b border-rule-soft px-4 py-2.5 align-top'
@@ -27,24 +28,42 @@ const when = (iso: string | null) => {
 /** One sync, in one sentence: what came in, what it raised, what needs a look. */
 function syncSentence(s: ErpStatus['syncs'][number]['summary']): string {
   const k = s.kinds ?? {}
-  const changed = Object.values(k).reduce((n, c) => n + (c.applied ?? 0) + (c.added ?? 0) + (c.line_applied ?? 0) + (c.line_added ?? 0), 0)
+  // Vendor bill lines are counted on their own below ("checked"), not as changes.
+  const changed = Object.entries(k).filter(([kind]) => kind !== 'bill_line')
+    .reduce((n, [, c]) => n + (c.applied ?? 0) + (c.added ?? 0) + (c.line_applied ?? 0) + (c.line_added ?? 0), 0)
   const parts = [
     changed ? `${changed} change${changed === 1 ? '' : 's'} applied` : 'nothing new to apply',
     s.events?.length ? `${s.events.length} new supplier price${s.events.length === 1 ? '' : 's'} sent to the agents` : '',
     s.invoice?.lines ? `${s.invoice.lines} vendor bill line${s.invoice.lines === 1 ? '' : 's'} checked, ${s.invoice.drifts} drift question${s.invoice.drifts === 1 ? '' : 's'}` : '',
   ].filter(Boolean)
+  const named = (s.changes ?? []).filter((c) => c.outcome !== 'no_effect' && c.outcome !== 'already_on_file')
+  const untouched = (s.changes ?? []).filter((c) => c.outcome === 'no_effect').length
+  if (!changed && untouched) parts[0] = `${untouched} edit${untouched === 1 ? '' : 's'} in Odoo, none to anything Margin Guard reads`
   const text = parts.join(', ')
-  return `${text[0].toUpperCase()}${text.slice(1)}.`
+  const which = named.length ? `: ${named.slice(0, 2).map((c) => c.record.split(',')[0]).join(', ')}${named.length > 2 ? ` and ${named.length - 2} more` : ''}` : ''
+  return `${text[0].toUpperCase()}${text.slice(1)}${which}.`
 }
 
 /** The ERP connection: whether Odoo is reachable, what is linked, what came in and what went out. */
-export function ErpLane({ version, busy, run }: { version: number; busy: boolean; run: (fn: () => Promise<unknown>) => void }) {
+export function ErpLane({ version, busy, run, onViewQuote, onOpenLane }: {
+  version: number
+  busy: boolean
+  run: (fn: () => Promise<unknown>) => void
+  onViewQuote: (quoteId: string) => void
+  onOpenLane: (lane: 'decide' | 'data', material?: string) => void
+}) {
   const [s, setS] = useState<ErpStatus | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [open, setOpen] = useState<number | null>(null)
 
   useEffect(() => {
-    api.erp().then((r) => { setS(r); setError(null) }).catch((e) => setError(String(e)))
+    api.erp().then((r) => {
+      setS(r)
+      setError(null)
+      // The newest sync opens by itself when it changed something, so its trace is the first thing seen.
+      const newest = r.syncs[0]
+      if (newest && (newest.summary.changes ?? []).length) setOpen(newest.id)
+    }).catch((e) => setError(String(e)))
   }, [version])
 
   if (error) return <Empty text={`Could not load the ERP connection: ${error}`} />
@@ -98,12 +117,13 @@ export function ErpLane({ version, busy, run }: { version: number; busy: boolean
 
         <section className="flex min-w-0 flex-col gap-2">
           <h3 className="text-lg font-semibold text-ink">Syncs</h3>
-          <p className="text-[13px] text-ink-dim">What came in from Odoo, newest first. Click one for its conflicts and notes.</p>
+          <p className="text-[13px] text-ink-dim">What came in from Odoo, newest first. Click one for what it changed and where.</p>
           {s.syncs.length ? (
             <ul className={`${panel} overflow-hidden`}>
               {s.syncs.map((x) => {
                 const conflicts = x.summary.conflicts ?? []
                 const notes = x.summary.notes ?? []
+                const changes = x.summary.changes
                 const isOpen = open === x.id
                 return (
                   <li key={x.id} className="border-b border-rule-soft last:border-b-0">
@@ -115,9 +135,18 @@ export function ErpLane({ version, busy, run }: { version: number; busy: boolean
                         {when(x.finished_at)}
                       </span>
                     </button>
-                    {isOpen && (conflicts.length || notes.length) ? (
-                      <div className="space-y-2 bg-ground/40 px-4 py-3 text-[13px]">
-                        {conflicts.length ? (
+                    {isOpen ? (
+                      <div className="space-y-3 bg-ground/40 px-4 py-3 text-[13px]">
+                        {changes === undefined ? (
+                          <p className="text-ink-dim">What this sync changed wasn't recorded (syncs before Nov 16 kept counts only).</p>
+                        ) : changes.length ? (
+                          <div>
+                            <p className="mb-2 font-medium text-ink">What changed, and where it landed</p>
+                            <ChangeList changes={changes} onViewQuote={onViewQuote} onOpenLane={onOpenLane} />
+                            {x.summary.changes_cut ? <p className="mt-2 text-ink-dim">and {x.summary.changes_cut} more, not listed.</p> : null}
+                          </div>
+                        ) : <p className="text-ink-dim">No record changed: everything Odoo sent matched what Margin Guard already had.</p>}
+                        {conflicts.length > 0 && !changes ? (
                           <div><p className="font-medium text-ink">Conflicts, Margin Guard's kept</p>
                             <ul className="list-disc pl-5 text-ink-dim">{conflicts.map((c) => <li key={c}>{c}</li>)}</ul></div>
                         ) : null}
@@ -126,7 +155,7 @@ export function ErpLane({ version, busy, run }: { version: number; busy: boolean
                             <ul className="list-disc pl-5 text-ink-dim">{notes.map((n) => <li key={n}>{n}</li>)}</ul></div>
                         ) : null}
                       </div>
-                    ) : isOpen ? <p className="bg-ground/40 px-4 py-3 text-[13px] text-ink-dim">No conflicts or notes.</p> : null}
+                    ) : null}
                   </li>
                 )
               })}

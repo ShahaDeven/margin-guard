@@ -12,7 +12,7 @@ const weekday = (iso: string) => new Date(`${iso}T12:00:00`).toLocaleDateString(
 
 /** Where a Home link goes: a lane, and what to show there first. */
 export type HomeTarget =
-  | { lane: 'decide'; filter?: 'questions' | `customer:${string}` }
+  | { lane: 'decide'; filter?: 'questions' | `customer:${string}` | `material:${string}` }
   | { lane: 'rules' | 'done' }
   | { lane: 'leakage'; tab: 'orders' | 'leaked'; material?: string; quote?: string }
 

@@ -1,5 +1,8 @@
+import { useEffect, useState } from 'react'
+
+import { api } from '../lib/api'
 import type { Lane } from '../lib/api'
-import type { Overview } from '../lib/types'
+import type { Overview, ShopListing } from '../lib/types'
 
 type Item = { id: Lane; label: string; count?: (ov: Overview) => number }
 
@@ -60,7 +63,7 @@ export function NavSidebar({ lane, setLane, ov, busy, onOpenDemo }: {
       </div>
 
       <div className="rounded-sm border border-dashed border-rule-bright px-2.5 py-3 text-[13px] text-ink-dim lg:mt-auto">
-        <p>Sample shop, synthetic data.</p>
+        <ShopSwitch busy={busy} />
         <button type="button" onClick={onOpenDemo} className="text-go hover:text-go-soft">Open demo controls</button>
         {/* Only while the agents run: approving or sending can take a few seconds to show up. */}
         <p className={`mt-1 items-center gap-2 text-attn ${busy ? 'flex' : 'hidden'}`} role="status">
@@ -87,5 +90,30 @@ function NavItem({ item, lane, setLane, ov }: { item: Item; lane: Lane; setLane:
       {item.label}
       {n != null ? <span className={on ? '' : 'text-ink-dim'}>{n}</span> : null}
     </button>
+  )
+}
+
+/** Which shop the console is on, and the way to another. The sample shop is synthetic;
+ *  a shop loaded from CSVs (Imports) is the person's own. */
+function ShopSwitch({ busy }: { busy: boolean }) {
+  const [list, setList] = useState<ShopListing | null>(null)
+  useEffect(() => { api.shops().then(setList).catch(() => {}) }, [])
+  const current = list?.shops.find((s) => s.id === list.current)
+  const go = (id: string) => api.switchShop(id).then(() => { window.location.hash = 'home'; window.location.reload() })
+
+  return (
+    <>
+      <p>{!current || current.synthetic ? 'Sample shop, synthetic data.' : <><span className="text-ink">{current.name}</span>, loaded from CSV.</>}</p>
+      {list && list.shops.length > 1 ? (
+        <label className="mb-1 mt-1.5 block">
+          <span className="sr-only">Switch shop</span>
+          <select value={list.current ?? ''} disabled={busy} onChange={(e) => go(e.target.value)}
+            className="w-full rounded-sm border border-rule-bright bg-ground px-2 py-1.5 text-[13px] text-ink outline-none focus:border-go">
+            {list.current ? null : <option value="">Another database</option>}
+            {list.shops.map((s) => <option key={s.id} value={s.id}>{s.synthetic ? 'Sample shop' : s.name}</option>)}
+          </select>
+        </label>
+      ) : null}
+    </>
   )
 }

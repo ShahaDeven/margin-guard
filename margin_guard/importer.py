@@ -192,7 +192,7 @@ TABLES = [
 DEFAULTS = {"tier": "standard", "scrap_rate": 0.0, "aliases": "[]", "is_costing": 0}
 
 
-def _read(folder: Path, t: Table, problems: list[str]) -> list[dict]:
+def _read(folder: Path, t: Table, problems: list[str], rejected: set | None = None) -> list[dict]:
     path = folder / t.file
     if not path.exists():
         problems.append(f"{t.file}: file missing")
@@ -224,13 +224,17 @@ def _read(folder: Path, t: Table, problems: list[str]) -> list[dict]:
                     ok = False
             if ok:
                 rows.append(row)
+            elif t.key and rejected is not None:
+                # Its problem is already listed; references to it shouldn't each list it again.
+                rejected.add(raw.get(t.key[0], "").strip())
         return rows
 
 
 def validate(folder: Path) -> tuple[dict[str, list[dict]], list[str]]:
     """Parse and cross-check every file. Returns (rows by file, problems)."""
     problems: list[str] = []
-    data = {t.file: _read(folder, t, problems) for t in TABLES}
+    rejected: dict[str, set] = {t.file: set() for t in TABLES}
+    data = {t.file: _read(folder, t, problems, rejected[t.file]) for t in TABLES}
     keys = {t.file: set() for t in TABLES}
     for t in TABLES:
         for r in data[t.file]:
@@ -243,7 +247,7 @@ def validate(folder: Path) -> tuple[dict[str, list[dict]], list[str]]:
     for t in TABLES:
         for r in data[t.file]:
             for col, target in t.refs.items():
-                if r[col] is not None and r[col] not in ids[target]:
+                if r[col] is not None and r[col] not in ids[target] and r[col] not in rejected[target]:
                     problems.append(f"{t.file} row {r['_row']}, {col}: {r[col]!r} is not in {target}")
 
     costing: dict[str, list] = {}

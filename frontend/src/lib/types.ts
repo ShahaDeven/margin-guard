@@ -55,7 +55,11 @@ export interface CostChange {
 export interface ReviewFacts {
   /** 'invoice_drift': from an invoice. 'correction': an approved decision a later change affects.
    *  'incomplete_attachment': a supplier file that wasn't read in full. */
-  kind?: 'invoice_drift' | 'correction' | 'incomplete_attachment' | 'erp_conflict'
+  kind?: 'invoice_drift' | 'correction' | 'incomplete_attachment' | 'erp_conflict' | 'ocr_no_prices'
+  /** A price read off a scan by OCR: which files, and how sure the OCR was. */
+  ocr?: { files: string[]; notes: string[] }
+  /** The price as the supplier wrote it, before conversion to $/lb. */
+  quoted?: { price: number | null; unit: string | null; pack_qty: number | null; currency: string; pct_change: number | null; old_price: number | null }
   /** erp_conflict: the queued write Odoo refused, and which kind it was. */
   outbox_id?: number
   write?: 'quote_prices' | 'call_task' | 'supplier_price'
@@ -113,6 +117,8 @@ export interface Proposal {
   outcome?: Outcome | null
   /** How this customer has taken price increases before (for people; the model never sees it). */
   customer_record?: CustomerRecord | null
+  /** Done lane, supplier questions: the price change a person's answer became. */
+  resolved?: ResolvedChange | null
   event: {
     material_id: string | null
     effective_date: string | null
@@ -312,6 +318,8 @@ export interface QuoteDetail {
     materials: string
   }[]
   revisions: { id: number; part_name: string; old_price: number; new_price: number; created_at: string }[]
+  /** What Odoo changed on this quote, newest sync first. */
+  erp_changes: (SyncChange & { sync_id: number; synced_at: string | null })[]
   cards: {
     id: number
     action: Action
@@ -586,9 +594,70 @@ export interface ErpStatus {
     started_at: string
     finished_at: string | null
     summary: { kinds?: Record<string, SyncCounts>; conflicts?: string[]; notes?: string[]; events?: number[];
+               changes?: SyncChange[]; changes_cut?: number;
                invoice?: { lines: number; above: number; drifts: number; overpaid_usd: number } | null }
   }[]
   writes: { id: number; kind: string; status: string; detail: string | null; created_at: string; sent_at: string | null; label: string }[]
   write_counts: Record<string, number>
   agents_busy: boolean
+}
+
+export interface Shop {
+  id: string
+  name: string
+  synthetic: boolean
+  created_at: string | null
+  counts: { open: number; won: number; customers: number; materials: number } | null
+}
+
+export interface ShopListing {
+  current: string | null
+  shops: Shop[]
+  as_of: string
+}
+
+export interface ShopCheck {
+  slots: { file: string; label: string; holds: string; uploaded: string | null; rows: number | null }[]
+  unused: string[]
+  problems: { file: string | null; row: number | null; column: string | null; message: string }[]
+  valid: boolean
+  summary: {
+    rows: Record<string, number>
+    quotes: { open: number; won: number; lost: number; expired: number }
+    first_quote: string | null
+    last_quote: string | null
+    computed_bases: number
+  } | null
+}
+
+export interface ShopCreated { id: string; name: string; created_at: string; rows: Record<string, number> }
+
+/** One field a sync changed. */
+export interface SyncField { field: string; label: string; from: unknown; to: unknown }
+
+/** One record a sync changed, and where the change landed (erp/sync.py). */
+export interface SyncChange {
+  kind: string
+  outcome: 'applied' | 'added' | 'removed' | 'conflict' | 'new_price' | 'already_on_file' | 'no_effect' | string
+  record: string
+  ref: string
+  fields: SyncField[]
+  where: { lane: string; quote?: string; material?: string } | null
+  lines?: SyncChange[]
+  margin?: { from: number | null; to: number | null; floor: number | null } | null
+  event_id?: number
+  reads?: string[]
+}
+
+/** The price change a supplier question became once a person answered it. */
+export interface ResolvedChange {
+  event_id: number
+  material_id: string
+  old_cost_per_lb: number | null
+  new_cost_per_lb: number | null
+  effective_date: string | null
+  corrected_by_person?: {
+    price?: { was: number | null; now: number; quoted: number; unit: string }
+    effective_date?: { was: string | null; now: string }
+  }
 }

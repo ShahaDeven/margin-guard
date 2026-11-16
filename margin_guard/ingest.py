@@ -31,7 +31,9 @@ def with_attachments(conn: sqlite3.Connection, email: sqlite3.Row | dict) -> dic
         email["attachments_text"] = attachments.for_prompt(files)
         # Anything not read in full (cut, unreadable, failed) must reach a person.
         email["incomplete_attachments"] = [(name, r.state, r.note) for name, r in files
-                                           if r.state != attachments.COMPLETE]
+                                           if r.state not in (attachments.COMPLETE, attachments.OCR)]
+        # Read by OCR: usable, but every price taken from it is checked by a person first.
+        email["ocr_attachments"] = [(name, r.note) for name, r in files if r.state == attachments.OCR]
     return email
 
 

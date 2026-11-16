@@ -156,6 +156,26 @@ def normalize(conn: sqlite3.Connection, email: sqlite3.Row | dict, extraction: E
         if not extraction.changes or extraction.email_kind in ("other", "supplier_offer"):
             return result
 
+    # A scan read by OCR: every price in the email is checked by a person before it moves
+    # a quote (a misread digit is a wrong price, and the model's word on which part of the
+    # email a price came from is not relied on), and a scan that gave no price at all is
+    # read by a person rather than taken at the model's word.
+    ocr_files = _get(email, "ocr_attachments") or []
+    ocr_reason = None
+    if ocr_files and vendor_id:
+        names = ", ".join(name for name, _ in ocr_files)
+        ocr_reason = f"read by OCR from {names}: check the price and date against the original"
+        if not extraction.changes and not incomplete:
+            result.drafts.append(EventDraft(
+                "price_change.needs_review",
+                f"review:{email['id']}:ocr",
+                {"email_id": email["id"], "vendor_id": vendor_id, "kind": "ocr_no_prices",
+                 "review_reasons": [f"{names} was read by OCR and gave no price change; check the original"],
+                 "summary": extraction.rationale},
+            ))
+            if not extraction.changes or extraction.email_kind in ("other", "supplier_offer"):
+                return result
+
     if extraction.email_kind in ("other", "supplier_offer"):
         result.ignored_reason = f"not a price change ({extraction.email_kind})"
         return result
@@ -232,6 +252,8 @@ def normalize(conn: sqlite3.Connection, email: sqlite3.Row | dict, extraction: E
 
         if extraction.confidence < MIN_EXTRACTION_CONFIDENCE:
             reasons.append(f"low extraction confidence ({extraction.confidence:.2f})")
+        if ocr_reason:            # every price, whichever part of the email the model says it came from
+            reasons.append(ocr_reason)
 
         payload = {
             "email_id": email["id"],
@@ -249,6 +271,8 @@ def normalize(conn: sqlite3.Connection, email: sqlite3.Row | dict, extraction: E
                        "pct_change": ch.pct_change, "old_price": ch.old_price},
             "extraction_confidence": extraction.confidence,
         }
+        if ocr_reason:
+            payload["ocr"] = {"files": [name for name, _ in ocr_files], "notes": [note for _, note in ocr_files]}
         if reasons:
             payload["review_reasons"] = reasons
             result.drafts.append(EventDraft("price_change.needs_review", f"review:{email['id']}:{i}", payload))

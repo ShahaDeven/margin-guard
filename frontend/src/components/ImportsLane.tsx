@@ -4,6 +4,8 @@ import { api } from '../lib/api'
 import { materialLabel, shortDate, usd } from '../lib/format'
 import type { ImportHistoryRow, ImportPreview, ImportResult, StagedImport, Vendor } from '../lib/types'
 import { Button } from './Button'
+import { Segmented } from './Segmented'
+import { ShopImport } from './ShopImport'
 
 const head = 'border-b border-rule px-3 py-2.5 text-[13px] font-medium text-ink-dim'
 const cell = 'border-b border-rule-soft px-3 py-2 align-top'
@@ -27,10 +29,25 @@ const when = (iso: string) => {
   return `${d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}, ${d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }).toLowerCase()}`
 }
 
+type Kind = 'invoices' | 'shop'
+const KINDS: { id: Kind; label: string }[] = [{ id: 'invoices', label: 'Supplier invoices' }, { id: 'shop', label: 'A whole shop' }]
+
+/** Two imports: an accounts-payable invoice export, checked against the prices on file, and a
+ *  whole shop from its nine CSV files. */
+export function ImportsLane({ onOpenDecide, asOf }: { onOpenDecide: () => void; asOf: string | null }) {
+  const [kind, setKind] = useState<Kind>('invoices')
+  return (
+    <div className="flex flex-col gap-5">
+      <div><Segmented items={KINDS} value={kind} onChange={setKind} label="What to import" /></div>
+      {kind === 'invoices' ? <InvoiceImport onOpenDecide={onOpenDecide} /> : <ShopImport asOf={asOf} />}
+    </div>
+  )
+}
+
 /** Invoice import, three steps on one page: match the columns (left), check the live dry run
  *  (right), then import. Every step runs margin_guard/imports.py; nothing is written until
  *  "Import". */
-export function ImportsLane({ onOpenDecide }: { onOpenDecide: () => void }) {
+function InvoiceImport({ onOpenDecide }: { onOpenDecide: () => void }) {
   const [history, setHistory] = useState<ImportHistoryRow[]>([])
   const [vendors, setVendors] = useState<Vendor[]>([])
   const [staged, setStaged] = useState<StagedImport | null>(null)

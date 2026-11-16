@@ -9,8 +9,11 @@ SSE at /api/stream. With SQLite in WAL mode the console stays responsive meanwhi
 """
 
 import asyncio
+import io
 import json
+import os
 import threading
+import zipfile
 from contextlib import asynccontextmanager
 from datetime import datetime, timedelta
 from pathlib import Path
@@ -19,7 +22,8 @@ from fastapi import FastAPI, HTTPException, Response
 from pydantic import BaseModel
 from sse_starlette.sse import EventSourceResponse
 
-from . import actions, attachments, backlog, catalog, coordinator, db, imports, ingest, leakage, outcomes, quotecheck
+from . import (actions, attachments, backlog, catalog, coordinator, db, importer, imports, ingest, leakage, outcomes,
+               quotecheck, shops)
 from .config import AS_OF, DB_PATH, MODEL, ROOT
 
 DEMO_EMAILS_PATH = ROOT / "data" / "demo_emails.json"
@@ -49,10 +53,29 @@ _conn_lock = threading.Lock()
 _job_lock = threading.Lock()
 
 
+SAMPLE_DB = DB_PATH                       # the sample shop; a loaded shop has its own database (shops.py)
+_shop_resolved = False
+
+
+def _db_path():
+    """The current shop's database. MG_DB_PATH, when set, pins it; otherwise the shop last
+    switched to in the console."""
+    global DB_PATH, _shop_resolved
+    if not _shop_resolved:
+        _shop_resolved = True
+        current = shops.current_id()
+        if not os.getenv("MG_DB_PATH") and current != shops.SAMPLE_ID:
+            try:
+                DB_PATH = shops.path_of(current, SAMPLE_DB)
+            except KeyError:
+                pass
+    return DB_PATH
+
+
 def conn():
     global _conn
     if _conn is None:
-        _conn = db.connect(DB_PATH)
+        _conn = db.connect(_db_path())
     return _conn
 
 
@@ -76,7 +99,7 @@ def _run_job(name: str, work) -> None:
         raise HTTPException(409, "the agents are already working; try again in a moment")
 
     def target():
-        job_conn = db.connect(DB_PATH)
+        job_conn = db.connect(_db_path())
         try:
             bus.publish("job.started", {"job": name})
             work(job_conn)
@@ -199,6 +222,11 @@ def queue(lane: str = "decide", email: str | None = None) -> list[dict]:
             if r["kind"] == "quote_action":
                 r["outcome"] = done.get(r["id"])
                 r["customer_record"] = records.get(r["facts"].get("customer_id"))
+            elif lane == "done" and r["status"] == "approved":
+                # The price change a person's answer became (actions.resolve_review), with any
+                # correction they made to what was read: the record of what was applied.
+                ev = c.execute("SELECT id, payload FROM events WHERE source_ref = ?", (f"review:{r['id']}",)).fetchone()
+                r["resolved"] = {"event_id": ev["id"], **json.loads(ev["payload"])} if ev else None
         return rows
 
 
@@ -511,8 +539,15 @@ def data_quote(quote_id: str) -> dict:
                FROM proposals p JOIN events e ON e.id = p.event_id WHERE p.quote_id = ? ORDER BY p.id""",
             (quote_id,),
         ).fetchall()
+        # What the ERP changed on this quote, sync by sync (erp/sync.py records each change).
+        erp_changes = []
+        if c.execute("SELECT 1 FROM sqlite_master WHERE name = 'erp_syncs'").fetchone():
+            for s in c.execute("SELECT id, finished_at, summary FROM erp_syncs ORDER BY id DESC LIMIT 200"):
+                for ch in json.loads(s["summary"] or "{}").get("changes", []):
+                    if ch.get("kind") == "quote" and ch.get("ref") == quote_id:
+                        erp_changes.append({**ch, "sync_id": s["id"], "synced_at": s["finished_at"]})
         return {**dict(q), "lines": [dict(r) for r in lines], "revisions": [dict(r) for r in revisions],
-                "cards": [dict(r) for r in cards]}
+                "cards": [dict(r) for r in cards], "erp_changes": erp_changes}
 
 
 @app.get("/api/data/customers")
@@ -570,6 +605,8 @@ class ReviewBody(BaseModel):
 class ResolveBody(BaseModel):
     material_id: str
     note: str | None = None
+    price: float | None = None              # a person's correction, in the supplier's quoted unit
+    effective_date: str | None = None
 
 
 class NoteBody(BaseModel):
@@ -622,7 +659,7 @@ def dismiss(proposal_id: int, b: NoteBody) -> dict:
 @app.post("/api/proposals/{proposal_id}/resolve")
 def resolve(proposal_id: int, b: ResolveBody) -> dict:
     _require_idle()
-    event_id = _act(actions.resolve_review, proposal_id, b.material_id, b.note)
+    event_id = _act(actions.resolve_review, proposal_id, b.material_id, b.note, b.price, b.effective_date)
     bus.publish("proposal.reviewed", {"id": proposal_id, "status": "approved"})
     _run_job("resolve", _coordinate)
     return {"event_id": event_id}
@@ -786,6 +823,85 @@ def erp_force(outbox_id: int) -> dict:
     return {"started": True}
 
 
+# ------------------------------------------------------------------ shops (margin_guard/shops.py)
+
+
+class ShopFiles(BaseModel):
+    files: dict[str, str]                         # uploaded file name -> its text
+    slots: dict[str, str | None] | None = None    # template file -> uploaded name, where the person chose
+
+
+class NewShop(ShopFiles):
+    name: str
+
+
+def _switch(path) -> None:
+    """Point the console at another shop's database."""
+    global _conn, DB_PATH, _shop_resolved
+    with _conn_lock:
+        if _conn is not None:
+            _conn.close()
+        _conn, DB_PATH, _shop_resolved = None, Path(path), True
+
+
+@app.get("/api/shops")
+def shop_list() -> dict:
+    _db_path()
+    current = next((s["id"] for s in shops.listing(SAMPLE_DB)
+                    if Path(shops.path_of(s["id"], SAMPLE_DB)).resolve() == Path(DB_PATH).resolve()), None)
+    return {"current": current, "shops": shops.listing(SAMPLE_DB), "as_of": AS_OF.isoformat(),
+            "slots": [{"file": f, "label": label, "holds": holds} for f, label, holds, _ in shops.SLOTS]}
+
+
+@app.post("/api/shops/check")
+def shop_check(b: ShopFiles) -> dict:
+    """The nine files matched and checked; nothing is written."""
+    return shops.check(b.files, b.slots)
+
+
+@app.post("/api/shops")
+def shop_create(b: NewShop) -> dict:
+    _require_idle()
+    try:
+        shop = shops.create(b.name, b.files, b.slots)
+    except importer.ImportFailed as exc:
+        raise HTTPException(400, f"{len(exc.problems)} problem(s); nothing was loaded") from exc
+    except ValueError as exc:
+        raise HTTPException(400, str(exc)) from exc
+    _switch(shops.path_of(shop["id"], SAMPLE_DB))
+    bus.publish("shop.switched", {"id": shop["id"], "name": shop["name"]})
+    return shop
+
+
+@app.post("/api/shops/{shop_id}/switch")
+def shop_switch(shop_id: str) -> dict:
+    _require_idle()
+    try:
+        path = shops.path_of(shop_id, SAMPLE_DB)
+    except KeyError:
+        raise HTTPException(404, f"no shop {shop_id!r}") from None
+    shops.set_current(shop_id)
+    _switch(path)
+    bus.publish("shop.switched", {"id": shop_id})
+    return {"current": shop_id}
+
+
+@app.get("/api/shops/sample-files")
+def shop_sample_files(mistakes: bool = False) -> dict:
+    """The sample shop's nine CSVs, to try the flow with (optionally with four mistakes in them)."""
+    return {"files": shops.sample_files(mistakes)}
+
+
+@app.get("/api/shops/templates.zip")
+def shop_templates() -> Response:
+    buf = io.BytesIO()
+    with zipfile.ZipFile(buf, "w", zipfile.ZIP_DEFLATED) as z:
+        for f in shops.SLOT_FILES:
+            z.write(shops.SAMPLE_FILES / f, f"margin_guard_shop_templates/{f}")
+    return Response(buf.getvalue(), media_type="application/zip",
+                    headers={"Content-Disposition": 'attachment; filename="margin_guard_shop_templates.zip"'})
+
+
 @app.get("/api/health")
 def health() -> dict:
-    return {"ok": True, "db": str(Path(DB_PATH))}
+    return {"ok": True, "db": str(Path(_db_path()))}

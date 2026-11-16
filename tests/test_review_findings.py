@@ -114,7 +114,8 @@ def test_truncated_attachment_is_flagged_and_reviewed(conn):
 
 def test_attachment_states():
     assert attachments.render("broken.xlsx", b"not a zip").state == attachments.FAILED
-    assert attachments.render("photo.jpg", b"\xff\xd8").state == attachments.UNREADABLE
+    assert attachments.render("photo.jpg", b"\xff\xd8").state == attachments.FAILED      # an image, but broken
+    assert attachments.render("drawing.dwg", b"AC1027").state == attachments.UNREADABLE
     assert attachments.render("empty.csv", b"").state == attachments.UNREADABLE
     assert attachments.render("ok.csv", b"Grade,Price\nNBR 70,5.2\n").state == attachments.COMPLETE
 

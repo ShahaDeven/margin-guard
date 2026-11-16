@@ -267,3 +267,69 @@ def test_quote_states_and_the_won_order_date():
     won, open_ = a.pull("quote", None)
     assert (won["status"], won["issued_date"], won["ordered_date"]) == ("won", None, "2026-11-14")
     assert (open_["status"], open_["issued_date"], open_["valid_until"]) == ("open", "2026-10-01", "2026-10-01")
+
+
+# ------------------------------------------------------------------ the trace: what each sync changed, and where
+
+
+def test_a_first_sync_that_only_links_records_no_changes(conn, erp):
+    s = sync(conn, erp)
+    assert s["changes"] == [] and s["changes_cut"] == 0
+
+
+def test_a_line_price_change_is_traced_to_the_quote_with_its_margin(conn, erp):
+    sync(conn, erp)
+    q = erp.find("quote", ref="Q-2026-0101")
+    line = q["lines"][0]
+    was = line["unit_price"]
+    q["write_date"], line["unit_price"] = T1, 0.5
+    [c] = sync(conn, erp)["changes"]
+    assert c["kind"] == "quote" and c["record"].startswith("Quote Q-2026-0101, ") and c["fields"] == []
+    assert c["where"] == {"lane": "data", "quote": "Q-2026-0101"}
+    [ln] = c["lines"]
+    assert ln["outcome"] == "applied" and ln["record"].startswith(line["part_ref"] + ", ")
+    assert ln["fields"] == [{"field": "unit_price", "label": "Unit price", "from": round(was, 6), "to": 0.5}]
+    assert c["margin"]["to"] < c["margin"]["from"] and c["margin"]["floor"]
+
+
+def test_a_new_supplier_price_is_traced_to_its_event(conn, erp):
+    sync(conn, erp)
+    erp.records["supplier_price"].append({"erp_id": 9001, "write_date": T1, "material_ref": "MAT-EPDM-70", "supplier_ref": "V-MWP",
+                                          "cost_per_lb": 2.35, "effective_date": "2026-12-01", "is_costing": True})
+    s = sync(conn, erp)
+    [c] = s["changes"]
+    assert c["outcome"] == "new_price" and c["event_id"] == s["events"][0]
+    assert c["record"] == "EPDM 70 Shore A compound from Midwest Polymer Supply"
+    assert {f["field"]: (f["from"], f["to"]) for f in c["fields"]} == {"cost_per_lb": (2.1, 2.35), "effective_date": (None, "2026-12-01")}
+
+
+def test_an_edit_to_something_margin_guard_does_not_read_says_so(conn, erp):
+    sync(conn, erp)
+    erp.find("customer", ref="C-01")["write_date"] = T1         # e.g. a website changed in Odoo
+    [c] = sync(conn, erp)["changes"]
+    assert c["outcome"] == "no_effect" and c["record"].startswith("Customer C-01") and "Buyer phone" in c["reads"]
+
+
+def test_a_conflict_is_traced_with_both_values(conn, erp):
+    sync(conn, erp)
+    conn.execute("UPDATE customers SET buyer_phone = '(312) 555-9999' WHERE id = 'C-01'")
+    c = erp.find("customer", ref="C-01")
+    c["write_date"], c["buyer_phone"] = T1, "(312) 555-0000"
+    [t] = sync(conn, erp)["changes"]
+    assert t["outcome"] == "conflict"
+    assert t["fields"] == [{"field": "buyer_phone", "label": "Buyer phone", "from": "(312) 555-9999", "to": "(312) 555-0000"}]
+
+
+def test_a_quote_shows_what_the_erp_changed_on_it(conn, erp, monkeypatch):
+    from fastapi.testclient import TestClient
+
+    from margin_guard import api
+    sync(conn, erp)
+    q = erp.find("quote", ref="Q-2026-0101")
+    q["write_date"], q["lines"][0]["unit_price"] = T1, 0.5
+    sync(conn, erp)
+    monkeypatch.setattr(api, "_conn", conn)
+    with TestClient(api.app) as c:
+        [ch] = c.get("/api/data/quotes/Q-2026-0101").json()["erp_changes"]
+        assert ch["lines"][0]["fields"][0]["to"] == 0.5 and ch["sync_id"]
+        assert c.get("/api/data/quotes/Q-2026-0102").json()["erp_changes"] == []

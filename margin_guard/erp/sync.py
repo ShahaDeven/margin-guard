@@ -24,6 +24,12 @@ Two kinds are append-only and never overwrite anything:
     vendor bill     new lines go through the invoice check (invoices.check_rows), so a price
                     billed above the one on file becomes a drift question, as with a CSV.
 
+Every change is recorded with the sync (`changes` in its summary): which record, each field
+from what to what, and where it landed (a quote's quoted margin before and after, a price
+change's event), so the console can show what a sync did and a quote can show what Odoo
+changed on it. A record touched in the ERP with nothing Margin Guard reads changed is listed
+too, so an edit that has no effect here says so instead of vanishing.
+
 Everything runs in one transaction with the cursors, so a failed sync changes nothing and
 the next one starts from the same place. What stays Margin Guard's own: a quote's margin floor
 (a new quote from the ERP gets DEFAULT_FLOOR, and the report says so) and a part's conversion
@@ -41,6 +47,17 @@ from ..parser import EventDraft, price_change_key
 from .adapter import KINDS, ErpAdapter
 
 DEFAULT_FLOOR = 0.25
+MAX_CHANGES = 300            # per sync; a first sync of a big ERP links records, it doesn't change them
+
+# What each field is called where a person reads it.
+LABELS = {
+    "name": "Name", "email_domain": "Email domain", "tier": "Tier", "price_lock_until": "Price lock until",
+    "contract_note": "Contract note", "buyer_name": "Buyer", "buyer_email": "Buyer email", "buyer_phone": "Buyer phone",
+    "account_manager": "Account manager", "account_manager_phone": "Account manager phone",
+    "customer_ref": "Customer", "status": "Status", "issued_date": "Quoted", "valid_until": "Valid until",
+    "ordered_date": "Ordered", "part_ref": "Part", "qty": "Quantity", "unit_price": "Unit price",
+    "lines": "Materials (lb per part)", "cost_per_lb": "Cost per lb", "effective_date": "From",
+}
 
 
 class Sync:
@@ -52,6 +69,9 @@ class Sync:
         self.events: list[int] = []
         self.invoice: dict | None = None
         self.bills: list[dict] = []
+        self.changes: list[dict] = []
+        self.since: str | None = None
+        self._pair: tuple[dict | None, dict] = (None, {})
 
     # ---------------------------------------------------------------- links and cursors
     def link(self, kind: str, erp_id: int):
@@ -71,6 +91,7 @@ class Sync:
 
     def reconcile(self, kind: str, rec: dict, view: dict, local: dict | None, protected: bool = False) -> str:
         """added | applied | unchanged | linked | conflict, following the table in the docstring."""
+        self._pair = (local, view)
         link = self.link(kind, rec["erp_id"])
         before = json.loads(link["snapshot"]) if link else None
         if before is not None:
@@ -94,6 +115,7 @@ class Sync:
         try:
             for kind in KINDS:
                 since = self.cursor(kind)
+                self.since = since
                 records = self.a.pull(kind, since)
                 handle = getattr(self, f"_{kind}")
                 for rec in records:
@@ -122,7 +144,29 @@ class Sync:
 
     def summary(self) -> dict:
         return {"kinds": {k: dict(v) for k, v in self.report.items()}, "conflicts": self.conflicts,
-                "notes": self.notes, "events": self.events, "invoice": self.invoice}
+                "notes": self.notes, "events": self.events, "invoice": self.invoice,
+                "changes": self.changes[:MAX_CHANGES], "changes_cut": max(len(self.changes) - MAX_CHANGES, 0)}
+
+    # ---------------------------------------------------------------- the trace
+    @staticmethod
+    def _diff(before: dict | None, after: dict) -> list[dict]:
+        return [{"field": k, "label": LABELS.get(k, k.replace("_", " ").capitalize()),
+                 "from": (before or {}).get(k), "to": after.get(k)}
+                for k in after if before is None or before.get(k) != after.get(k)]
+
+    def touched(self, rec: dict) -> bool:
+        """Written in the ERP since the last sync (the cursor is inclusive, so equal is not new)."""
+        return bool(self.since) and rec.get("write_date", "") > self.since
+
+    def trace(self, kind: str, outcome: str, record: str, ref: str, before: dict | None, after: dict,
+              where: dict | None = None, **extra) -> dict | None:
+        """Record one change: the fields that moved, from what to what, and where it landed."""
+        fields = self._diff(before, after)
+        if outcome in ("applied", "conflict") and not fields:
+            return None
+        entry = {"kind": kind, "outcome": outcome, "record": record, "ref": ref, "fields": fields, "where": where, **extra}
+        self.changes.append(entry)
+        return entry
 
     def count(self, kind: str, outcome: str, what: str) -> None:
         self.report[kind][outcome] += 1
@@ -184,6 +228,14 @@ class Sync:
 
     def _done(self, kind: str, r: dict, outcome: str, local_id: str, view: dict, what: str) -> None:
         self.count(kind, outcome, what)
+        local = self._pair[0]
+        record = f"{what[0].upper()}{what[1:]}" + (f", {r['name']}" if r.get("name") and kind != "bom" else "")
+        where = {"lane": "data"} if kind in ("customer", "material") else None
+        if outcome in ("added", "applied", "conflict"):
+            self.trace(kind, outcome, record, local_id, local, view, where)
+        elif outcome == "unchanged" and self.touched(r):
+            self.trace(kind, "no_effect", record, local_id, None, {}, None,
+                       reads=[LABELS.get(k, k) for k in view])
         if outcome != "conflict":
             self.save(kind, r["erp_id"], local_id, view)
 
@@ -217,11 +269,16 @@ class Sync:
                        "match_method": "erp", "source": self.system, "erp_id": r["erp_id"]}
             event_id = events.append(self.conn, EventDraft("price_change.detected", price_change_key(ven, mat, cost, day), payload),
                                      source_ref=f"{self.system}:product.supplierinfo:{r['erp_id']}")
+            names = self._names(mat, ven)
+            before = {"cost_per_lb": out(old), "effective_date": None}
             if event_id:
                 self.events.append(event_id)
                 self.report["supplier_price"]["new_price"] += 1
+                self.trace("supplier_price", "new_price", names, f"{mat}:{ven}", before, view,
+                           {"lane": "decide", "material": mat}, event_id=event_id)
             else:
                 self.report["supplier_price"]["already_on_file"] += 1    # same change already came by email
+                self.trace("supplier_price", "already_on_file", names, f"{mat}:{ven}", before, view, None)
         self.save("supplier_price", r["erp_id"], f"{mat}:{ven}:{day}", view)
 
     def _costing(self, mat: str, ven: str, is_costing: bool) -> None:
@@ -288,9 +345,30 @@ class Sync:
             self.conn.execute("UPDATE quotes SET customer_id = ?, status = ?, issued_date = COALESCE(?, issued_date), "
                               "valid_until = ?, ordered_date = ? WHERE id = ?",
                               (r["customer_ref"], r["status"], r["issued_date"], r["valid_until"], r["ordered_date"], q))
-        self._done("quote", r, outcome, q, view, f"quote {q}")
+        margin_before = self._margin(q)
+        self.count("quote", outcome, f"quote {q}")
+        if outcome != "conflict":
+            self.save("quote", r["erp_id"], q, view)
+        mark = len(self.changes)
         if outcome != "conflict":
             self._lines(q, r["lines"])
+        lines = self.changes[mark:]
+        del self.changes[mark:]
+        customer = self.conn.execute("SELECT name FROM customers WHERE id = ?", (r["customer_ref"],)).fetchone()
+        record = f"Quote {q}" + (f", {customer['name']}" if customer else "")
+        floor = self.conn.execute("SELECT margin_floor FROM quotes WHERE id = ?", (q,)).fetchone()
+        margin = {"from": margin_before, "to": self._margin(q), "floor": floor["margin_floor"] if floor else None}
+        changed = outcome in ("added", "applied", "conflict")
+        if changed or lines:
+            # One entry per quote: its own fields (if they moved), each line that moved, and
+            # what that did to the quoted margin.
+            self.changes.append({
+                "kind": "quote", "outcome": outcome if changed else "applied", "record": record, "ref": q,
+                "fields": self._diff(None if outcome == "added" else local, view) if changed else [],
+                "where": {"lane": "data", "quote": q}, "lines": lines,
+                "margin": margin if margin["from"] != margin["to"] else None})
+        elif self.touched(r):
+            self.trace("quote", "no_effect", record, q, None, {}, None, reads=[LABELS[k] for k in view] + ["its lines"])
 
     def _lines(self, q: str, lines: list[dict]) -> None:
         local_rows = self.conn.execute("SELECT * FROM quote_lines WHERE quote_id = ? ORDER BY id", (q,)).fetchall()
@@ -327,6 +405,8 @@ class Sync:
                                       (ln["part_ref"], int(ln["qty"]), ln["unit_price"], local_id))
             seen.add(local_id)
             self.report["quote"][f"line_{outcome}"] += 1
+            if outcome in ("added", "applied", "conflict"):
+                self.trace("quote_line", outcome, self._part_name(ln["part_ref"]), str(local_id), lv, view)
             if outcome == "conflict":
                 self.conflicts.append(f"quote {q}, {ln['part_ref']}: price or quantity changed in Margin Guard (an approved "
                                       f"reprice) and in {self.system.capitalize()}; kept Margin Guard's")
@@ -339,9 +419,31 @@ class Sync:
             if self.conn.execute("SELECT 1 FROM quote_revisions WHERE line_id = ?", (local_id,)).fetchone():
                 self.conflicts.append(f"quote {q}: a line removed in {self.system.capitalize()} has an approved reprice here; kept it")
                 continue
+            gone = self.conn.execute("SELECT part_id, qty, unit_price FROM quote_lines WHERE id = ?", (local_id,)).fetchone()
+            if gone:
+                self.trace("quote_line", "removed", self._part_name(gone["part_id"]), str(local_id),
+                           {"part_ref": gone["part_id"], "qty": gone["qty"], "unit_price": gone["unit_price"]},
+                           {"part_ref": None, "qty": None, "unit_price": None})
             self.conn.execute("DELETE FROM quote_lines WHERE id = ?", (local_id,))
             self.conn.execute("DELETE FROM erp_links WHERE system = ? AND kind = 'quote_line' AND erp_id = ?", (self.system, link["erp_id"]))
             self.report["quote"]["line_removed"] += 1
+
+    def _margin(self, q: str) -> float | None:
+        """The quote's margin as quoted: price against the cost each line was quoted at."""
+        r = self.conn.execute("SELECT SUM(qty * unit_price) AS value, SUM(qty * (material_cost_basis + conversion_cost)) AS cost "
+                              "FROM quote_lines WHERE quote_id = ?", (q,)).fetchone()
+        if not r or not r["value"]:
+            return None
+        return round(1 - r["cost"] / r["value"], 4)
+
+    def _part_name(self, part: str) -> str:
+        row = self.conn.execute("SELECT name FROM parts WHERE id = ?", (part,)).fetchone()
+        return f"{part}, {row['name']}" if row else part
+
+    def _names(self, mat: str, ven: str) -> str:
+        m = self.conn.execute("SELECT name FROM materials WHERE id = ?", (mat,)).fetchone()
+        v = self.conn.execute("SELECT name FROM vendors WHERE id = ?", (ven,)).fetchone()
+        return f"{m['name'] if m else mat} from {v['name'] if v else ven}"
 
     # ---------------------------------------------------------------- vendor bills (append-only)
     def _bill_line(self, r: dict) -> None:

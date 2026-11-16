@@ -1,5 +1,5 @@
 import type {
-  Backlog, ErpStatus, DataCustomer, DataMaterial, DataQuote, DemoEmail, Email, ImportHistoryRow, ImportPreview, ImportResult, Leakage, Material, Part,
+  Backlog, ErpStatus, ShopCheck, ShopCreated, ShopListing, DataCustomer, DataMaterial, DataQuote, DemoEmail, Email, ImportHistoryRow, ImportPreview, ImportResult, Leakage, Material, Part,
   OutcomeBody, OutcomesSummary, QuoteCheck, StagedImport, Vendor, OutboxItem, Overview, Proposal, QuoteDetail,
 } from './types'
 
@@ -65,10 +65,18 @@ export const api = {
     post<Proposal>(`/api/proposals/${id}/review`, body),
   reopen: (id: number) => post<Proposal>(`/api/proposals/${id}/reopen`),
   confirmRules: (eventId: number) => post<{ confirmed: number }>(`/api/events/${eventId}/confirm-rules`),
-  resolve: (id: number, materialId: string) => post<{ event_id: number }>(`/api/proposals/${id}/resolve`, { material_id: materialId }),
+  resolve: (id: number, materialId: string, fix?: { price?: number; effective_date?: string }) =>
+    post<{ event_id: number }>(`/api/proposals/${id}/resolve`, { material_id: materialId, ...fix }),
   dismiss: (id: number, note?: string) => post<Proposal>(`/api/proposals/${id}/dismiss`, { note }),
   redecide: (id: number) => post<{ event_id: number }>(`/api/proposals/${id}/redecide`),
   erp: () => call<ErpStatus>('/api/erp'),
+  shops: () => call<ShopListing>('/api/shops'),
+  checkShop: (files: Record<string, string>, slots: Record<string, string | null>) =>
+    post<ShopCheck>('/api/shops/check', { files, slots }),
+  createShop: (name: string, files: Record<string, string>, slots: Record<string, string | null>) =>
+    post<ShopCreated>('/api/shops', { name, files, slots }),
+  switchShop: (id: string) => post<{ current: string }>(`/api/shops/${id}/switch`),
+  sampleShopFiles: (mistakes: boolean) => call<{ files: Record<string, string> }>(`/api/shops/sample-files?mistakes=${mistakes}`),
   erpSync: () => post<{ started: boolean }>('/api/erp/sync'),
   erpPush: () => post<{ started: boolean }>('/api/erp/push'),
   erpForce: (outboxId: number) => post<{ started: boolean }>(`/api/erp/outbox/${outboxId}/force`),
